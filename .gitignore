@@ -25,3 +25,8 @@ build/
 # IDE
 .idea/
 .vscode/
+# CatVTON kaynak kodu (backend/README.md içindeki adımlarla klonlanır)
+ai/CatVTON/
+
+# Test çıktıları
+tests/output_*

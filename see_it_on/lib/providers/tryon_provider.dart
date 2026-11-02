@@ -21,6 +21,7 @@ class TryOnProvider extends ChangeNotifier {
   GarmentItem? _selectedGarmentItem;
 
   // Fit & Generation Controls
+  String _selectedCategory = 'upper'; // 'upper', 'lower', 'overall'
   String _selectedFit = 'Tailored'; // 'Tailored', 'Regular', 'Oversized'
   bool _lockPose = false;
   bool _autoCleanBg = true;
@@ -100,6 +101,7 @@ class TryOnProvider extends ChangeNotifier {
   Uint8List? get garmentImageBytes => _garmentImageBytes;
   String? get garmentImageName => _garmentImageName;
   GarmentItem? get selectedGarmentItem => _selectedGarmentItem;
+  String get selectedCategory => _selectedCategory;
   String get selectedFit => _selectedFit;
   bool get lockPose => _lockPose;
   bool get autoCleanBg => _autoCleanBg;
@@ -202,6 +204,11 @@ class TryOnProvider extends ChangeNotifier {
   }
 
   // Fit & Control Setters
+  void setSelectedCategory(String category) {
+    _selectedCategory = category;
+    notifyListeners();
+  }
+
   void setSelectedFit(String fit) {
     _selectedFit = fit;
     notifyListeners();
@@ -227,7 +234,7 @@ class TryOnProvider extends ChangeNotifier {
 
     _isLoading = true;
     _progress = 0.05;
-    _currentStepDescription = 'Initializing IDM-VTON diffusion pipeline...';
+    _currentStepDescription = 'Initializing CatVTON diffusion pipeline...';
     _errorMessage = null;
     notifyListeners();
 
@@ -237,6 +244,7 @@ class TryOnProvider extends ChangeNotifier {
         personImageName: _personImageName,
         garmentImageBytes: _garmentImageBytes!,
         garmentImageName: _garmentImageName,
+        category: _selectedCategory,
         fitType: _selectedFit,
         lockPose: _lockPose,
         autoCleanBg: _autoCleanBg,

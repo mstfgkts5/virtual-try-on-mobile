@@ -1,41 +1,69 @@
-# SeeItOn - AI Virtual Try-On Python FastAPI Backend
+# SeeItOn - Yerel Sanal Deneme Backend'i (FastAPI + CatVTON)
 
-Bu servis, **SeeItOn** Flutter mobil uygulamasından gelen iki görseli (`person_image` ve `garment_image`) alır ve **IDM-VTON** yapay zeka difüzyon modeline ileterek 1. fotoğraftaki kişinin üzerine 2. fotoğraftaki kıyafeti giydirilmiş şekilde döndürür.
+Bu servis, **SeeItOn** Flutter uygulamasından gelen kişi ve kıyafet fotoğraflarını alır ve
+**CatVTON** difüzyon modeliyle yerel NVIDIA GPU üzerinde sanal deneme yapar.
+Üst giyim (`upper`), alt giyim (`lower`) ve tam kıyafet (`overall`) desteklenir.
+
+Ölçülen performans (RTX 5060 Laptop, 8 GB): görsel başına ~40 sn (30 adım), en yüksek VRAM ~4,4 GB.
 
 ---
 
 ### 1. Kurulum
 
-Gerekli Python paketlerini yükleyin:
-
 ```bash
+# Proje kökünde: CatVTON kaynak kodu
+git clone --depth 1 https://github.com/Zheng-Chong/CatVTON.git ai/CatVTON
+
 cd backend
-pip install -r requirements.txt
+python -m venv venv
+venv\Scripts\pip install torch torchvision --index-url https://download.pytorch.org/whl/cu128
+venv\Scripts\pip install -r requirements.txt
+
+# Model ağırlıkları (~6 GB, kullanıcının Hugging Face önbelleğine iner)
+set HF_HUB_DISABLE_XET=1
+venv\Scripts\python download_models.py
 ```
 
 ---
 
 ### 2. Sunucuyu Başlatma
 
-Sunucuyu yerel makinenizde çalıştırmak için:
-
 ```bash
-uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+cd backend
+venv\Scripts\python -m uvicorn main:app --host 0.0.0.0 --port 8000
 ```
 
-Sunucu başladığında `http://localhost:8000/docs` adresinden interaktif Swagger dokümantasyonunu görebilirsiniz.
+Model açılışta bir kez GPU'ya yüklenir (~20 sn). `GET /health` model hazır olunca `"status": "ok"` döner.
+Swagger dokümantasyonu: `http://localhost:8000/docs`
 
 ---
 
-### 3. Flutter Uygulaması ile Bağlantı
+### 3. API
 
-- **Chrome / Web**: Otomatik olarak `http://localhost:8000` üzerinden bağlanır.
-- **Android Emülatör**: `http://10.0.2.2:8000` üzerinden bağlanır.
-- **Gerçek Telefon**: Bilgisayarınızın yerel Wi-Fi IP adresini (Örn: `http://192.168.1.35:8000`) veya Ngrok linkini mobil uygulamanın sağ üstündeki **Profil (Ayarlar)** penceresinden girebilirsiniz.
+`POST /api/v1/tryon` (multipart/form-data)
+
+| Alan | Tür | Açıklama |
+|---|---|---|
+| `person_image` | dosya | Kişi fotoğrafı (önden, tercihen boydan) |
+| `garment_image` | dosya | Kıyafet fotoğrafı (düz zemin) |
+| `category` | metin | `upper`, `lower` veya `overall` (varsayılan `upper`) |
+| `steps` | sayı | 10–50 arası difüzyon adımı (varsayılan 30) |
+| `seed` | sayı | Tekrarlanabilir sonuç için (varsayılan 42) |
+
+Yanıt: `image/png`. `X-Render-Time` başlığı gerçek işlem süresini (sn), `X-Category` kullanılan kategoriyi verir.
 
 ---
 
-### 4. Model Çalışma Mantığı
+### 4. Flutter Uygulaması ile Bağlantı
 
-1. `gradio_client` sayesinde doğrudan Hugging Face üzerindeki açık **`yisol/IDM-VTON`** Space'ini çağırır. Bu sayede yerel bilgisayarınızda pahalı bir NVIDIA ekran kartına ihtiyaç duymadan gerçek difüzyon çıktısı alabilirsiniz.
-2. İnternet kesilirse veya Hugging Face kota sınırına girerse, sunucu otomatik olarak Pillow katmanlı kompozit motorunu devreye sokar ve hiçbir zaman çökme yaşanmaz.
+- **Chrome / Web**: `http://localhost:8000`
+- **Android Emülatör**: `http://10.0.2.2:8000`
+- **Gerçek Telefon**: Bilgisayarın yerel Wi-Fi IP adresi (örn. `http://192.168.1.35:8000`), uygulamadaki ayarlardan girilir.
+
+---
+
+### 5. Test
+
+```bash
+backend\venv\Scripts\python tests\smoke_tryon.py <kişi.jpg> <kıyafet.jpg> upper
+```

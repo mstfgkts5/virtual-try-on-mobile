@@ -1,170 +1,119 @@
 import asyncio
 import io
 import os
-import time
-from fastapi import FastAPI, File, UploadFile, Form, HTTPException
+import sys
+from contextlib import asynccontextmanager
+
+from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
-from PIL import Image
-from huggingface_hub import login
+from PIL import Image, UnidentifiedImageError
 
-# Token artık kodun içinde değil, .env dosyasından / ortam değişkeninden okunuyor (güvenlik için).
-# backend klasöründeki .env dosyasına tek satır yazın:  HF_TOKEN=hf_...
-try:
-    from dotenv import load_dotenv
-    load_dotenv()
-except ImportError:
-    print("[UYARI] python-dotenv kurulu değil: pip install python-dotenv")
+sys.stdout.reconfigure(encoding="utf-8")  # Windows konsolunda Türkçe log'lar için
 
-HF_TOKEN = os.getenv("HF_TOKEN", "")
-if HF_TOKEN:
+MAX_UPLOAD_BYTES = 15 * 1024 * 1024
+engine = None  # CatVTONEngine, sunucu açılırken yüklenir
+engine_error = None
+
+
+@asynccontextmanager
+async def lifespan(_: FastAPI):
+    global engine, engine_error
     try:
-        login(token=HF_TOKEN)
+        from engine import CatVTONEngine
+        print("[SeeItOn] CatVTON modeli GPU'ya yükleniyor...")
+        engine = await asyncio.to_thread(
+            CatVTONEngine,
+            int(os.getenv("TRYON_WIDTH", "768")),
+            int(os.getenv("TRYON_HEIGHT", "1024")),
+        )
+        print(f"[SeeItOn] Model hazır: {engine.gpu_info()}")
     except Exception as e:
-        print(f"[UYARI] Hugging Face login uyarısı: {e}")
-else:
-    print("[UYARI] HF_TOKEN ayarlanmamış, anonim kota ile devam ediliyor.")
+        engine_error = str(e)
+        print(f"[HATA] Model yüklenemedi: {e}")
+    yield
+
 
 app = FastAPI(
-    title="SeeItOn - Bulletproof AI Backend",
-    description="Stable architecture powered exclusively by IDM-VTON Universal Engine.",
-    version="3.5.0"
+    title="SeeItOn - Local Try-On Backend",
+    description="CatVTON ile yerel GPU üzerinde üst, alt ve tam kıyafet sanal deneme.",
+    version="4.0.0",
+    lifespan=lifespan,
 )
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["X-Render-Time", "X-Category"],
 )
-
-try:
-    from gradio_client import Client, handle_file
-    GRADIO_AVAILABLE = True
-except ImportError:
-    GRADIO_AVAILABLE = False
 
 
 @app.get("/")
 def root():
-    return {
-        "status": "online",
-        "service": "SeeItOn Stable Engine",
-        "engine": "IDM-VTON Universal Pipeline"
-    }
+    return {"status": "online", "service": "SeeItOn", "engine": "CatVTON (local GPU)"}
 
 
 @app.get("/health")
 def health():
-    return {"status": "ok"}
+    if engine is None:
+        return {"status": "loading" if engine_error is None else "error", "detail": engine_error}
+    return {"status": "ok", "engine": "CatVTON", "gpu": engine.gpu_info()}
 
 
-def optimize_image(image_bytes: bytes, max_width: int = 768, max_height: int = 1024) -> bytes:
-    img = Image.open(io.BytesIO(image_bytes))
-    if img.mode not in ("RGB", "RGBA"):
-        img = img.convert("RGBA" if "A" in img.getbands() else "RGB")
-    img.thumbnail((max_width, max_height), Image.Resampling.LANCZOS)
-
-    buffer = io.BytesIO()
-    if img.mode == "RGBA":
-        img.save(buffer, format="PNG", optimize=True)
-    else:
-        img.save(buffer, format="JPEG", quality=90, optimize=True)
-    return buffer.getvalue()
-
-
-def _run_idm_vton(person_path: str, garment_path: str, category: str):
-    """Bloklayan Space çağrısı. Ayrı thread'de çalıştırılır ki sunucu donmasın."""
-    client = Client("yisol/IDM-VTON")
-
-    if category == "lower_body":
-        garment_description = "A pair of trousers, pants, lower body garment"
-        is_crop_val = True
-    elif category == "dresses":
-        garment_description = "Full body dress gown"
-        is_crop_val = False
-    else:
-        garment_description = "Virtual try-on high quality top garment, shirt, jacket"
-        is_crop_val = False
-
-    return client.predict(
-        dict={"background": handle_file(person_path), "layers": [], "composite": None},
-        garm_img=handle_file(garment_path),
-        garment_des=garment_description,
-        is_checked=True,
-        is_checked_crop=is_crop_val,
-        denoise_steps=30,
-        seed=42,
-        api_name="/tryon"
-    )
+async def _read_image(upload: UploadFile, label: str) -> Image.Image:
+    data = await upload.read()
+    if not data:
+        raise HTTPException(status_code=400, detail=f"{label} boş yüklendi.")
+    if len(data) > MAX_UPLOAD_BYTES:
+        raise HTTPException(status_code=413, detail=f"{label} 15 MB sınırını aşıyor.")
+    try:
+        image = Image.open(io.BytesIO(data))
+        image.load()
+        return image
+    except UnidentifiedImageError:
+        raise HTTPException(status_code=400, detail=f"{label} geçerli bir görsel değil.")
 
 
 @app.post("/api/v1/tryon")
 async def process_tryon(
     person_image: UploadFile = File(...),
     garment_image: UploadFile = File(...),
-    category: str = Form("upper_body"),
-    fit_type: str = Form("Tailored"),
-    lock_pose: str = Form("false"),
-    auto_clean_bg: str = Form("true")
+    category: str = Form("upper"),
+    steps: int = Form(30),
+    seed: int = Form(42),
 ):
-    person_path, garment_path = None, None
+    if engine is None:
+        raise HTTPException(status_code=503, detail=engine_error or "Model henüz yükleniyor, birazdan tekrar deneyin.")
+
     try:
-        person_bytes = await person_image.read()
-        garment_bytes = await garment_image.read()
+        engine.normalize_category(category)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    if not 10 <= steps <= 50:
+        raise HTTPException(status_code=400, detail="steps 10 ile 50 arasında olmalı.")
 
-        if not person_bytes or not garment_bytes:
-            raise HTTPException(status_code=400, detail="Eksik fotoğraf yüklendi.")
+    person = await _read_image(person_image, "Kişi fotoğrafı")
+    garment = await _read_image(garment_image, "Kıyafet fotoğrafı")
 
-        os.makedirs("temp", exist_ok=True)
-        timestamp = int(time.time() * 1000)
-        person_path = f"temp/person_{timestamp}.jpg"
-        garment_path = f"temp/garment_{timestamp}.jpg"
+    print(f"[SeeItOn] İstek -> kategori: {category}, adım: {steps}")
+    try:
+        output = await asyncio.to_thread(engine.run, person, garment, category, steps, 2.5, seed)
+    except Exception as e:
+        print(f"[HATA] Çıkarım hatası: {e}")
+        raise HTTPException(status_code=500, detail=f"Model çalıştırılamadı: {e}")
 
-        with open(person_path, "wb") as f:
-            f.write(optimize_image(person_bytes))
-        with open(garment_path, "wb") as f:
-            f.write(optimize_image(garment_bytes))
-
-        if not GRADIO_AVAILABLE:
-            raise HTTPException(status_code=500, detail="gradio_client kütüphanesi eksik.")
-
-        print(f"\n[SeeItOn Engine] İstek İşleniyor -> Kategori: {category}")
-        print("[SeeItOn Engine] IDM-VTON çalışıyor (30-120 sn sürebilir)...")
-
-        result = await asyncio.to_thread(_run_idm_vton, person_path, garment_path, category)
-
-        output_image_path = result[0] if isinstance(result, (list, tuple)) else result
-
-        if output_image_path and os.path.exists(output_image_path):
-            with open(output_image_path, "rb") as f:
-                output_bytes = f.read()
-
-            _safe_remove(person_path, garment_path)
-            print("[SeeItOn Engine] İşlem BAŞARILI!")
-            return Response(content=output_bytes, media_type="image/png")
-        else:
-            raise Exception("Yapay zeka modeli görseli oluşturamadı.")
-
-    except HTTPException:
-        _safe_remove(person_path, garment_path)
-        raise
-    except Exception as api_err:
-        _safe_remove(person_path, garment_path)
-        print(f"\n[HATA] Sunucu İşlem Hatası: {str(api_err)}\n")
-        raise HTTPException(status_code=503, detail=f"Sunucu hatası: {str(api_err)}")
-
-
-def _safe_remove(*paths):
-    for p in paths:
-        try:
-            if p and os.path.exists(p):
-                os.remove(p)
-        except Exception:
-            pass
+    buffer = io.BytesIO()
+    output.image.save(buffer, format="PNG")
+    print(f"[SeeItOn] Tamamlandı ({output.render_time_sec} sn)")
+    return Response(
+        content=buffer.getvalue(),
+        media_type="image/png",
+        headers={"X-Render-Time": str(output.render_time_sec), "X-Category": output.category},
+    )
 
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
+    uvicorn.run("main:app", host="0.0.0.0", port=8000)

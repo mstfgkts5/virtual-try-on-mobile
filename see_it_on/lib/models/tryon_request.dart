@@ -5,7 +5,7 @@ class TryOnRequest {
   final String? personImageName;
   final Uint8List garmentImageBytes;
   final String? garmentImageName;
-  final String category; // 'upper_body', 'lower_body', 'dresses'
+  final String category; // 'upper', 'lower', 'overall'
   final String fitType; // 'Tailored', 'Regular', 'Oversized'
   final bool lockPose;
   final bool autoCleanBg;
@@ -15,7 +15,7 @@ class TryOnRequest {
     this.personImageName,
     required this.garmentImageBytes,
     this.garmentImageName,
-    this.category = 'upper_body', // Varsayılan üst giyim
+    this.category = 'upper', // Varsayılan üst giyim
     this.fitType = 'Tailored',
     this.lockPose = false,
     this.autoCleanBg = true,
@@ -23,11 +23,8 @@ class TryOnRequest {
 
   Map<String, String> toFieldsMap() {
     return {
-      'category': category.toLowerCase(), // KESİN ÇÖZÜM: Artık kategori FastAPI'ye gidiyor!
-      'fit_type': fitType.toLowerCase(),
-      'lock_pose': lockPose.toString(),
-      'auto_clean_bg': autoCleanBg.toString(),
-      'model_version': 'idm-vton-3.2',
+      'category': category.toLowerCase(),
+      'steps': '30',
     };
   }
 }

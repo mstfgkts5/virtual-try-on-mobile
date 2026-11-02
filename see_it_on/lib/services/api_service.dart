@@ -51,7 +51,7 @@ class ApiService {
         ),
       );
 
-      // Sadece üst giyim (Upper Body) kıyafetini ekle
+      // Kıyafet fotoğrafını ekle (üst, alt veya tam kıyafet)
       multipartRequest.files.add(
         http.MultipartFile.fromBytes(
           'garment_image',
@@ -60,19 +60,18 @@ class ApiService {
         ),
       );
 
-      // Kategori parametresini sadece "upper" olarak zorunlu kılıyoruz
       final fieldsMap = request.toFieldsMap();
-      fieldsMap['category'] = 'upper'; // Sadece üst giyim desteklenecek
       multipartRequest.fields.addAll(fieldsMap);
 
       debugPrint('[ApiService] İstek Gönderiliyor -> Kategori: ${fieldsMap['category']}, BaseUrl: $_baseUrl');
 
       onProgress?.call("Görseller yükleniyor...", 0.35);
 
+      // Yerel GPU'da işlem ~10-40 sn sürer; ilk istek model ısınması nedeniyle daha uzun olabilir
       final streamedResponse = await multipartRequest.send().timeout(
-            const Duration(seconds: 60),
+            const Duration(seconds: 180),
             onTimeout: () {
-              throw TimeoutException('İstek 60 saniye sonra zaman aşımına uğradı');
+              throw TimeoutException('İstek 180 saniye sonra zaman aşımına uğradı');
             },
           );
 
@@ -98,24 +97,25 @@ class ApiService {
 
   TryOnResult _parseSuccessResponse(http.Response response, TryOnRequest request) {
     final contentType = response.headers['content-type'] ?? '';
+    final renderTime =
+        double.tryParse(response.headers['x-render-time'] ?? '') ?? 0.0;
     final defaultTitle = (request.garmentImageName != null &&
             request.garmentImageName!.isNotEmpty &&
             !request.garmentImageName!.toLowerCase().endsWith('.jpg') &&
             !request.garmentImageName!.toLowerCase().endsWith('.png'))
         ? request.garmentImageName!
-        : 'Üst Giyim Sonucu';
+        : 'Sanal Deneme Sonucu';
 
     // API direkt fotoğraf bytes'ı döndürüyorsa
     if (contentType.contains('image/')) {
       return TryOnResult(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
         title: defaultTitle,
-        designer: 'Local Model',
+        designer: 'CatVTON (Local GPU)',
         resultImageBytes: response.bodyBytes,
         originalPersonBytes: request.personImageBytes,
         garmentBytes: request.garmentImageBytes,
-        fitScore: 99.4,
-        renderTimeSec: 3.4,
+        renderTimeSec: renderTime,
         fitType: request.fitType,
       );
     }
