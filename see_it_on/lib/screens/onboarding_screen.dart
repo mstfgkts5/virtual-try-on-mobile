@@ -6,42 +6,47 @@ class OnboardingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF6F4EF), // Görseldeki zarif açık krem arka plan
-      body: SafeArea(
-        child: Column(
-          children: [
-            // 1. ÜST LOGO KISMI
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-              child: Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: const BoxDecoration(
-                      color: Colors.black,
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(Icons.checkroom, color: Colors.white, size: 16),
-                  ),
-                  const SizedBox(width: 10),
-                  const Text(
-                    'SeeItOn',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 0.5,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+    // Ekran boyutunu dinamik olarak alıyoruz
+    final size = MediaQuery.of(context).size;
 
-            // 2. BÜYÜK GÖRSEL VE ALTINDAKİ KART (GLASSMORPHISM)
-            Expanded(
-              flex: 5,
-              child: Container(
+    return Scaffold(
+      backgroundColor: const Color(0xFFF6F4EF),
+      body: SafeArea(
+        // Ekran küçüldüğünde taşmayı önleyen kaydırma yapısı
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Column(
+            children: [
+              // 1. ÜST LOGO KISMI
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: const BoxDecoration(
+                        color: Colors.black,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(Icons.checkroom, color: Colors.white, size: 16),
+                    ),
+                    const SizedBox(width: 10),
+                    const Text(
+                      'SeeItOn',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // 2. BÜYÜK GÖRSEL VE ALTINDAKİ KART
+              Container(
+                height: size.height * 0.45, // Görsel ekranın %45'ini kaplasın
                 margin: const EdgeInsets.symmetric(horizontal: 20),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(32),
@@ -52,11 +57,10 @@ class OnboardingScreen extends StatelessWidget {
                       offset: const Offset(0, 10),
                     ),
                   ],
-                  // Projeye eklediğimiz fotoğrafı arka plan yapıyoruz
+                  // İnternetten çekilen şık arka plan görseli
                   image: const DecorationImage(
-                    image: AssetImage('assets/image_c17b27.jpg'), 
+                    image: NetworkImage('https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=1000&auto=format&fit=crop'),
                     fit: BoxFit.cover,
-                    alignment: Alignment.topCenter,
                   ),
                 ),
                 child: Align(
@@ -65,7 +69,7 @@ class OnboardingScreen extends StatelessWidget {
                     margin: const EdgeInsets.all(16),
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.95), // Hafif şeffaf cam efekti
+                      color: Colors.white.withValues(alpha: 0.95),
                       borderRadius: BorderRadius.circular(24),
                       boxShadow: [
                         BoxShadow(
@@ -77,7 +81,6 @@ class OnboardingScreen extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        // Askı İkonu
                         Container(
                           padding: const EdgeInsets.all(8),
                           decoration: const BoxDecoration(
@@ -87,7 +90,6 @@ class OnboardingScreen extends StatelessWidget {
                           child: const Icon(Icons.checkroom, color: Colors.black54, size: 20),
                         ),
                         const SizedBox(width: 12),
-                        // Kıyafet Metni
                         const Expanded(
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
@@ -98,7 +100,6 @@ class OnboardingScreen extends StatelessWidget {
                             ],
                           ),
                         ),
-                        // SIMULATED Etiketi
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                           decoration: BoxDecoration(
@@ -119,13 +120,10 @@ class OnboardingScreen extends StatelessWidget {
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: 30),
+              const SizedBox(height: 30),
 
-            // 3. ALT METİNLER VE BUTONLAR
-            Expanded(
-              flex: 4,
-              child: Padding(
+              // 3. ALT METİNLER VE BUTONLAR
+              Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30.0),
                 child: Column(
                   children: [
@@ -135,7 +133,7 @@ class OnboardingScreen extends StatelessWidget {
                       style: TextStyle(
                         color: Colors.black87,
                         fontSize: 32,
-                        fontFamily: 'Georgia', // Görseldeki o zarif Serif font görünümü için
+                        fontFamily: 'Georgia',
                         fontWeight: FontWeight.w600,
                         height: 1.2,
                       ),
@@ -152,7 +150,6 @@ class OnboardingScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 24),
                     
-                    // 3 Nokta (Sayfa Göstergesi)
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -165,12 +162,10 @@ class OnboardingScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 30),
                     
-                    // Get Started Butonu (Koyu Renk)
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () {
-                          // Tıklandığında Login sayfasına yönlendirir
                           Navigator.push(context, MaterialPageRoute(builder: (_) => const LoginScreen()));
                         },
                         style: ElevatedButton.styleFrom(
@@ -189,16 +184,14 @@ class OnboardingScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const Spacer(),
+                    const SizedBox(height: 20),
                     
-                    // Log In Yönlendirmesi
                     GestureDetector(
                       onTap: () {
-                        // Tıklandığında Login sayfasına yönlendirir
                         Navigator.push(context, MaterialPageRoute(builder: (_) => const LoginScreen()));
                       },
                       child: const Padding(
-                        padding: EdgeInsets.only(bottom: 20.0),
+                        padding: EdgeInsets.only(bottom: 30.0),
                         child: Text.rich(
                           TextSpan(
                             text: 'Already have an account? ',
@@ -213,8 +206,8 @@ class OnboardingScreen extends StatelessWidget {
                   ],
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
