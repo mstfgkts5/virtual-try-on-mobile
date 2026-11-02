@@ -15,6 +15,7 @@ Teslim: çalışan uygulama + rapor + sunum.
 - [ ] Örnek alt giyim katalogu (pantolon, etek, şort)
 - [ ] Zaman aşımı, bağlantı ve model hataları için düzgün hata ekranları
 - [ ] Sahte değerleri kaldır (fit score, simüle ilerleme çubuğu, kullanılmayan fit/pose ayarları)
+- [ ] Önce/sonra karşılaştırmasını düzelt: backend 3:4 kırpılmış kişi fotoğrafını da döndürsün, karşılaştırma onu kullansın
 
 ## 3. Hafta (17–23 Kasım) – Çoklu açı, gardırop, tasarım
 - [ ] **Çoklu Açı Sanal Deneme:** kullanıcı önden / yandan / arkadan fotoğraf yükler, kıyafetin ön ve arka görseli kullanılır, her açı ayrı işlenir; sonuç ekranında kaydırarak / döndürme animasyonuyla açılar arası geçiş
