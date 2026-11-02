@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ResultScreen extends StatefulWidget {
   final Uint8List originalImageBytes;  // Kullanıcının yüklediği orijinal fotoğraf
@@ -16,10 +17,67 @@ class ResultScreen extends StatefulWidget {
 }
 
 class _ResultScreenState extends State<ResultScreen> {
-  double _sliderValue = 0.5;
+  bool _isSaving = false;
+  double _sliderValue = 0.5; // Split mode sürgüsü için
+  double _fadeValue = 0.5;   // Fade mode şeffaflığı için
   String _activeTab = "Split Slider";
 
-  // Tam ekran görüntüleme modalını açan fonksiyon
+  // 1. Supabase'e Kaydetme Fonksiyonu
+  Future<void> _saveToWardrobe() async {
+    setState(() {
+      _isSaving = true;
+    });
+
+    try {
+      final supabase = Supabase.instance.client;
+      final user = supabase.auth.currentUser;
+
+      if (user == null) {
+        throw Exception("Lütfen önce giriş yapın.");
+      }
+
+      final fileName = '${user.id}_${DateTime.now().millisecondsSinceEpoch}.png';
+
+      await supabase.storage
+          .from('wardrobe_images')
+          .uploadBinary(fileName, widget.generatedImageBytes);
+
+      final imageUrl = supabase.storage
+          .from('wardrobe_images')
+          .getPublicUrl(fileName);
+
+      await supabase.from('wardrobe').insert({
+        'user_id': user.id,
+        'image_url': imageUrl,
+      });
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('✨ Kombin gardırobuna başarıyla eklendi!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Kaydedilirken hata oluştu: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSaving = false;
+        });
+      }
+    }
+  }
+
+  // 2. Tam ekran görüntüleme modalı
   void _openFullScreenView(Uint8List imageBytes, String title) {
     showDialog(
       context: context,
@@ -57,6 +115,119 @@ class _ResultScreenState extends State<ResultScreen> {
     );
   }
 
+  Widget _buildImageComparisonArea() {
+    if (_activeTab == "Side by Side") {
+      return Stack(
+        fit: StackFit.expand,
+        children: [
+          Row(
+            children: [
+              Expanded(child: Image.memory(widget.originalImageBytes, fit: BoxFit.cover, filterQuality: FilterQuality.high)),
+              Container(width: 2, color: Colors.white24),
+              Expanded(child: Image.memory(widget.generatedImageBytes, fit: BoxFit.cover, filterQuality: FilterQuality.high)),
+            ],
+          ),
+          _buildFullScreenButton(),
+        ],
+      );
+    } else if (_activeTab == "Fade") {
+      return Stack(
+        fit: StackFit.expand,
+        children: [
+          Image.memory(widget.originalImageBytes, fit: BoxFit.cover, filterQuality: FilterQuality.high),
+          Opacity(
+            opacity: _fadeValue,
+            child: Image.memory(widget.generatedImageBytes, fit: BoxFit.cover, filterQuality: FilterQuality.high),
+          ),
+          _buildFullScreenButton(),
+        ],
+      );
+    } else {
+      // Varsayılan: Split Slider
+      return GestureDetector(
+        onHorizontalDragUpdate: (details) {
+          setState(() {
+            _sliderValue = (details.localPosition.dx / MediaQuery.of(context).size.width).clamp(0.0, 1.0);
+          });
+        },
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            Image.memory(
+              widget.originalImageBytes, 
+              fit: BoxFit.cover,
+              filterQuality: FilterQuality.high,
+            ),
+            const Positioned(
+              top: 16, left: 16,
+              child: _LabelBadge(text: '• ÖNCE', color: Colors.black54),
+            ),
+            ClipRect(
+              clipper: _SplitImageClipper(_sliderValue),
+              child: Image.memory(
+                widget.generatedImageBytes, 
+                fit: BoxFit.cover,
+                filterQuality: FilterQuality.high,
+              ),
+            ),
+            Positioned(
+              top: 16,
+              right: 16,
+              child: ClipRect(
+                clipper: _SplitImageClipper(1.0 - _sliderValue),
+                child: const _LabelBadge(text: '✨ SONRA', color: Colors.white12),
+              ),
+            ),
+            Positioned(
+              top: 0, bottom: 0,
+              left: MediaQuery.of(context).size.width * _sliderValue - 14,
+              child: Row(
+                children: [
+                  Container(width: 2, color: Colors.white),
+                  Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(color: Colors.black, shape: BoxShape.circle, border: Border.all(color: Colors.white, width: 2)),
+                    child: const Icon(Icons.unfold_more_outlined, color: Colors.white, size: 16),
+                  ),
+                  Container(width: 2, color: Colors.white),
+                ],
+              ),
+            ),
+            _buildFullScreenButton(),
+          ],
+        ),
+      );
+    }
+  }
+
+  Widget _buildFullScreenButton() {
+    return Positioned(
+      bottom: 16,
+      left: 0, right: 0,
+      child: Center(
+        child: GestureDetector(
+          onTap: () => _openFullScreenView(widget.generatedImageBytes, "✨ Üst Giyim Sonucu"),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            decoration: BoxDecoration(
+              color: Colors.black.withValues(alpha: 0.7),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: Colors.white24)
+            ),
+            child: const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.fullscreen, color: Colors.white, size: 16),
+                SizedBox(width: 6),
+                Text('Tam Ekran', style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold)),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,7 +243,6 @@ class _ResultScreenState extends State<ResultScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // 1. ÜST BAŞLIK VE AÇIKLAMA
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
               child: Row(
@@ -84,10 +254,10 @@ class _ResultScreenState extends State<ResultScreen> {
                       children: [
                         const Text('STUDIO COMPARISON', style: TextStyle(color: Colors.grey, fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 1.5)),
                         const SizedBox(height: 4),
-                        const Text('Before / After Comparison', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                        const Text('Kombin Sonucu', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
                         const SizedBox(height: 6),
                         Text(
-                          'Slide to see the AI drape result and compare pattern, fabric, and fit accuracy.',
+                          'Sanal giydirme sonucunu inceleyin ve detayları karşılaştırın.',
                           style: TextStyle(color: Colors.grey.shade400, fontSize: 13, height: 1.4),
                         ),
                       ],
@@ -105,7 +275,6 @@ class _ResultScreenState extends State<ResultScreen> {
               ),
             ),
 
-            // 2. INTERAKTİF SÜRGÜLÜ FOTOĞRAF ALANI (SPLIT SLIDER)
             Container(
               height: 450,
               margin: const EdgeInsets.all(16),
@@ -114,93 +283,34 @@ class _ResultScreenState extends State<ResultScreen> {
                 borderRadius: BorderRadius.circular(32),
                 border: Border.all(color: Colors.grey.shade900, width: 2),
               ),
-              child: GestureDetector(
-                onHorizontalDragUpdate: (details) {
-                  setState(() {
-                    _sliderValue = (details.localPosition.dx / MediaQuery.of(context).size.width).clamp(0.0, 1.0);
-                  });
-                },
-                child: Stack(
-                  fit: StackFit.expand,
+              child: _buildImageComparisonArea(),
+            ),
+
+            if (_activeTab == "Fade")
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Row(
                   children: [
-                    // ARKA PLAN: Orijinal Fotoğraf (BEFORE)
-                    Image.memory(
-                      widget.originalImageBytes, 
-                      fit: BoxFit.cover,
-                      filterQuality: FilterQuality.high,
-                    ),
-                    const Positioned(
-                      top: 16, left: 16,
-                      child: _LabelBadge(text: '• BEFORE • ORIGINAL', color: Colors.black54),
-                    ),
-
-                    // ÖN PLAN: AI Giydirilmiş Hali (AFTER)
-                    ClipRect(
-                      clipper: _SplitImageClipper(_sliderValue),
-                      child: Image.memory(
-                        widget.generatedImageBytes, 
-                        fit: BoxFit.cover,
-                        filterQuality: FilterQuality.high,
+                    const Icon(Icons.person_outline, color: Colors.grey, size: 18),
+                    Expanded(
+                      child: Slider(
+                        value: _fadeValue,
+                        min: 0.0,
+                        max: 1.0,
+                        activeColor: Colors.white,
+                        inactiveColor: Colors.grey.shade800,
+                        onChanged: (val) {
+                          setState(() {
+                            _fadeValue = val;
+                          });
+                        },
                       ),
                     ),
-                    Positioned(
-                      top: 16,
-                      right: 16,
-                      child: ClipRect(
-                        clipper: _SplitImageClipper(1.0 - _sliderValue),
-                        child: const _LabelBadge(text: '✨ AFTER • ATELIER DRAPE', color: Colors.white12),
-                      ),
-                    ),
-
-                    // ORTADAKİ HAREKETLİ BÖLÜCÜ ÇİZGİ
-                    Positioned(
-                      top: 0, bottom: 0,
-                      left: MediaQuery.of(context).size.width * _sliderValue - 14,
-                      child: Row(
-                        children: [
-                          Container(width: 2, color: Colors.white),
-                          Container(
-                            padding: const EdgeInsets.all(4),
-                            decoration: BoxDecoration(color: Colors.black, shape: BoxShape.circle, border: Border.all(color: Colors.white, width: 2)),
-                            child: const Icon(Icons.unfold_more_outlined, color: Colors.white, size: 16),
-                          ),
-                          Container(width: 2, color: Colors.white),
-                        ],
-                      ),
-                    ),
-
-                    // 🌟 TAM EKRAN GÖRÜNTÜLEME BUTONU
-                    Positioned(
-                      bottom: 16,
-                      left: 0, right: 0,
-                      child: Center(
-                        child: GestureDetector(
-                          onTap: () => _openFullScreenView(widget.generatedImageBytes, "✨ After • AI Drape Result"),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                            decoration: BoxDecoration(
-                              color: Colors.black.withValues(alpha: 0.7),
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(color: Colors.white24)
-                            ),
-                            child: const Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(Icons.fullscreen, color: Colors.white, size: 16),
-                                SizedBox(width: 6),
-                                Text('Full Screen View', style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold)),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    )
+                    const Icon(Icons.checkroom, color: Colors.white, size: 18),
                   ],
                 ),
               ),
-            ),
 
-            // 3. TAB BUTONLARI
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Container(
@@ -217,7 +327,6 @@ class _ResultScreenState extends State<ResultScreen> {
             ),
             const SizedBox(height: 24),
 
-            // 4. ANALİZ VE DETAY KARTLARI
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: Column(
@@ -227,18 +336,18 @@ class _ResultScreenState extends State<ResultScreen> {
                     children: [
                       const Icon(Icons.check_circle_outline, color: Colors.white, size: 18),
                       const SizedBox(width: 8),
-                      const Text('Fabric Fit & Texture Analysis', style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
+                      const Text('Kumaş & Doku Analizi', style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
                       const Spacer(),
-                      Text('Atelier v4.2', style: TextStyle(color: Colors.grey.shade600, fontSize: 12)),
+                      Text('Local Model', style: TextStyle(color: Colors.grey.shade600, fontSize: 12)),
                     ],
                   ),
                   const SizedBox(height: 16),
 
                   Row(
                     children: [
-                      _buildInfoCard("Pattern Accuracy", "+99.4%", "Shoulder & Draping Naturalness"),
+                      _buildInfoCard("Desen Doğruluğu", "+99.4%", "Doğal omuz ve kumaş dökümü"),
                       const SizedBox(width: 12),
-                      _buildInfoCard("Lighting Integration", "1:1 Studio", "Natural Daylight & Shadows"),
+                      _buildInfoCard("Işık Uyumu", "1:1 Studio", "Gerçekçi ortam ışığı ve gölgeler"),
                     ],
                   ),
                 ],
@@ -246,7 +355,6 @@ class _ResultScreenState extends State<ResultScreen> {
             ),
             const SizedBox(height: 30),
 
-            // 5. AKSİYON BUTONLARI
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: Row(
@@ -258,11 +366,14 @@ class _ResultScreenState extends State<ResultScreen> {
                   const SizedBox(width: 12),
                   Expanded(
                     child: ElevatedButton.icon(
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Look confirmed & added to wardrobe!'), backgroundColor: Colors.green));
-                      },
-                      icon: const Icon(Icons.check, color: Colors.black),
-                      label: const Text('Confirm & Add to Wardrobe', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 14)),
+                      onPressed: _isSaving ? null : _saveToWardrobe,
+                      icon: _isSaving 
+                          ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.black))
+                          : const Icon(Icons.check, color: Colors.black),
+                      label: Text(
+                        _isSaving ? 'Kaydediliyor...' : 'Onayla ve Gardıroba Ekle', 
+                        style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 14)
+                      ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 18),

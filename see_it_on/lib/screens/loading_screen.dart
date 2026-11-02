@@ -6,22 +6,17 @@ import 'result_screen.dart';
 class LoadingScreen extends StatefulWidget {
   final Uint8List personImageBytes;
   final Uint8List garmentImageBytes;
-  final String fitType;
-  final bool lockPose;
 
   const LoadingScreen({
     super.key, 
     required this.personImageBytes,
     required this.garmentImageBytes,
-    required this.fitType,
-    required this.lockPose,
   });
 
   @override
   State<LoadingScreen> createState() => _LoadingScreenState();
 }
 
-// Animasyonları kullanabilmek için SingleTickerProviderStateMixin ekliyoruz
 class _LoadingScreenState extends State<LoadingScreen> with SingleTickerProviderStateMixin {
   double progress = 0.0;
   late AnimationController _spinController;
@@ -30,10 +25,7 @@ class _LoadingScreenState extends State<LoadingScreen> with SingleTickerProvider
   @override
   void initState() {
     super.initState();
-    
-    // Ortadaki 3D Mesh etrafında dönecek olan radar çizgileri ve beyaz noktalar için animasyon (4 saniyede 1 tam tur)
     _spinController = AnimationController(vsync: this, duration: const Duration(seconds: 4))..repeat();
-    
     _processVirtualTryOn();
   }
 
@@ -45,15 +37,13 @@ class _LoadingScreenState extends State<LoadingScreen> with SingleTickerProvider
 
   Future<void> _processVirtualTryOn() async {
     try {
-      // Yapay ilerleme barını başlat
+      // Sahte ilerlemeyi başlat
       _startFakeProgress();
 
-      // Android Emulator için 10.0.2.2, iOS Emulator/Web veya Gerçek Cihaz için makinenin yerel IP'si kullanılır.
-      // Şimdilik Emulator varsayımı ile 10.0.2.2 kullanıyoruz.
+      // Yerel arka uç sunucusuna (sadece üst giyim için) istek atıyoruz
       var uri = Uri.parse('http://127.0.0.1:8000/api/v1/tryon');
       var request = http.MultipartRequest('POST', uri);
 
-      // Ana ekrandan gelen resimleri ekle
       request.files.add(
         http.MultipartFile.fromBytes(
           'person_image', 
@@ -69,68 +59,72 @@ class _LoadingScreenState extends State<LoadingScreen> with SingleTickerProvider
         )
       );
 
-      // Form verilerini ekle
-      request.fields['fit_type'] = widget.fitType;
-      request.fields['lock_pose'] = widget.lockPose.toString();
-      request.fields['auto_clean_bg'] = 'true';
+      // Kategori her zaman 'upper'
+      request.fields['category'] = 'upper';
 
-      // İsteği gönder
-      var response = await request.send();
+      debugPrint('[LoadingScreen] İstek gönderiliyor -> Kategori: upper');
 
-      _isProcessing = false; // İşlem bitti, sahte progress barı durdur
+      // İsteği gönder (Uzun sürebileceği için zaman aşımı ekledik)
+      var streamedResponse = await request.send().timeout(const Duration(seconds: 180));
+      var response = await http.Response.fromStream(streamedResponse);
+
+      _isProcessing = false; // İşlem tamamlandı, sahte progress barı durdur
       
       if (!mounted) return;
 
       if (response.statusCode == 200) {
-        // İlerleme çubuğunu %100'e çek
+        // İlerlemeyi direkt %100 yap
         setState(() => progress = 1.0);
-        await Future.delayed(const Duration(milliseconds: 500)); // Animasyon bitişi için ufak gecikme
+        await Future.delayed(const Duration(milliseconds: 400));
 
-        // Yapay zekadan giydirilmiş fotoğraf başarıyla geldi!
-        var resultBytes = await response.stream.toBytes();
+        var resultBytes = response.bodyBytes;
         
         if (mounted) {
-  Navigator.pushReplacement(
-    context, 
-    MaterialPageRoute(
-      builder: (_) => ResultScreen(
-        originalImageBytes: widget.personImageBytes, // <-- EKLEDİK
-        generatedImageBytes: resultBytes
-      )
-    )
-  );
-}
+          Navigator.pushReplacement(
+            context, 
+            MaterialPageRoute(
+              builder: (_) => ResultScreen(
+                originalImageBytes: widget.personImageBytes, 
+                generatedImageBytes: resultBytes
+              )
+            )
+          );
+        }
       } else {
-        throw Exception('API Hatası: ${response.statusCode}');
+        throw Exception('API Hatası (${response.statusCode}): ${response.body}');
       }
     } catch (e) {
       _isProcessing = false;
+      debugPrint('[LoadingScreen] Hata: $e');
       if (!mounted) return;
-      // Hata durumunda kullanıcıyı uyar ve geri gönder
+      
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Giydirme işlemi başarısız: $e'),
           backgroundColor: Colors.red,
+          duration: const Duration(seconds: 5),
         )
       );
       Navigator.pop(context);
     }
   }
 
-  // İstek atılırken ekrandaki çubuğu %90'a kadar yavaşça dolduran görsel hile
+  // İlerleme çubuğunu akıllı yöneten yapı (Backend erken biterse %100'e tamamlar)
   void _startFakeProgress() async {
     int i = 0;
-    while (_isProcessing && i <= 90) {
-      await Future.delayed(const Duration(milliseconds: 150)); 
-      if (mounted) setState(() => progress = i / 100);
-      i += 1;
+    while (_isProcessing && i < 95) {
+      await Future.delayed(const Duration(milliseconds: 200)); 
+      if (mounted && _isProcessing) {
+        setState(() => progress = i / 100);
+        i += 2;
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0F0F0F), // Çok koyu mat siyah arka plan
+      backgroundColor: const Color(0xFF0F0F0F),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -138,7 +132,6 @@ class _LoadingScreenState extends State<LoadingScreen> with SingleTickerProvider
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // 1. ÜST BAR (NEURAL DRAPE ENGINE V3.2)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -149,7 +142,7 @@ class _LoadingScreenState extends State<LoadingScreen> with SingleTickerProvider
                         children: [
                           Container(width: 6, height: 6, decoration: const BoxDecoration(color: Colors.grey, shape: BoxShape.circle)),
                           const SizedBox(width: 8),
-                          const Text('NEURAL DRAPE ENGINE V3.2', style: TextStyle(color: Colors.grey, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 0.5)),
+                          const Text('NEURAL DRAPE ENGINE', style: TextStyle(color: Colors.grey, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 0.5)),
                         ],
                       ),
                     ),
@@ -164,8 +157,6 @@ class _LoadingScreenState extends State<LoadingScreen> with SingleTickerProvider
                   ],
                 ),
                 const SizedBox(height: 20),
-
-                // 2. FÜTÜRİSTİK GÖRSEL ALANI (RADAR VE 3D MESH)
                 Container(
                   height: 280,
                   width: double.infinity,
@@ -177,7 +168,6 @@ class _LoadingScreenState extends State<LoadingScreen> with SingleTickerProvider
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
-                      // Arka Plandaki Orijinal Fotoğraf (Çok karanlık ve şeffaf)
                       ClipRRect(
                         borderRadius: BorderRadius.circular(24),
                         child: ColorFiltered(
@@ -185,33 +175,22 @@ class _LoadingScreenState extends State<LoadingScreen> with SingleTickerProvider
                           child: Image.memory(widget.personImageBytes, width: double.infinity, fit: BoxFit.cover),
                         ),
                       ),
-                      
-                      // Dört Köşedeki Kare Noktalar
                       Positioned(top: 16, left: 16, child: _buildCornerDot()),
                       Positioned(top: 16, right: 16, child: _buildCornerDot()),
                       Positioned(bottom: 16, left: 16, child: _buildCornerDot()),
                       Positioned(bottom: 16, right: 16, child: _buildCornerDot()),
-
-                      // Sağ Üst Etiket (POLY)
-                      Positioned(top: 40, right: 30, child: _buildFloatingLabel('POLY: 142K')),
-                      
-                      // Sol Alt Etiket (DRAPE)
+                      Positioned(top: 40, right: 30, child: _buildFloatingLabel('UPPER BODY')),
                       Positioned(bottom: 50, left: 30, child: _buildFloatingLabel('DRAPE: ${(progress * 100).toStringAsFixed(1)}%')),
-                      
-                      // Alt Orta Metin
                       const Positioned(
                         bottom: 16, 
                         child: Text('LATENT SPACE SYNTHESIS', style: TextStyle(color: Colors.white38, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1.5))
                       ),
-
-                      // DÖNEN RADAR ANİMASYONU VE ORTA İKON
                       SizedBox(
                         width: 160,
                         height: 160,
                         child: Stack(
                           alignment: Alignment.center,
                           children: [
-                            // Dışarıdaki dönen radar çizgisi ve beyaz noktalar
                             RotationTransition(
                               turns: _spinController,
                               child: Container(
@@ -229,8 +208,6 @@ class _LoadingScreenState extends State<LoadingScreen> with SingleTickerProvider
                                 ),
                               ),
                             ),
-                            
-                            // Ters yönde dönen iç radar çizgisi
                             RotationTransition(
                               turns: Tween(begin: 1.0, end: 0.0).animate(_spinController),
                               child: Container(
@@ -239,15 +216,13 @@ class _LoadingScreenState extends State<LoadingScreen> with SingleTickerProvider
                                   shape: BoxShape.circle,
                                   border: Border.all(color: Colors.white.withValues(alpha: 0.05), width: 1),
                                 ),
-                                child: Stack(
+                                child: const Stack(
                                   children: [
-                                    Positioned(top: 15, right: 10, child: _buildSpinningDot(4)),
+                                    Positioned(top: 15, right: 10, child: SizedBox()),
                                   ],
                                 ),
                               ),
                             ),
-
-                            // Ortadaki Sabit 3D MESH Merkezi
                             Container(
                               width: 80, height: 80,
                               decoration: BoxDecoration(color: Colors.black.withValues(alpha: 0.6), shape: BoxShape.circle),
@@ -274,8 +249,6 @@ class _LoadingScreenState extends State<LoadingScreen> with SingleTickerProvider
                   ),
                 ),
                 const SizedBox(height: 24),
-
-                // 3. YÜZDE VE İLERLEME ÇUBUĞU
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -308,8 +281,6 @@ class _LoadingScreenState extends State<LoadingScreen> with SingleTickerProvider
                   ],
                 ),
                 const SizedBox(height: 24),
-
-                // 4. GÖREV LİSTESİ KARTLARI
                 Container(
                   padding: const EdgeInsets.symmetric(vertical: 10),
                   decoration: BoxDecoration(color: const Color(0xFF141414), borderRadius: BorderRadius.circular(20), border: Border.all(color: Colors.grey.shade900)),
@@ -324,39 +295,6 @@ class _LoadingScreenState extends State<LoadingScreen> with SingleTickerProvider
                   ),
                 ),
                 const SizedBox(height: 24),
-
-                // 5. İPUCU KARTI VE DURDUR BUTONU
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(color: const Color(0xFF141414), borderRadius: BorderRadius.circular(20), border: Border.all(color: Colors.grey.shade900)),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(padding: const EdgeInsets.all(8), decoration: BoxDecoration(color: Colors.grey.shade900, shape: BoxShape.circle), child: const Icon(Icons.lightbulb_outline, color: Colors.white54, size: 16)),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text('ATELIER TIP • Perfect Drape', style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
-                            const SizedBox(height: 6),
-                            Text.rich(
-                              TextSpan(
-                                style: const TextStyle(color: Colors.white54, fontSize: 12, height: 1.4),
-                                children: [
-                                  const TextSpan(text: 'Full-body photos taken in natural daylight reflect fabric folds and seam depth '),
-                                  const TextSpan(text: '40% more realistically.', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                                ],
-                              )
-                            )
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 24),
-
                 Center(
                   child: TextButton.icon(
                     onPressed: () => Navigator.pop(context),
@@ -373,7 +311,6 @@ class _LoadingScreenState extends State<LoadingScreen> with SingleTickerProvider
     );
   }
 
-  // Dönen ufak beyaz nokta tasarımı
   Widget _buildSpinningDot(double size) {
     return Container(
       width: size, height: size,
@@ -381,12 +318,10 @@ class _LoadingScreenState extends State<LoadingScreen> with SingleTickerProvider
     );
   }
 
-  // Köşelerdeki gri kareler
   Widget _buildCornerDot() {
     return Container(width: 6, height: 6, color: Colors.white24);
   }
 
-  // Fotoğraf üzerindeki yüzen siyah etiketler
   Widget _buildFloatingLabel(String text) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
@@ -402,13 +337,11 @@ class _LoadingScreenState extends State<LoadingScreen> with SingleTickerProvider
     );
   }
 
-  // Görev Satırı (Silüet, Fizik vs.)
   Widget _buildTaskRow(IconData icon, String title, String subtitle, String status, bool isDone, bool isProcessing) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(
         children: [
-          // Sol İkon Göstergesi
           Container(
             padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(
@@ -423,7 +356,6 @@ class _LoadingScreenState extends State<LoadingScreen> with SingleTickerProvider
             ),
           ),
           const SizedBox(width: 16),
-          // Yazılar
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -434,7 +366,6 @@ class _LoadingScreenState extends State<LoadingScreen> with SingleTickerProvider
               ],
             ),
           ),
-          // Sağ Durum Etiketi
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(

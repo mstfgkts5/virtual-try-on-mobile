@@ -2,6 +2,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'loading_screen.dart';
+import 'wardrobe_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -15,12 +16,31 @@ class _HomeScreenState extends State<HomeScreen> {
   Uint8List? _garmentImageBytes;
   final ImagePicker _picker = ImagePicker();
 
-  bool _lockPose = false;
-  String _selectedFit = "Tailored";
   int _currentNavigationIndex = 0;
+  late PageController _rackController;
+  int _currentRackIndex = 1;
 
-  Future<void> _pickImage(bool isPerson) async {
-    final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+  final List<Map<String, dynamic>> _rackItems = [
+  {'name': 'Vintage Leather', 'type': 'Jacket', 'color': 0xFF2C2C2C},
+  {'name': 'Crimson Memory', 'type': 'LS Shirt', 'color': 0xFF8B0000},
+  {'name': 'Silk Button-up', 'type': 'Shirt', 'color': 0xFFFDF5E6},
+  {'name': 'Denim Over-shirt', 'type': 'Jacket', 'color': 0xFF4682B4},
+];
+
+  @override
+  void initState() {
+    super.initState();
+    _rackController = PageController(viewportFraction: 0.35, initialPage: _currentRackIndex);
+  }
+
+  @override
+  void dispose() {
+    _rackController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _pickImage(bool isPerson, ImageSource source) async {
+    final XFile? pickedFile = await _picker.pickImage(source: source);
     if (pickedFile != null) {
       final bytes = await pickedFile.readAsBytes();
       setState(() {
@@ -44,8 +64,8 @@ class _HomeScreenState extends State<HomeScreen> {
               Expanded(
                 child: Text(
                   _personImageBytes == null
-                      ? 'Please upload your photo (Step 1) first!'
-                      : 'Please select a garment (Step 2) to try on!',
+                      ? 'Lütfen önce kendi fotoğrafınızı (Adım 1) yükleyin!'
+                      : 'Lütfen denemek istediğiniz kıyafeti (Adım 2) seçin!',
                   style: const TextStyle(fontWeight: FontWeight.w600),
                 ),
               ),
@@ -60,28 +80,35 @@ class _HomeScreenState extends State<HomeScreen> {
       return;
     }
     
-    // BURASI GÜNCELLENDİ: Sadece insan resmini değil, tüm ayarları LoadingScreen'e yolluyoruz
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => LoadingScreen(
           personImageBytes: _personImageBytes!,
           garmentImageBytes: _garmentImageBytes!,
-          fitType: _selectedFit,
-          lockPose: _lockPose,
         ),
+      ),
+    );
+  }
+
+  void _selectRecommendedGarment(int index) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Kombin seçildi!'),
+        backgroundColor: Colors.green,
+        duration: Duration(seconds: 2),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    // Görseldeki zarif açık arka plan rengi
     const backgroundColor = Color(0xFFF6F4EF); 
-    const textColor = Color(0xFF1E1C1A); // Koyu kahve/siyah metin rengi
+    const textColor = Color(0xFF1E1C1A); 
 
     return Scaffold(
       backgroundColor: backgroundColor,
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -97,242 +124,157 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.checkroom, color: textColor),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const WardrobeScreen()),
+              );
+            },
+          ),
           IconButton(icon: const Icon(Icons.notifications_outlined, color: textColor), onPressed: () {}),
           IconButton(icon: const Icon(Icons.person_outline, color: textColor), onPressed: () {}),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // BAŞLIKLAR
-              const SizedBox(height: 10),
-              const Text(
-                'Studio Fitting Room', 
-                style: TextStyle(
-                  color: textColor, 
-                  fontSize: 32, 
-                  fontFamily: 'Georgia', // Serif font ile lüks görünüm
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: -0.5
-                )
-              ),
-              const SizedBox(height: 4),
-              Text(
-                'Fuse your silhouette with any luxury piece in real time.', 
-                style: TextStyle(color: textColor.withValues(alpha: 0.6), fontSize: 13)
-              ),
-              const SizedBox(height: 24),
-
-              // STEP 1 & STEP 2 ARASI ORTAK BAĞLANTI ALANI (KARTLAR VE ZİNCİR)
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  Column(
-                    children: [
-                      // STEP 1: YOUR SILHOUETTE
-                      _buildUploadCard(
-                        title: "STEP 1  •  Your Silhouette",
-                        isPerson: true,
-                        imageBytes: _personImageBytes,
-                        icon: Icons.add_a_photo_outlined,
-                        mainText: "Upload Your Photo",
-                        subText: "Full-length editorial pose or clear front\nmirror selfie",
-                        buttons: [
-                          _buildCardButton(Icons.photo_library_outlined, "Gallery", () => _pickImage(true)),
-                          _buildCardButton(Icons.camera_alt_outlined, "Camera", () {}),
-                          _buildCardButton(Icons.history, "Past Look", () {}, isRound: true),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-
-                      // STEP 2: GARMENT TO TRY
-                      _buildUploadCard(
-                        title: "STEP 2  •  Garment to Try",
-                        isPerson: false,
-                        imageBytes: _garmentImageBytes,
-                        icon: Icons.checkroom,
-                        mainText: "Upload Garment",
-                        subText: "Screenshot e-commerce catalog, flat-\nlay, or snap in-store",
-                        buttons: [
-                          _buildCardButton(Icons.link, "Paste URL", () {}),
-                          _buildCardButton(Icons.person_outline, "From Wardrobe", () => _pickImage(false)),
-                          _buildCardButton(Icons.check_circle_outline, "Curated Picks", () {}),
-                        ],
-                      ),
-                    ],
-                  ),
-                  
-                  // ORTADAKİ ZİNCİR / BAĞLANTI İKONU
-                  IgnorePointer(
-                    child: Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: const Color(0xFFF0EBE1), width: 1),
-                        boxShadow: [
-                          BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, spreadRadius: 2)
-                        ]
-                      ),
-                      child: const Icon(Icons.link, color: textColor, size: 16),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
-
-              // NEURAL FIT CONTROLS
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Row(
-                    children: [
-                      Icon(Icons.tune, color: textColor, size: 18),
-                      SizedBox(width: 8),
-                      Text('Neural Fit\nControls', style: TextStyle(color: textColor, fontSize: 13, height: 1.2)),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text('Lock Pose', style: TextStyle(color: textColor.withValues(alpha: 0.6), fontSize: 12)),
-                      const SizedBox(width: 8),
-                      SizedBox(
-                        height: 24,
-                        child: Switch(
-                          value: _lockPose,
-                          activeColor: Colors.white,
-                          activeTrackColor: textColor,
-                          inactiveThumbColor: Colors.white,
-                          inactiveTrackColor: Colors.grey.shade400,
-                          onChanged: (val) {
-                            setState(() {
-                              _lockPose = val;
-                            });
-                          },
-                        ),
-                      ),
-                    ],
+      body: SafeArea(
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 10),
+                const Text(
+                  'Studio Fitting Room', 
+                  style: TextStyle(
+                    color: textColor, 
+                    fontSize: 32, 
+                    fontFamily: 'Georgia',
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: -0.5
                   )
-                ],
-              ),
-              const SizedBox(height: 12),
-              
-              // FIT SEÇENEKLERİ (Tailored, Regular, Oversized)
-              Container(
-                padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  color: textColor.withValues(alpha: 0.05), 
-                  borderRadius: BorderRadius.circular(30)
                 ),
-                child: Row(
+                const SizedBox(height: 4),
+                Text(
+                  'Kendi stilini saniyeler içinde oluştur.', 
+                  style: TextStyle(color: textColor.withValues(alpha: 0.6), fontSize: 13)
+                ),
+                const SizedBox(height: 24),
+
+                Stack(
+                  alignment: Alignment.center,
                   children: [
-                    _buildFitOption("Tailored", textColor),
-                    _buildFitOption("Regular", textColor),
-                    _buildFitOption("Oversized", textColor),
+                    Column(
+                      children: [
+                        _buildUploadCard(
+                          title: "ADIM 1  •  Kendi Fotoğrafın",
+                          isPerson: true,
+                          imageBytes: _personImageBytes,
+                          icon: Icons.add_a_photo_outlined,
+                          mainText: "Fotoğraf Yükle",
+                          subText: "Net bir boy aynası selfie'si\nveya düz durduğunuz bir fotoğraf",
+                          buttons: [
+                            _buildCardButton(Icons.photo_library_outlined, "Galeri", () => _pickImage(true, ImageSource.gallery)),
+                            _buildCardButton(Icons.camera_alt_outlined, "Kamera", () => _pickImage(true, ImageSource.camera)),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+
+                        _buildUploadCard(
+                          title: "ADIM 2  •  Üst Giyim",
+                          isPerson: false,
+                          imageBytes: _garmentImageBytes,
+                          icon: Icons.checkroom,
+                          mainText: "Kıyafet Yükle",
+                          subText: "E-ticaret sitesinden ekran görüntüsü\nveya net çekilmiş bir kazak/tişört",
+                          buttons: [
+                            _buildCardButton(Icons.photo_library_outlined, "Galeri", () => _pickImage(false, ImageSource.gallery)),
+                            _buildCardButton(Icons.camera_alt_outlined, "Kamera", () => _pickImage(false, ImageSource.camera)),
+                          ],
+                        ),
+                      ],
+                    ),
+                    
+                    IgnorePointer(
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: const Color(0xFFF0EBE1), width: 1),
+                          boxShadow: [
+                            BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, spreadRadius: 2)
+                          ]
+                        ),
+                        child: const Icon(Icons.link, color: textColor, size: 16),
+                      ),
+                    ),
                   ],
                 ),
-              ),
-              const SizedBox(height: 24),
+                const SizedBox(height: 32),
 
-              // MAIN TRY ON BUTTON (Koyu Kahve/Siyah Buton)
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () => _onTryOnPressed(context),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF221F1E),
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 20),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-                    elevation: 0,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text(
-                        'Üzerimde Gör', 
-                        style: TextStyle(
-                          color: Colors.white, 
-                          fontSize: 18, 
-                          fontFamily: 'Georgia', // Butondaki Serif Font
-                          fontWeight: FontWeight.bold
-                        )
-                      ),
-                      const SizedBox(width: 12),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.15), 
-                          borderRadius: BorderRadius.circular(12)
-                        ),
-                        child: const Text('Try On', style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold)),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 12),
-              
-              // İşlem süresi metinleri
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.access_time, color: textColor.withValues(alpha: 0.5), size: 12),
-                  const SizedBox(width: 4),
-                  Text('~3.8s Processing', style: TextStyle(color: textColor.withValues(alpha: 0.5), fontSize: 12)),
-                  const SizedBox(width: 12),
-                  Text('•', style: TextStyle(color: textColor.withValues(alpha: 0.5), fontSize: 12)),
-                  const SizedBox(width: 12),
-                  Icon(Icons.layers, color: textColor.withValues(alpha: 0.5), size: 12),
-                  const SizedBox(width: 4),
-                  Text('4K Micro-Drape', style: TextStyle(color: textColor.withValues(alpha: 0.5), fontSize: 12)),
-                ],
-              ),
-              const SizedBox(height: 32),
-
-              // RECENT RENDERS
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('RECENT RENDERS', style: TextStyle(color: textColor.withValues(alpha: 0.5), fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 1.2)),
-                  TextButton(
-                    onPressed: () {},
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () => _onTryOnPressed(context),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF221F1E),
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 20),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                      elevation: 0,
+                    ),
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text('Wardrobe History', style: TextStyle(color: textColor, fontSize: 12, fontWeight: FontWeight.w600)),
-                        const SizedBox(width: 4),
-                        Icon(Icons.arrow_forward_ios, color: textColor, size: 10),
+                        const Text(
+                          'Üzerimde Gör', 
+                          style: TextStyle(
+                            color: Colors.white, 
+                            fontSize: 18, 
+                            fontFamily: 'Georgia',
+                            fontWeight: FontWeight.bold
+                          )
+                        ),
+                        const SizedBox(width: 12),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.15), 
+                            borderRadius: BorderRadius.circular(12)
+                          ),
+                          child: const Text('Try On', style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold)),
+                        )
                       ],
                     ),
                   ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  // Sahte render sonuçları (Buraya kendi uygulamanın geçmiş fotoları gelecek)
-                  _buildRenderCard("Wool Trench", "Fit: 98% Match"),
-                  const SizedBox(width: 16),
-                  _buildRenderCard("Ivory Silk Shirt", "Fit: 95% Match"),
-                ],
-              ),
-              const SizedBox(height: 40),
-            ],
+                ),
+                const SizedBox(height: 40),
+
+                _buildAnimatedRack(textColor),
+                const SizedBox(height: 40),
+              ],
+            ),
           ),
         ),
       ),
-      // ALT NAVİGASYON BARI (Açık Tema Uyarlaması)
       bottomNavigationBar: Theme(
         data: Theme.of(context).copyWith(canvasColor: const Color(0xFFF0EBE1)),
         child: BottomNavigationBar(
           currentIndex: _currentNavigationIndex,
           onTap: (index) {
-            setState(() {
-              _currentNavigationIndex = index;
-            });
+            if (index == 1) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const WardrobeScreen()),
+              );
+            } else {
+              setState(() {
+                _currentNavigationIndex = index;
+              });
+            }
           },
           selectedItemColor: textColor,
           unselectedItemColor: textColor.withValues(alpha: 0.4),
@@ -350,7 +292,140 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // YARDIMCI WIDGET'LAR AŞAĞIDADIR
+  Widget _buildAnimatedRack(Color textColor) {
+    return Column(
+      children: [
+        Text(
+          "GÜNÜN KOMBİN ÖNERİLERİ", 
+          style: TextStyle(color: textColor.withValues(alpha: 0.5), fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 1.2)
+        ),
+        const SizedBox(height: 20),
+        SizedBox(
+          height: 220,
+          child: Stack(
+            alignment: Alignment.topCenter,
+            children: [
+              Positioned(
+                top: 30,
+                left: 0,
+                right: 0,
+                child: Container(
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade400,
+                    borderRadius: BorderRadius.circular(2),
+                    boxShadow: [
+                      BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 2, offset: const Offset(0, 2))
+                    ]
+                  ),
+                ),
+              ),
+              PageView.builder(
+                controller: _rackController,
+                onPageChanged: (int index) {
+                  setState(() {
+                    _currentRackIndex = index;
+                  });
+                },
+                itemCount: _rackItems.length,
+                itemBuilder: (context, index) {
+                  return AnimatedBuilder(
+                    animation: _rackController,
+                    builder: (context, child) {
+                      double value = 1.0;
+                      if (_rackController.position.haveDimensions) {
+                        value = _rackController.page! - index;
+                        value = (1 - (value.abs() * 0.4)).clamp(0.0, 1.0);
+                      } else {
+                        value = (index == _currentRackIndex) ? 1.0 : 0.6;
+                      }
+
+                      return Center(
+                        child: Transform.scale(
+                          scale: Curves.easeOut.transform(value),
+                          child: Opacity(
+                            opacity: value.clamp(0.4, 1.0),
+                            child: child,
+                          ),
+                        ),
+                      );
+                    },
+                    child: Column(
+                      children: [
+                        Container(
+                          width: 15,
+                          height: 20,
+                          decoration: BoxDecoration(
+                            border: Border(
+                              top: BorderSide(color: Colors.grey.shade600, width: 2),
+                              left: BorderSide(color: Colors.grey.shade600, width: 2),
+                              right: BorderSide(color: Colors.grey.shade600, width: 2),
+                            ),
+                            borderRadius: const BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            _rackController.animateToPage(index, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+                          },
+                          child: Container(
+                            height: 140,
+                            width: 100,
+                            decoration: BoxDecoration(
+                              color: Color(_rackItems[index]['color'] as int),
+                              borderRadius: BorderRadius.circular(12),
+                              boxShadow: [
+                                BoxShadow(color: Colors.black.withValues(alpha: 0.2), blurRadius: 10, offset: const Offset(0, 5))
+                              ],
+                            ),
+                            child: const Icon(Icons.checkroom, color: Colors.white54, size: 40),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+        
+        AnimatedSwitcher(
+          duration: const Duration(milliseconds: 300),
+          child: Column(
+            key: ValueKey<int>(_currentRackIndex),
+            children: [
+              Text(
+                _rackItems[_currentRackIndex]['name'] as String,
+                style: const TextStyle(color: Color(0xFF1E1C1A), fontSize: 16, fontWeight: FontWeight.bold, fontFamily: 'Georgia'),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                _rackItems[_currentRackIndex]['type'] as String,
+                style: TextStyle(color: const Color(0xFF1E1C1A).withValues(alpha: 0.5), fontSize: 12),
+              ),
+              const SizedBox(height: 12),
+              InkWell(
+                onTap: () => _selectRecommendedGarment(_currentRackIndex),
+                borderRadius: BorderRadius.circular(20),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: textColor, 
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: const Text(
+                    'BU PARÇAYI SEÇ', 
+                    style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1)
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+      ],
+    );
+  }
 
   Widget _buildUploadCard({
     required String title,
@@ -365,9 +440,9 @@ class _HomeScreenState extends State<HomeScreen> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.4), // Hafif saydam beyaz
+        color: Colors.white.withValues(alpha: 0.4),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.white, width: 2), // Beyaz çerçeve
+        border: Border.all(color: Colors.white, width: 2),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -375,9 +450,8 @@ class _HomeScreenState extends State<HomeScreen> {
           Text(title, style: TextStyle(color: textColor.withValues(alpha: 0.6), fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 1)),
           const SizedBox(height: 16),
           
-          // Beyaz Yuvarlak İçindeki Fotoğraf/İkon Alanı
           GestureDetector(
-            onTap: () => _pickImage(isPerson),
+            onTap: () => _pickImage(isPerson, ImageSource.gallery), 
             child: Container(
               height: 160,
               width: double.infinity,
@@ -395,7 +469,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   ? Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        // İkonun olduğu küçük yuvarlak
                         Container(
                           padding: const EdgeInsets.all(12),
                           decoration: const BoxDecoration(color: Color(0xFFF0EBE1), shape: BoxShape.circle),
@@ -418,7 +491,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           const SizedBox(height: 16),
-          // Butonları wrap ile diziyoruz (Taşma yapmasın diye)
           Wrap(
             spacing: 8,
             runSpacing: 8,
@@ -448,89 +520,6 @@ class _HomeScreenState extends State<HomeScreen> {
             Icon(icon, color: textColor.withValues(alpha: 0.6), size: 14),
             const SizedBox(width: 6),
             Text(label, style: const TextStyle(color: textColor, fontSize: 12, fontWeight: FontWeight.w600)),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildFitOption(String label, Color textColor) {
-    bool isSelected = _selectedFit == label;
-    return Expanded(
-      child: GestureDetector(
-        onTap: () {
-          setState(() {
-            _selectedFit = label;
-          });
-        },
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          decoration: BoxDecoration(
-            color: isSelected ? const Color(0xFF221F1E) : Colors.transparent,
-            borderRadius: BorderRadius.circular(24),
-          ),
-          child: Center(
-            child: Text(
-              label,
-              style: TextStyle(
-                color: isSelected ? Colors.white : textColor.withValues(alpha: 0.6), 
-                fontSize: 12, 
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.w500
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  // Sonuç geçmişi kartı
-  Widget _buildRenderCard(String title, String match) {
-    return Expanded(
-      child: Container(
-        height: 240,
-        decoration: BoxDecoration(
-          color: Colors.black, // Orijinal fotoda içi karanlık
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            // Buraya normalde network'ten veya assets'den resim gelecek.
-            // Şimdilik boş gri bir kutu koyduk.
-            Container(
-              decoration: BoxDecoration(
-                color: const Color(0xFF2A2A2A),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: const Icon(Icons.image, color: Colors.white24, size: 50),
-            ),
-            
-            // Alt Kısım Metinleri
-            Positioned(
-              bottom: 16,
-              left: 16,
-              right: 16,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title, style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 2),
-                  Text(match, style: const TextStyle(color: Colors.white70, fontSize: 10)),
-                ],
-              ),
-            ),
-            
-            // Göz İkonu
-            Positioned(
-              bottom: 14,
-              right: 14,
-              child: Container(
-                padding: const EdgeInsets.all(6),
-                decoration: const BoxDecoration(color: Colors.white24, shape: BoxShape.circle),
-                child: const Icon(Icons.remove_red_eye, color: Colors.white, size: 12),
-              ),
-            )
           ],
         ),
       ),

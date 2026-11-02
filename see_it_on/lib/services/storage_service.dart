@@ -5,54 +5,55 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 class StorageService {
+  // Singleton pattern
   static final StorageService _instance = StorageService._internal();
   factory StorageService() => _instance;
   StorageService._internal();
 
-  /// Saves image bytes to user photo gallery
+  /// Üretilen üst giyim görselini galeriye kaydeder
   Future<bool> saveToGallery(Uint8List bytes, {String? fileName}) async {
     final name = fileName ?? 'SeeItOn_${DateTime.now().millisecondsSinceEpoch}.png';
 
     if (kIsWeb) {
-      debugPrint('[StorageService] Web gallery download simulated');
+      debugPrint('[StorageService] Web ortamında galeri kaydı simüle edildi.');
       return true;
     }
 
     try {
-      // Check or request gallery access permission
+      // Galeri erişim iznini kontrol et
       final hasAccess = await Gal.hasAccess();
       if (!hasAccess) {
         final granted = await Gal.requestAccess();
         if (!granted) {
-          debugPrint('[StorageService] Gallery permission denied');
+          debugPrint('[StorageService] Galeri izni reddedildi.');
         }
       }
 
       await Gal.putImageBytes(bytes, name: name);
       return true;
     } catch (e) {
-      debugPrint('[StorageService] Gal save error: $e');
+      debugPrint('[StorageService] Galeri kaydetme hatası: $e');
 
-      // Fallback: save to application documents or downloads folder
+      // Hata durumunda uygulama klasörüne kaydetmeyi dene
       try {
         if (!kIsWeb) {
           final dir = await getApplicationDocumentsDirectory();
           final file = File('${dir.path}/$name');
           await file.writeAsBytes(bytes);
-          debugPrint('[StorageService] Saved to fallback path: ${file.path}');
+          debugPrint('[StorageService] Alternatif yola kaydedildi: ${file.path}');
           return true;
         }
       } catch (innerError) {
-        debugPrint('[StorageService] Secondary fallback error: $innerError');
+        debugPrint('[StorageService] Alternatif kayıt hatası: $innerError');
       }
       return false;
     }
   }
 
-  /// Shares the generated try-on outfit via native share sheet
+  /// Üretilen görseli yerel paylaşım menüsü üzerinden paylaşır
   Future<void> shareOutfit(Uint8List bytes, {String? message}) async {
     final text = message ??
-        'Check out my AI-powered virtual try-on created with SeeItOn! ✨ #SeeItOn #FashionAI #VirtualTryOn';
+        'SeeItOn ile oluşturduğum yapay zeka destekli sanal kombinimi incele! ✨ #SeeItOn #SanalKabin';
 
     try {
       final xFile = XFile.fromData(
@@ -62,8 +63,8 @@ class StorageService {
       );
       await Share.shareXFiles([xFile], text: text);
     } catch (e) {
-      debugPrint('[StorageService] Share error: $e');
-      // Fallback share as text
+      debugPrint('[StorageService] Paylaşım hatası: $e');
+      // Görsel paylaşılamazsa sadece metni paylaşmayı dene
       try {
         await Share.share(text);
       } catch (_) {}
