@@ -28,46 +28,40 @@ WIDTH, HEIGHT = 896, 1152  # ~3:4, CatVTON'un 768x1024 oranına uygun
 
 # Kilo değerleri boya göre beden tablosundan seçildi; model kiloyu anlamadığı için
 # her bedenin vücut tarifi ayrıca yazıldı.
-WOMAN = "30 year old woman, long straight black hair, fair white skin, 160 cm tall, petite height"
-MAN = "30 year old man, short black hair, fair white skin, 185 cm tall, tall height"
+# SDXL metin kodlayıcısı yalnızca ilk 77 token'ı okur; en önemli bilgiler (tam boy, kişi,
+# beden) başa yazılır ve tarif kısa tutulur.
+WOMAN = "30yo Turkish woman, long straight black hair, fair skin"
+MAN = "30yo Turkish man, short black hair, fair skin"
 MANNEQUINS = [
-    {"id": "W-S", "gender": "female", "size": "S", "height_cm": 160, "weight_kg": 50,
-     "body": "slim slender body, straight body shape"},
-    {"id": "W-M", "gender": "female", "size": "M", "height_cm": 160, "weight_kg": 58,
-     "body": "average healthy body, straight body shape"},
-    {"id": "W-L", "gender": "female", "size": "L", "height_cm": 160, "weight_kg": 67,
-     "body": "slightly chubby full-figured body, straight body shape"},
-    {"id": "W-XL", "gender": "female", "size": "XL", "height_cm": 160, "weight_kg": 76,
-     "body": "plus-size curvy heavier body, wide waist"},
-    {"id": "M-S", "gender": "male", "size": "S", "height_cm": 185, "weight_kg": 72,
-     "body": "slim lean body, narrow shoulders"},
-    {"id": "M-M", "gender": "male", "size": "M", "height_cm": 185, "weight_kg": 80,
-     "body": "average athletic body"},
-    {"id": "M-L", "gender": "male", "size": "L", "height_cm": 185, "weight_kg": 90,
-     "body": "broad stocky body, slight belly"},
-    {"id": "M-XL", "gender": "male", "size": "XL", "height_cm": 185, "weight_kg": 100,
-     "body": "plus-size heavy-set body, big belly, wide waist"},
+    {"id": "W-S", "gender": "female", "size": "S", "height_cm": 160, "weight_kg": 50, "body": "slim slender body"},
+    {"id": "W-M", "gender": "female", "size": "M", "height_cm": 160, "weight_kg": 58, "body": "average healthy body"},
+    {"id": "W-L", "gender": "female", "size": "L", "height_cm": 160, "weight_kg": 67, "body": "chubby full-figured body"},
+    {"id": "W-XL", "gender": "female", "size": "XL", "height_cm": 160, "weight_kg": 76, "body": "plus-size heavy body"},
+    {"id": "M-S", "gender": "male", "size": "S", "height_cm": 185, "weight_kg": 72, "body": "slim lean body"},
+    {"id": "M-M", "gender": "male", "size": "M", "height_cm": 185, "weight_kg": 80, "body": "average athletic body"},
+    {"id": "M-L", "gender": "male", "size": "L", "height_cm": 185, "weight_kg": 90, "body": "stocky body, slight belly"},
+    {"id": "M-XL", "gender": "male", "size": "XL", "height_cm": 185, "weight_kg": 100, "body": "plus-size body, big belly"},
 ]
 
 VIEWS = {
-    "front": "standing straight facing the camera, front view, arms relaxed slightly away from the body, looking at camera",
-    "side": "standing straight, full side profile view facing left, arms relaxed at the sides",
-    "back": "standing straight, back view seen from behind, arms relaxed slightly away from the body",
+    "front": "front view facing camera",
+    "side": "side profile view",
+    "back": "back view from behind",
 }
 
+# Kot pantolon modelde "eller cepte" pozunu çağırıyor; cepsiz pantolon ve duruşun başta yazılması bunu engelliyor
+POSE = "A-pose, arms straight and slightly away from hips, open hands visible"
 # CatVTON için sade, dar kıyafet ve düz arka plan en iyi sonucu verir
-OUTFIT = "wearing a plain fitted white crew-neck t-shirt, slim fit dark blue jeans, white sneakers"
-STYLE = ("full body shot from head to feet, professional e-commerce fashion catalog photo, "
-         "plain light grey seamless studio background, soft even studio lighting, sharp focus, 85mm, photorealistic")
-NEGATIVE = ("cropped, cut off feet, cut off head, hands in pockets, crossed arms, hands on hips, holding object, "
-            "jacket, coat, logo, text, watermark, pattern on shirt, busy background, outdoor, shadow on wall, "
-            "deformed hands, extra fingers, missing fingers, extra limbs, distorted body, blurry, lowres, "
-            "cartoon, 3d render, painting, nsfw")
+OUTFIT = "plain white t-shirt, grey leggings, white sneakers"
+STYLE = "plain light grey studio background, e-commerce catalog photo, photorealistic"
+NEGATIVE = ("nsfw, hands in pockets, hands on hips, crossed arms, cropped, cut off feet, cut off head, close-up, holding object, "
+            "jacket, logo, text, watermark, busy background, deformed hands, extra fingers, extra limbs, "
+            "distorted body, blurry, lowres, cartoon, 3d render")
 
 
 def build_prompt(m: dict, view: str) -> str:
     person = WOMAN if m["gender"] == "female" else MAN
-    return f"{person}, {m['body']}, {OUTFIT}, {VIEWS[view]}, {STYLE}"
+    return f"full body photo head to toe, {POSE}, {VIEWS[view]}, {person}, {m['body']}, {OUTFIT}, {STYLE}"
 
 
 def download_models() -> str:

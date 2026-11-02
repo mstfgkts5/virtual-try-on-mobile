@@ -30,3 +30,6 @@ ai/CatVTON/
 
 # Test çıktıları
 tests/output_*
+
+# Üretilen manken adayları (seçilenler daha sonra uygulama asset klasörüne alınacak)
+test_images/
