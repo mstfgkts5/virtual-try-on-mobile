@@ -6,7 +6,8 @@ Teslim: çalışan uygulama + rapor + sunum.
 - [x] Mevcut durumu git'e kaydet (`feat/catvton-backend` dalı)
 - [x] IDM-VTON (Hugging Face Space) yerine CatVTON'u yerel GPU'da (RTX 5060, 8 GB) çalıştır
 - [x] Backend'i yeniden yaz: kategori desteği (upper / lower / overall), gerçek süre ölçümü, anlaşılır hata mesajları
-- [ ] Örnek görsellerle GPU testi (süre + VRAM ölçümü)
+- [x] Örnek görsellerle GPU testi: upper ve overall başarılı, ~40 sn / görsel, en yüksek VRAM 4,4 GB
+- [x] Kıyafet kenarındaki "hayalet" izi düzelt (repaint maskesi)
 - [ ] Gerçek manken fotoğraflarıyla uygunluk değerlendirmesi ve test
 
 ## 2. Hafta (10–16 Kasım) – Alt giyim ve hatalar
