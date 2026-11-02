@@ -1,0 +1,24 @@
+# PyTorch ayrıca kurulmalı (RTX 50 serisi için CUDA 12.8):
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cu128
+fastapi>=0.110.0
+uvicorn>=0.28.0
+python-multipart>=0.0.9
+python-dotenv>=1.0.0
+pillow>=10.2.0
+numpy<2
+huggingface_hub>=0.34,<1.0
+diffusers>=0.31
+transformers>=4.46,<5
+accelerate>=0.31
+peft>=0.17
+# CatVTON maskeleme (DensePose + SCHP) bağımlılıkları
+opencv-python
+scipy
+scikit-image
+matplotlib
+fvcore
+omegaconf
+pycocotools
+cloudpickle
+PyYAML
+av

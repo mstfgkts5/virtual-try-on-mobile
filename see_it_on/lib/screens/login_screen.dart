@@ -136,6 +136,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   hintText: 'Email Address',
                   icon: Icons.email_outlined,
                   obscureText: false,
+                  textInputAction: TextInputAction.next, // Enter'a basınca şifreye geçer
                 ),
                 const SizedBox(height: 16),
 
@@ -145,6 +146,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   hintText: 'Password',
                   icon: Icons.lock_outline,
                   obscureText: true,
+                  textInputAction: TextInputAction.done, // Enter/Bitti tuşunu gösterir
+                  onSubmitted: (_) {
+                    if (!_isLoading) {
+                      _authenticate(); // Enter'a basıldığında giriş fonksiyonunu tetikler
+                    }
+                  },
                 ),
                 const SizedBox(height: 32),
 
@@ -210,11 +217,15 @@ class _LoginScreenState extends State<LoginScreen> {
     required String hintText,
     required IconData icon,
     required bool obscureText,
+    TextInputAction? textInputAction,
+    Function(String)? onSubmitted,
   }) {
     const textColor = Color(0xFF1E1C1A);
     return TextField(
       controller: controller,
       obscureText: obscureText,
+      textInputAction: textInputAction,
+      onSubmitted: onSubmitted,
       style: const TextStyle(color: textColor),
       decoration: InputDecoration(
         hintText: hintText,
@@ -225,7 +236,7 @@ class _LoginScreenState extends State<LoginScreen> {
         contentPadding: const EdgeInsets.symmetric(vertical: 18),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: Colors.white, width: 2),
+          borderSide: const BorderSide(color: Colors.white, width: 2),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
