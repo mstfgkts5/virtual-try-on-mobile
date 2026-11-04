@@ -841,6 +841,42 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'AI Sanal Deneme'**
   String get wardrobeAiFit;
+
+  /// No description provided for @authErrorInvalidCredentials.
+  ///
+  /// In tr, this message translates to:
+  /// **'E-posta veya şifre hatalı.'**
+  String get authErrorInvalidCredentials;
+
+  /// No description provided for @authErrorEmailTaken.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu e-posta adresiyle zaten bir hesap var. Giriş yapmayı dene.'**
+  String get authErrorEmailTaken;
+
+  /// No description provided for @authErrorWeakPassword.
+  ///
+  /// In tr, this message translates to:
+  /// **'Şifre en az 6 karakter olmalı.'**
+  String get authErrorWeakPassword;
+
+  /// No description provided for @authErrorInvalidEmail.
+  ///
+  /// In tr, this message translates to:
+  /// **'Geçerli bir e-posta adresi gir.'**
+  String get authErrorInvalidEmail;
+
+  /// No description provided for @authErrorNetwork.
+  ///
+  /// In tr, this message translates to:
+  /// **'İnternet bağlantısı yok ya da sunucuya ulaşılamıyor.'**
+  String get authErrorNetwork;
+
+  /// No description provided for @authErrorPasswordTooShort.
+  ///
+  /// In tr, this message translates to:
+  /// **'Şifre en az 6 karakter olmalı.'**
+  String get authErrorPasswordTooShort;
 }
 
 class _AppLocalizationsDelegate

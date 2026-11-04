@@ -437,4 +437,24 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get wardrobeAiFit => 'AI Sanal Deneme';
+
+  @override
+  String get authErrorInvalidCredentials => 'E-posta veya şifre hatalı.';
+
+  @override
+  String get authErrorEmailTaken =>
+      'Bu e-posta adresiyle zaten bir hesap var. Giriş yapmayı dene.';
+
+  @override
+  String get authErrorWeakPassword => 'Şifre en az 6 karakter olmalı.';
+
+  @override
+  String get authErrorInvalidEmail => 'Geçerli bir e-posta adresi gir.';
+
+  @override
+  String get authErrorNetwork =>
+      'İnternet bağlantısı yok ya da sunucuya ulaşılamıyor.';
+
+  @override
+  String get authErrorPasswordTooShort => 'Şifre en az 6 karakter olmalı.';
 }
