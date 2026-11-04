@@ -19,7 +19,7 @@ Teslim: çalışan uygulama + rapor + sunum.
 - [ ] (İsteğe bağlı) Kısa alt giyim için maskeyi kıyafet uzunluğuna göre kısaltma
 - [ ] Alt giyimde renk doygunluğu biraz düşüyor (kot) → incele
 - [ ] Zaman aşımı, bağlantı ve model hataları için düzgün hata ekranları
-- [ ] Sahte değerleri kaldır (fit score, simüle ilerleme çubuğu, kullanılmayan fit/pose ayarları)
+- [x] Sahte değerleri kaldır (fit score, sahte yükleme adımları, kullanılmayan fit/pose ayarları)
 - [x] Önce/sonra karşılaştırmasını düzelt: backend 3:4 kırpılmış kişi fotoğrafını da döndürsün, karşılaştırma onu kullansın
 
 ## 3. Hafta (17–23 Kasım) – Çoklu açı, gardırop, tasarım
@@ -32,7 +32,7 @@ Teslim: çalışan uygulama + rapor + sunum.
 - [x] Supabase kurulumu (`supabase/setup_wardrobe.sql`) çalıştırıldı; kaydet → gardırop → filtre → sil gerçek hesapla doğrulandı (2026-11-04)
 - [x] Android release: INTERNET izni + yerel http backend için cleartext izni, uygulama adı "SeeItOn"
 - [ ] Tasarım düzenlemesi: tutarlı tema, koyu mod, geçiş animasyonları
-- [ ] Tekrarlanan kodu temizle (`splash_screen.dart` = `result_screen.dart` kopyası)
+- [x] Tekrarlanan ve kullanılmayan kodu temizle (`splash_screen.dart` kopyası, 8 widget, eski görseller)
 
 ## 4. Hafta (24–30 Kasım) – Test ve dokümantasyon
 - [ ] Gerçek telefonda uçtan uca test
