@@ -192,5 +192,27 @@
   "resultGallerySaved": "Görsel galeriye kaydedildi.",
   "resultGalleryWeb": "Tarayıcıda galeri yok; Paylaş butonunu ya da tam ekranda sağ tık → kaydet kullanın.",
   "resultGalleryFailed": "Görsel kaydedilemedi.",
-  "resultShareText": "SeeItOn ile oluşturduğum yapay zeka destekli sanal kombinimi incele! ✨ #SeeItOn #SanalKabin"
+  "resultShareText": "SeeItOn ile oluşturduğum yapay zeka destekli sanal kombinimi incele! ✨ #SeeItOn #SanalKabin",
+  "wardrobeTitle": "GARDIROBUM",
+  "wardrobeSyncing": "Gardırop yükleniyor...",
+  "wardrobeCount": "{count, plural, =0{Henüz kombin yok} other{{count} kayıtlı kombin}}",
+  "@wardrobeCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "wardrobeDaysAgo": "{days, plural, =0{Bugün} =1{Dün} other{{days} gün önce}}",
+  "@wardrobeDaysAgo": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "wardrobeEmptyTitle": "Gardırobun Boş",
+  "wardrobeEmptyBody": "Kabine geç, ilk kombinini dene ve kendi koleksiyonunu oluşturmaya başla.",
+  "wardrobeEmptyCta": "İlk Kombinini Dene",
+  "wardrobeAiFit": "AI Sanal Deneme"
 }

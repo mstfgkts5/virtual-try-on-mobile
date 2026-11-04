@@ -115,5 +115,13 @@
   "resultGallerySaved": "Image saved to gallery.",
   "resultGalleryWeb": "Browsers have no gallery; use Share, or right-click the full-screen image to save it.",
   "resultGalleryFailed": "Could not save the image.",
-  "resultShareText": "Check out the AI virtual try-on look I made with SeeItOn! ✨ #SeeItOn #VirtualTryOn"
+  "resultShareText": "Check out the AI virtual try-on look I made with SeeItOn! ✨ #SeeItOn #VirtualTryOn",
+  "wardrobeTitle": "MY WARDROBE",
+  "wardrobeSyncing": "Loading wardrobe...",
+  "wardrobeCount": "{count, plural, =0{No looks yet} =1{1 saved look} other{{count} saved looks}}",
+  "wardrobeDaysAgo": "{days, plural, =0{Today} =1{Yesterday} other{{days} days ago}}",
+  "wardrobeEmptyTitle": "Your Wardrobe is Empty",
+  "wardrobeEmptyBody": "Step into the fitting room, try your first outfit and start building your collection.",
+  "wardrobeEmptyCta": "Try Your First Outfit",
+  "wardrobeAiFit": "AI Virtual Try-On"
 }

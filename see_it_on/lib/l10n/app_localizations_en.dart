@@ -392,4 +392,47 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get resultShareText =>
       'Check out the AI virtual try-on look I made with SeeItOn! ✨ #SeeItOn #VirtualTryOn';
+
+  @override
+  String get wardrobeTitle => 'MY WARDROBE';
+
+  @override
+  String get wardrobeSyncing => 'Loading wardrobe...';
+
+  @override
+  String wardrobeCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count saved looks',
+      one: '1 saved look',
+      zero: 'No looks yet',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String wardrobeDaysAgo(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days days ago',
+      one: 'Yesterday',
+      zero: 'Today',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get wardrobeEmptyTitle => 'Your Wardrobe is Empty';
+
+  @override
+  String get wardrobeEmptyBody =>
+      'Step into the fitting room, try your first outfit and start building your collection.';
+
+  @override
+  String get wardrobeEmptyCta => 'Try Your First Outfit';
+
+  @override
+  String get wardrobeAiFit => 'AI Virtual Try-On';
 }
