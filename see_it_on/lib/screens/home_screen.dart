@@ -350,8 +350,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 expand: true,
                 onPressed: () => _onTryOnPressed(context),
               ),
-              const SizedBox(height: 8),
-              Center(child: Caption(l.homeTryOnBadge)),
               const HairlineDivider(verticalPadding: 28),
 
               _buildAnimatedRack(),
