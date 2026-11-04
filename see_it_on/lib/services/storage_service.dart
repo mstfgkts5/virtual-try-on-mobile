@@ -14,10 +14,8 @@ class StorageService {
   Future<bool> saveToGallery(Uint8List bytes, {String? fileName}) async {
     final name = fileName ?? 'SeeItOn_${DateTime.now().millisecondsSinceEpoch}.png';
 
-    if (kIsWeb) {
-      debugPrint('[StorageService] Web ortamında galeri kaydı simüle edildi.');
-      return true;
-    }
+    // Web'de cihaz galerisi yok; başarılı gibi davranmak yerine false dönülür
+    if (kIsWeb) return false;
 
     try {
       // Galeri erişim iznini kontrol et
@@ -61,12 +59,12 @@ class StorageService {
         name: 'SeeItOn_Outfit_${DateTime.now().millisecondsSinceEpoch}.png',
         mimeType: 'image/png',
       );
-      await Share.shareXFiles([xFile], text: text);
+      await SharePlus.instance.share(ShareParams(files: [xFile], text: text));
     } catch (e) {
       debugPrint('[StorageService] Paylaşım hatası: $e');
       // Görsel paylaşılamazsa sadece metni paylaşmayı dene
       try {
-        await Share.share(text);
+        await SharePlus.instance.share(ShareParams(text: text));
       } catch (_) {}
     }
   }
