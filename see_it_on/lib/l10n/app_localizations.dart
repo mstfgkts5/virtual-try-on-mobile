@@ -1015,6 +1015,24 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Koyu'**
   String get settingsThemeDark;
+
+  /// No description provided for @onboardingIssue.
+  ///
+  /// In tr, this message translates to:
+  /// **'No. 01 — Sanal Kabin'**
+  String get onboardingIssue;
+
+  /// No description provided for @onboardingCoverLine2.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yerel yapay zeka'**
+  String get onboardingCoverLine2;
+
+  /// No description provided for @onboardingCoverLine3.
+  ///
+  /// In tr, this message translates to:
+  /// **'Türkçe & English'**
+  String get onboardingCoverLine3;
 }
 
 class _AppLocalizationsDelegate
