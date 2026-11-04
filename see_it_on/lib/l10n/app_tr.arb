@@ -246,5 +246,9 @@
   "wardrobeCancel": "Vazgeç",
   "wardrobeDeleted": "Kombin silindi.",
   "wardrobeDeleteFailed": "Kombin silinemedi. Tekrar dene.",
-  "wardrobeShareFailed": "Görsel paylaşılamadı."
+  "wardrobeShareFailed": "Görsel paylaşılamadı.",
+  "settingsAppearance": "GÖRÜNÜM",
+  "settingsThemeSystem": "Sistem",
+  "settingsThemeLight": "Açık",
+  "settingsThemeDark": "Koyu"
 }

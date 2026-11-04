@@ -520,4 +520,16 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get wardrobeShareFailed => 'Görsel paylaşılamadı.';
+
+  @override
+  String get settingsAppearance => 'GÖRÜNÜM';
+
+  @override
+  String get settingsThemeSystem => 'Sistem';
+
+  @override
+  String get settingsThemeLight => 'Açık';
+
+  @override
+  String get settingsThemeDark => 'Koyu';
 }
