@@ -36,6 +36,7 @@ CATEGORY_ALIASES = {
 @dataclass
 class TryOnOutput:
     image: Image.Image
+    person: Image.Image  # Modele giren 3:4 kırpılmış kişi fotoğrafı (önce/sonra karşılaştırması için)
     mask: Image.Image
     category: str
     render_time_sec: float
@@ -123,7 +124,9 @@ class CatVTONEngine:
 
         # Maske dışındaki alanları (yüz, arka plan) orijinal fotoğraftan geri al
         result = self._repaint(person, mask, result)
-        return TryOnOutput(image=result, mask=mask, category=mask_type, render_time_sec=round(elapsed, 2))
+        return TryOnOutput(
+            image=result, person=person, mask=mask, category=mask_type, render_time_sec=round(elapsed, 2)
+        )
 
     @staticmethod
     def _repaint(person: Image.Image, mask: Image.Image, result: Image.Image) -> Image.Image:
