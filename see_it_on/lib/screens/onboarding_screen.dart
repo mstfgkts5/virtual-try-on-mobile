@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../core/l10n_ext.dart';
 import 'login_screen.dart';
 
 class OnboardingScreen extends StatelessWidget {
@@ -90,13 +91,13 @@ class OnboardingScreen extends StatelessWidget {
                           child: const Icon(Icons.checkroom, color: Colors.black54, size: 20),
                         ),
                         const SizedBox(width: 12),
-                        const Expanded(
+                        Expanded(
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('Üst • Alt • Tam Kıyafet', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.black87)),
-                              Text('Tek fotoğrafla saniyeler içinde dene', style: TextStyle(color: Colors.black54, fontSize: 10)),
+                              Text(context.l10n.onboardingCardTitle, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.black87)),
+                              Text(context.l10n.onboardingCardSubtitle, style: TextStyle(color: Colors.black54, fontSize: 10)),
                             ],
                           ),
                         ),
@@ -107,11 +108,11 @@ class OnboardingScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(12),
                             color: const Color(0xFFFAF9F6),
                           ),
-                          child: const Row(
+                          child: Row(
                             children: [
                               Icon(Icons.memory, size: 12, color: Colors.black54),
                               SizedBox(width: 4),
-                              Text('YEREL AI', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.black54)),
+                              Text(context.l10n.onboardingBadge, style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.black54)),
                             ],
                           ),
                         )
@@ -127,8 +128,8 @@ class OnboardingScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 30.0),
                 child: Column(
                   children: [
-                    const Text(
-                      'Try On Any Outfit\nInstantly',
+                    Text(
+                      context.l10n.onboardingTitle,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.black87,
@@ -139,8 +140,8 @@ class OnboardingScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    const Text(
-                      'Upload your photo, select any designer garment, and preview realistic photoreal draping in seconds.',
+                    Text(
+                      context.l10n.onboardingSubtitle,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.black54,
@@ -174,10 +175,10 @@ class OnboardingScreen extends StatelessWidget {
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                           elevation: 0,
                         ),
-                        child: const Row(
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text('Get Started', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                            Text(context.l10n.onboardingStart, style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
                             SizedBox(width: 8),
                             Icon(Icons.arrow_forward, color: Colors.white, size: 20),
                           ],
@@ -190,14 +191,14 @@ class OnboardingScreen extends StatelessWidget {
                       onTap: () {
                         Navigator.push(context, MaterialPageRoute(builder: (_) => const LoginScreen()));
                       },
-                      child: const Padding(
+                      child: Padding(
                         padding: EdgeInsets.only(bottom: 30.0),
                         child: Text.rich(
                           TextSpan(
-                            text: 'Already have an account? ',
+                            text: context.l10n.onboardingHaveAccount,
                             style: TextStyle(color: Colors.black54),
                             children: [
-                              TextSpan(text: 'Log In', style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold)),
+                              TextSpan(text: context.l10n.loginButton, style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold)),
                             ],
                           ),
                         ),

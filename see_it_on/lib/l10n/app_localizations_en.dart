@@ -29,4 +29,66 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsLanguageEn => 'English';
+
+  @override
+  String get onboardingCardTitle => 'Tops • Bottoms • Full Outfits';
+
+  @override
+  String get onboardingCardSubtitle =>
+      'Try it on in seconds from a single photo';
+
+  @override
+  String get onboardingBadge => 'LOCAL AI';
+
+  @override
+  String get onboardingTitle => 'Try On Any Outfit\nInstantly';
+
+  @override
+  String get onboardingSubtitle =>
+      'Upload your photo, pick a garment and see how it looks on you in seconds.';
+
+  @override
+  String get onboardingStart => 'Get Started';
+
+  @override
+  String get onboardingHaveAccount => 'Already have an account? ';
+
+  @override
+  String get loginTitle => 'Welcome Back';
+
+  @override
+  String get signupTitle => 'Join SeeItOn';
+
+  @override
+  String get loginSubtitle => 'Sign in to access your digital wardrobe.';
+
+  @override
+  String get signupSubtitle => 'Create an account to start trying on outfits.';
+
+  @override
+  String get loginEmailHint => 'Email address';
+
+  @override
+  String get loginPasswordHint => 'Password';
+
+  @override
+  String get loginButton => 'Log In';
+
+  @override
+  String get signupButton => 'Sign Up';
+
+  @override
+  String get loginNoAccount => 'Don\'t have an account? ';
+
+  @override
+  String get loginHaveAccount => 'Already have an account? ';
+
+  @override
+  String get loginSkipDev => 'Skip login (developer mode)';
+
+  @override
+  String get loginMissingFields => 'Please enter your email and password.';
+
+  @override
+  String get errorUnexpected => 'Something went wrong.';
 }

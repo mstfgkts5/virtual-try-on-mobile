@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../core/l10n_ext.dart';
 import 'home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -23,7 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final password = _passwordController.text.trim();
 
     if (email.isEmpty || password.isEmpty) {
-      _showError('Lütfen e-posta ve şifrenizi girin.');
+      _showError(context.l10n.loginMissingFields);
       return;
     }
 
@@ -58,7 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
         e.message,
       ); // Supabase'den gelen hata mesajı (Örn: Yanlış şifre)
     } catch (e) {
-      _showError('Beklenmeyen bir hata oluştu.');
+      if (mounted) _showError(context.l10n.errorUnexpected);
     } finally {
       if (mounted) {
         setState(() {
@@ -123,7 +124,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 // Başlık
                 Text(
-                  _isLogin ? 'Welcome Back' : 'Join SeeItOn',
+                  _isLogin ? context.l10n.loginTitle : context.l10n.signupTitle,
                   style: const TextStyle(
                     color: textColor,
                     fontSize: 32,
@@ -135,8 +136,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 8),
                 Text(
                   _isLogin
-                      ? 'Sign in to access your digital wardrobe.'
-                      : 'Create an account to start fusing your silhouette.',
+                      ? context.l10n.loginSubtitle
+                      : context.l10n.signupSubtitle,
                   style: TextStyle(
                     color: textColor.withValues(alpha: 0.6),
                     fontSize: 14,
@@ -147,7 +148,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 // E-Posta Alanı
                 _buildTextField(
                   controller: _emailController,
-                  hintText: 'Email Address',
+                  hintText: context.l10n.loginEmailHint,
                   icon: Icons.email_outlined,
                   obscureText: false,
                   textInputAction:
@@ -158,7 +159,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 // Şifre Alanı
                 _buildTextField(
                   controller: _passwordController,
-                  hintText: 'Password',
+                  hintText: context.l10n.loginPasswordHint,
                   icon: Icons.lock_outline,
                   obscureText: true,
                   textInputAction:
@@ -195,7 +196,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           )
                         : Text(
-                            _isLogin ? 'Log In' : 'Sign Up',
+                            _isLogin ? context.l10n.loginButton : context.l10n.signupButton,
                             style: const TextStyle(
                               fontSize: 16,
                               fontFamily: 'Georgia',
@@ -217,15 +218,15 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Text.rich(
                       TextSpan(
                         text: _isLogin
-                            ? "Don't have an account? "
-                            : "Already have an account? ",
+                            ? context.l10n.loginNoAccount
+                            : context.l10n.loginHaveAccount,
                         style: TextStyle(
                           color: textColor.withValues(alpha: 0.6),
                           fontSize: 13,
                         ),
                         children: [
                           TextSpan(
-                            text: _isLogin ? 'Sign Up' : 'Log In',
+                            text: _isLogin ? context.l10n.signupButton : context.l10n.loginButton,
                             style: const TextStyle(
                               color: textColor,
                               fontWeight: FontWeight.bold,
@@ -254,7 +255,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         color: textColor.withValues(alpha: 0.5),
                       ),
                       label: Text(
-                        'Girişi atla (geliştirici modu)',
+                        context.l10n.loginSkipDev,
                         style: TextStyle(
                           color: textColor.withValues(alpha: 0.5),
                           fontSize: 12,

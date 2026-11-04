@@ -139,6 +139,126 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'English'**
   String get settingsLanguageEn;
+
+  /// No description provided for @onboardingCardTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Üst • Alt • Tam Kıyafet'**
+  String get onboardingCardTitle;
+
+  /// No description provided for @onboardingCardSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tek fotoğrafla saniyeler içinde dene'**
+  String get onboardingCardSubtitle;
+
+  /// No description provided for @onboardingBadge.
+  ///
+  /// In tr, this message translates to:
+  /// **'YEREL AI'**
+  String get onboardingBadge;
+
+  /// No description provided for @onboardingTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Her Kıyafeti\nAnında Dene'**
+  String get onboardingTitle;
+
+  /// No description provided for @onboardingSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Fotoğrafını yükle, bir kıyafet seç ve saniyeler içinde üzerinde gerçekçi görünümünü izle.'**
+  String get onboardingSubtitle;
+
+  /// No description provided for @onboardingStart.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hemen Başla'**
+  String get onboardingStart;
+
+  /// No description provided for @onboardingHaveAccount.
+  ///
+  /// In tr, this message translates to:
+  /// **'Zaten hesabın var mı? '**
+  String get onboardingHaveAccount;
+
+  /// No description provided for @loginTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tekrar Hoş Geldin'**
+  String get loginTitle;
+
+  /// No description provided for @signupTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'SeeItOn\'a Katıl'**
+  String get signupTitle;
+
+  /// No description provided for @loginSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dijital gardırobuna erişmek için giriş yap.'**
+  String get loginSubtitle;
+
+  /// No description provided for @signupSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kıyafetleri üzerinde denemeye başlamak için hesap oluştur.'**
+  String get signupSubtitle;
+
+  /// No description provided for @loginEmailHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'E-posta adresi'**
+  String get loginEmailHint;
+
+  /// No description provided for @loginPasswordHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Şifre'**
+  String get loginPasswordHint;
+
+  /// No description provided for @loginButton.
+  ///
+  /// In tr, this message translates to:
+  /// **'Giriş Yap'**
+  String get loginButton;
+
+  /// No description provided for @signupButton.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kayıt Ol'**
+  String get signupButton;
+
+  /// No description provided for @loginNoAccount.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hesabın yok mu? '**
+  String get loginNoAccount;
+
+  /// No description provided for @loginHaveAccount.
+  ///
+  /// In tr, this message translates to:
+  /// **'Zaten hesabın var mı? '**
+  String get loginHaveAccount;
+
+  /// No description provided for @loginSkipDev.
+  ///
+  /// In tr, this message translates to:
+  /// **'Girişi atla (geliştirici modu)'**
+  String get loginSkipDev;
+
+  /// No description provided for @loginMissingFields.
+  ///
+  /// In tr, this message translates to:
+  /// **'Lütfen e-posta ve şifrenizi girin.'**
+  String get loginMissingFields;
+
+  /// No description provided for @errorUnexpected.
+  ///
+  /// In tr, this message translates to:
+  /// **'Beklenmeyen bir hata oluştu.'**
+  String get errorUnexpected;
 }
 
 class _AppLocalizationsDelegate
