@@ -25,6 +25,7 @@ Teslim: çalışan uygulama + rapor + sunum.
 ## 3. Hafta (17–23 Kasım) – Çoklu açı, gardırop, tasarım
 - [ ] **Çoklu Açı Sanal Deneme:** kullanıcı önden / yandan / arkadan fotoğraf yükler, kıyafetin ön ve arka görseli kullanılır, her açı ayrı işlenir; sonuç ekranında kaydırarak / döndürme animasyonuyla açılar arası geçiş
 - [ ] Yan ve arka açı kalitesini test et, sınırları raporda belgele
+- [x] **Türkçe / İngilizce dil desteği** (Flutter gen-l10n): tüm ekranlar iki dilli, Ayarlar ekranından TR/EN, seçim kalıcı, 23 otomatik test
 - [ ] Kayıt ve giriş akışı: kullanıcı kendi hesabını açıp giriş yapabilsin (Supabase Auth), hata mesajları Türkçe, oturum açıkken uygulama doğrudan ana ekrana gitsin, çıkış yap butonu
 - [ ] Gardırobu gerçek Supabase verisine bağla
 - [ ] Tasarım düzenlemesi: tutarlı tema, koyu mod, geçiş animasyonları
