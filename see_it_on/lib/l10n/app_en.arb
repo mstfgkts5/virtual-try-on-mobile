@@ -123,5 +123,11 @@
   "wardrobeEmptyTitle": "Your Wardrobe is Empty",
   "wardrobeEmptyBody": "Step into the fitting room, try your first outfit and start building your collection.",
   "wardrobeEmptyCta": "Try Your First Outfit",
-  "wardrobeAiFit": "AI Virtual Try-On"
+  "wardrobeAiFit": "AI Virtual Try-On",
+  "authErrorInvalidCredentials": "Incorrect email or password.",
+  "authErrorEmailTaken": "An account with this email already exists. Try logging in.",
+  "authErrorWeakPassword": "Password must be at least 6 characters.",
+  "authErrorInvalidEmail": "Enter a valid email address.",
+  "authErrorNetwork": "No internet connection, or the server can't be reached.",
+  "authErrorPasswordTooShort": "Password must be at least 6 characters."
 }

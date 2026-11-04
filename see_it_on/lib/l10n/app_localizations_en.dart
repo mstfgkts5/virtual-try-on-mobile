@@ -435,4 +435,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get wardrobeAiFit => 'AI Virtual Try-On';
+
+  @override
+  String get authErrorInvalidCredentials => 'Incorrect email or password.';
+
+  @override
+  String get authErrorEmailTaken =>
+      'An account with this email already exists. Try logging in.';
+
+  @override
+  String get authErrorWeakPassword => 'Password must be at least 6 characters.';
+
+  @override
+  String get authErrorInvalidEmail => 'Enter a valid email address.';
+
+  @override
+  String get authErrorNetwork =>
+      'No internet connection, or the server can\'t be reached.';
+
+  @override
+  String get authErrorPasswordTooShort =>
+      'Password must be at least 6 characters.';
 }
