@@ -1,7 +1,8 @@
-import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../services/api_service.dart';
+import '../services/storage_service.dart';
 
 class ResultScreen extends StatefulWidget {
   final Uint8List
@@ -82,6 +83,21 @@ class _ResultScreenState extends State<ResultScreen> {
         });
       }
     }
+  }
+
+  Future<void> _saveToGallery() async {
+    final ok = await StorageService().saveToGallery(widget.generatedImageBytes);
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(ok
+            ? 'Görsel galeriye kaydedildi.'
+            : kIsWeb
+                ? 'Tarayıcıda galeri yok; Paylaş butonunu ya da tam ekranda sağ tık → kaydet kullanın.'
+                : 'Görsel kaydedilemedi.'),
+        backgroundColor: ok ? Colors.green : Colors.red,
+      ),
+    );
   }
 
   // 2. Tam ekran görüntüleme modalı
@@ -314,10 +330,10 @@ class _ResultScreenState extends State<ResultScreen> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.notifications_outlined),
-            onPressed: () {},
+            tooltip: 'Galeriye kaydet',
+            icon: const Icon(Icons.download_outlined),
+            onPressed: _saveToGallery,
           ),
-          IconButton(icon: const Icon(Icons.person_outline), onPressed: () {}),
         ],
       ),
       body: SingleChildScrollView(
@@ -523,7 +539,7 @@ class _ResultScreenState extends State<ResultScreen> {
                         Icons.share_outlined,
                         color: Colors.white,
                       ),
-                      onPressed: () {},
+                      onPressed: () => StorageService().shareOutfit(widget.generatedImageBytes),
                     ),
                   ),
                   const SizedBox(width: 12),

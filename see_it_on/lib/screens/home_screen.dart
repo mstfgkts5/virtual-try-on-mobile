@@ -45,14 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   int _currentNavigationIndex = 0;
   late PageController _rackController;
-  int _currentRackIndex = 1;
-
-  final List<Map<String, dynamic>> _rackItems = [
-    {'name': 'Vintage Leather', 'type': 'Jacket', 'color': 0xFF2C2C2C},
-    {'name': 'Crimson Memory', 'type': 'LS Shirt', 'color': 0xFF8B0000},
-    {'name': 'Silk Button-up', 'type': 'Shirt', 'color': 0xFFFDF5E6},
-    {'name': 'Denim Over-shirt', 'type': 'Jacket', 'color': 0xFF4682B4},
-  ];
+  int _currentRackIndex = 1; // Raf, _sampleGarments listesini gösterir
 
   @override
   void initState() {
@@ -271,12 +264,17 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _selectRecommendedGarment(int index) {
+  // Raftaki kıyafeti 2. adıma yükler ve kategoriyi kıyafete göre değiştirir
+  Future<void> _selectRackGarment(int index) async {
+    final garment = _sampleGarments[index];
+    setState(() => _category = garment['category']!);
+    await _loadAsset(false, 'assets/images/garments/${garment['id']}.jpg');
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Kombin seçildi!'),
-        backgroundColor: Colors.green,
-        duration: Duration(seconds: 2),
+      SnackBar(
+        content: Text('${garment['label']} seçildi. Şimdi fotoğrafını ekle ve "Üzerimde Gör"e bas.'),
+        backgroundColor: const Color(0xFF221F1E),
+        duration: const Duration(seconds: 3),
       ),
     );
   }
@@ -630,7 +628,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Column(
       children: [
         Text(
-          "GÜNÜN KOMBİN ÖNERİLERİ",
+          "ÖRNEK KIYAFET RAFI",
           style: TextStyle(
             color: textColor.withValues(alpha: 0.5),
             fontSize: 11,
@@ -670,7 +668,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     _currentRackIndex = index;
                   });
                 },
-                itemCount: _rackItems.length,
+                itemCount: _sampleGarments.length,
                 itemBuilder: (context, index) {
                   return AnimatedBuilder(
                     animation: _rackController,
@@ -730,8 +728,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Container(
                             height: 140,
                             width: 100,
+                            clipBehavior: Clip.antiAlias,
                             decoration: BoxDecoration(
-                              color: Color(_rackItems[index]['color'] as int),
+                              color: Colors.white,
                               borderRadius: BorderRadius.circular(12),
                               boxShadow: [
                                 BoxShadow(
@@ -741,10 +740,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ],
                             ),
-                            child: const Icon(
-                              Icons.checkroom,
-                              color: Colors.white54,
-                              size: 40,
+                            child: Image.asset(
+                              'assets/images/garments/${_sampleGarments[index]['id']}.jpg',
+                              fit: BoxFit.cover,
                             ),
                           ),
                         ),
@@ -763,7 +761,7 @@ class _HomeScreenState extends State<HomeScreen> {
             key: ValueKey<int>(_currentRackIndex),
             children: [
               Text(
-                _rackItems[_currentRackIndex]['name'] as String,
+                _sampleGarments[_currentRackIndex]['label']!,
                 style: const TextStyle(
                   color: Color(0xFF1E1C1A),
                   fontSize: 16,
@@ -773,7 +771,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               const SizedBox(height: 4),
               Text(
-                _rackItems[_currentRackIndex]['type'] as String,
+                _categories.firstWhere((c) => c['id'] == _sampleGarments[_currentRackIndex]['category'])['label'] as String,
                 style: TextStyle(
                   color: const Color(0xFF1E1C1A).withValues(alpha: 0.5),
                   fontSize: 12,
@@ -781,7 +779,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               const SizedBox(height: 12),
               InkWell(
-                onTap: () => _selectRecommendedGarment(_currentRackIndex),
+                onTap: () => _selectRackGarment(_currentRackIndex),
                 borderRadius: BorderRadius.circular(20),
                 child: Container(
                   padding: const EdgeInsets.symmetric(

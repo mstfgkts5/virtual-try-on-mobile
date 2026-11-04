@@ -128,7 +128,7 @@ class _WardrobeScreenState extends State<WardrobeScreen>
                     shape: BoxShape.circle,
                     gradient: RadialGradient(
                       colors: [
-                        const Color(0xFFC5A880).withOpacity(0.08),
+                        const Color(0xFFC5A880).withValues(alpha: 0.08),
                         Colors.transparent,
                       ],
                     ),
@@ -192,10 +192,10 @@ class _WardrobeScreenState extends State<WardrobeScreen>
               right: 20,
             ),
             decoration: BoxDecoration(
-              color: const Color(0xFF141312).withOpacity(0.65),
+              color: const Color(0xFF141312).withValues(alpha: 0.65),
               border: Border(
                 bottom: BorderSide(
-                  color: Colors.white.withOpacity(0.07),
+                  color: Colors.white.withValues(alpha: 0.07),
                   width: 0.8,
                 ),
               ),
@@ -225,7 +225,7 @@ class _WardrobeScreenState extends State<WardrobeScreen>
                       style: TextStyle(
                         fontSize: 11,
                         letterSpacing: 0.6,
-                        color: const Color(0xFFDCDAD4).withOpacity(0.6),
+                        color: const Color(0xFFDCDAD4).withValues(alpha: 0.6),
                         fontWeight: FontWeight.w300,
                       ),
                     ),
@@ -273,13 +273,13 @@ class _WardrobeScreenState extends State<WardrobeScreen>
           height: 38,
           decoration: BoxDecoration(
             color: isHighlighted
-                ? const Color(0xFFF7F2EB).withOpacity(0.14)
-                : Colors.white.withOpacity(0.05),
+                ? const Color(0xFFF7F2EB).withValues(alpha: 0.14)
+                : Colors.white.withValues(alpha: 0.05),
             borderRadius: BorderRadius.circular(14),
             border: Border.all(
               color: isHighlighted
-                  ? const Color(0xFFC5A880).withOpacity(0.4)
-                  : Colors.white.withOpacity(0.09),
+                  ? const Color(0xFFC5A880).withValues(alpha: 0.4)
+                  : Colors.white.withValues(alpha: 0.09),
               width: 0.8,
             ),
           ),
@@ -313,9 +313,9 @@ class _WardrobeScreenState extends State<WardrobeScreen>
               return Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  color: const Color(0xFF1A1918).withOpacity(opacity),
+                  color: const Color(0xFF1A1918).withValues(alpha: opacity),
                   border: Border.all(
-                    color: Colors.white.withOpacity(0.05),
+                    color: Colors.white.withValues(alpha: 0.05),
                     width: 0.8,
                   ),
                 ),
@@ -329,7 +329,7 @@ class _WardrobeScreenState extends State<WardrobeScreen>
                         width: 50,
                         height: 10,
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(opacity * 0.5),
+                          color: Colors.white.withValues(alpha: opacity * 0.5),
                           borderRadius: BorderRadius.circular(6),
                         ),
                       ),
@@ -338,7 +338,7 @@ class _WardrobeScreenState extends State<WardrobeScreen>
                         width: 100,
                         height: 14,
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(opacity * 0.8),
+                          color: Colors.white.withValues(alpha: opacity * 0.8),
                           borderRadius: BorderRadius.circular(6),
                         ),
                       ),
@@ -370,14 +370,14 @@ class _WardrobeScreenState extends State<WardrobeScreen>
               height: 110,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: const Color(0xFF1A1817).withOpacity(0.7),
+                color: const Color(0xFF1A1817).withValues(alpha: 0.7),
                 border: Border.all(
-                  color: const Color(0xFFC5A880).withOpacity(0.25),
+                  color: const Color(0xFFC5A880).withValues(alpha: 0.25),
                   width: 1,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFFC5A880).withOpacity(0.12),
+                    color: const Color(0xFFC5A880).withValues(alpha: 0.12),
                     blurRadius: 36,
                     spreadRadius: 4,
                   ),
@@ -411,7 +411,7 @@ class _WardrobeScreenState extends State<WardrobeScreen>
                 fontSize: 13.5,
                 height: 1.55,
                 fontWeight: FontWeight.w300,
-                color: const Color(0xFFC7C3BB).withOpacity(0.75),
+                color: const Color(0xFFC7C3BB).withValues(alpha: 0.75),
               ),
             ),
             const SizedBox(height: 36),
@@ -422,7 +422,7 @@ class _WardrobeScreenState extends State<WardrobeScreen>
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFFFAF7F2).withOpacity(0.08),
+                    color: const Color(0xFFFAF7F2).withValues(alpha: 0.08),
                     blurRadius: 20,
                     offset: const Offset(0, 4),
                   ),
@@ -510,7 +510,7 @@ class _WardrobeScreenState extends State<WardrobeScreen>
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.4),
+              color: Colors.black.withValues(alpha: 0.4),
               blurRadius: 18,
               offset: const Offset(0, 8),
             ),
@@ -525,7 +525,7 @@ class _WardrobeScreenState extends State<WardrobeScreen>
               Image.network(
                 imageUrl,
                 fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => Container(
+                errorBuilder: (_, _, _) => Container(
                   color: const Color(0xFF1C1A19),
                   child: const Center(
                     child: Icon(Icons.broken_image_rounded, color: Colors.white24),
@@ -539,7 +539,7 @@ class _WardrobeScreenState extends State<WardrobeScreen>
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                      color: Colors.white.withOpacity(0.12),
+                      color: Colors.white.withValues(alpha: 0.12),
                       width: 1,
                     ),
                   ),
@@ -558,10 +558,10 @@ class _WardrobeScreenState extends State<WardrobeScreen>
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.35),
+                        color: Colors.black.withValues(alpha: 0.35),
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(
-                          color: Colors.white.withOpacity(0.12),
+                          color: Colors.white.withValues(alpha: 0.12),
                           width: 0.6,
                         ),
                       ),
@@ -592,8 +592,8 @@ class _WardrobeScreenState extends State<WardrobeScreen>
                       end: Alignment.bottomCenter,
                       colors: [
                         Colors.transparent,
-                        Colors.black.withOpacity(0.4),
-                        Colors.black.withOpacity(0.88),
+                        Colors.black.withValues(alpha: 0.4),
+                        Colors.black.withValues(alpha: 0.88),
                       ],
                       stops: const [0.0, 0.4, 1.0],
                     ),
@@ -631,7 +631,7 @@ class _WardrobeScreenState extends State<WardrobeScreen>
                             'AI Silhouette Fit',
                             style: TextStyle(
                               fontSize: 9.5,
-                              color: Colors.white.withOpacity(0.55),
+                              color: Colors.white.withValues(alpha: 0.55),
                               fontWeight: FontWeight.w300,
                             ),
                           ),
@@ -654,10 +654,10 @@ class _WardrobeScreenState extends State<WardrobeScreen>
                               width: 30,
                               height: 30,
                               decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.12),
+                                color: Colors.white.withValues(alpha: 0.12),
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(
-                                  color: Colors.white.withOpacity(0.18),
+                                  color: Colors.white.withValues(alpha: 0.18),
                                   width: 0.6,
                                 ),
                               ),

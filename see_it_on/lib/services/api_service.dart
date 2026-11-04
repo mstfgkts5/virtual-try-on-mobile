@@ -105,7 +105,6 @@ class ApiService {
     return TryOnResult(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       title: categoryLabel(category),
-      designer: 'CatVTON (Local GPU)',
       category: category,
       resultImageBytes: base64Decode(json['image_base64'] as String),
       // Backend'in 3:4 kırptığı kişi fotoğrafı; yoksa orijinale düş
@@ -114,7 +113,6 @@ class ApiService {
           : request.personImageBytes,
       garmentBytes: request.garmentImageBytes,
       renderTimeSec: (json['render_time'] as num?)?.toDouble() ?? 0.0,
-      fitType: request.fitType,
     );
   }
 

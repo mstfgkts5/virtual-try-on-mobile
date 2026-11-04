@@ -148,7 +148,7 @@ class _LoadingScreenState extends State<LoadingScreen>
                           ),
                           const SizedBox(width: 8),
                           const Text(
-                            'NEURAL DRAPE ENGINE',
+                            'CATVTON • YEREL GPU',
                             style: TextStyle(
                               color: Colors.grey,
                               fontSize: 10,
@@ -223,13 +223,13 @@ class _LoadingScreenState extends State<LoadingScreen>
                         bottom: 50,
                         left: 30,
                         child: _buildFloatingLabel(
-                          'DRAPE: ${(progress * 100).toStringAsFixed(1)}%',
+                          'İLERLEME: ${(progress * 100).toStringAsFixed(1)}%',
                         ),
                       ),
                       const Positioned(
                         bottom: 16,
                         child: Text(
-                          'LATENT SPACE SYNTHESIS',
+                          'DİFÜZYON MODELİ ÇALIŞIYOR',
                           style: TextStyle(
                             color: Colors.white38,
                             fontSize: 10,
@@ -332,7 +332,7 @@ class _LoadingScreenState extends State<LoadingScreen>
                                       ),
                                       const SizedBox(width: 4),
                                       const Text(
-                                        '3D MESH',
+                                        'AI',
                                         style: TextStyle(
                                           color: Colors.white54,
                                           fontSize: 9,
@@ -356,7 +356,7 @@ class _LoadingScreenState extends State<LoadingScreen>
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     const Text(
-                      'Draping Fabric •',
+                      'Kıyafet giydiriliyor •',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 22,
@@ -400,7 +400,7 @@ class _LoadingScreenState extends State<LoadingScreen>
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text(
-                      'Atelier Studio Drape Mode',
+                      'Tahmini süre ~40 sn',
                       style: TextStyle(
                         color: Colors.white54,
                         fontSize: 12,
@@ -417,8 +417,8 @@ class _LoadingScreenState extends State<LoadingScreen>
                         const SizedBox(width: 4),
                         Text(
                           progress > 0.8
-                              ? 'Applying final touches...'
-                              : 'Processing geometries...',
+                              ? 'Son rötuşlar...'
+                              : 'İşleniyor...',
                           style: const TextStyle(
                             color: Colors.white54,
                             fontSize: 11,
@@ -440,8 +440,8 @@ class _LoadingScreenState extends State<LoadingScreen>
                     children: [
                       _buildTaskRow(
                         Icons.person_outline,
-                        "Silhouette Segmentation",
-                        "Pose Keypoints Completed",
+                        "Vücut Maskesi",
+                        "DensePose + SCHP ile giydirilecek bölge bulunur",
                         progress > 0.3 ? "DONE" : "PROCESSING",
                         progress > 0.3,
                         progress <= 0.3,
@@ -449,8 +449,8 @@ class _LoadingScreenState extends State<LoadingScreen>
                       Divider(color: Colors.grey.shade900, height: 1),
                       _buildTaskRow(
                         Icons.layers_outlined,
-                        "Fabric Physics Simulation",
-                        "Calculating weight and drape...",
+                        "Difüzyon (30 adım)",
+                        "CatVTON kıyafeti kişinin üzerine çizer",
                         progress > 0.7
                             ? "DONE"
                             : (progress > 0.3 ? "PROCESSING" : "QUEUED"),
@@ -460,8 +460,8 @@ class _LoadingScreenState extends State<LoadingScreen>
                       Divider(color: Colors.grey.shade900, height: 1),
                       _buildTaskRow(
                         Icons.wb_sunny_outlined,
-                        "Photorealistic Texture",
-                        "Awaiting HDR relighting...",
+                        "Birleştirme",
+                        "Yüz ve arka plan orijinal fotoğraftan korunur",
                         progress == 1.0
                             ? "DONE"
                             : (progress > 0.7 ? "PROCESSING" : "QUEUED"),
@@ -481,7 +481,7 @@ class _LoadingScreenState extends State<LoadingScreen>
                       size: 18,
                     ),
                     label: const Text(
-                      'Stop Simulation',
+                      'İptal',
                       style: TextStyle(
                         color: Colors.white54,
                         fontSize: 13,

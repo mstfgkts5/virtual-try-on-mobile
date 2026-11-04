@@ -57,9 +57,9 @@ class OnboardingScreen extends StatelessWidget {
                       offset: const Offset(0, 10),
                     ),
                   ],
-                  // İnternetten çekilen şık arka plan görseli
+                  // Yerel görsel: demo sırasında internet olmasa da açılış ekranı boş kalmaz
                   image: const DecorationImage(
-                    image: NetworkImage('https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=1000&auto=format&fit=crop'),
+                    image: AssetImage('assets/images/onboarding_hero.png'),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -95,8 +95,8 @@ class OnboardingScreen extends StatelessWidget {
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('Tweed Structured Blazer', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.black87)),
-                              Text('Zero-calibration live drape', style: TextStyle(color: Colors.black54, fontSize: 10)),
+                              Text('Üst • Alt • Tam Kıyafet', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.black87)),
+                              Text('Tek fotoğrafla saniyeler içinde dene', style: TextStyle(color: Colors.black54, fontSize: 10)),
                             ],
                           ),
                         ),
@@ -109,9 +109,9 @@ class OnboardingScreen extends StatelessWidget {
                           ),
                           child: const Row(
                             children: [
-                              Icon(Icons.tune, size: 12, color: Colors.black54),
+                              Icon(Icons.memory, size: 12, color: Colors.black54),
                               SizedBox(width: 4),
-                              Text('SIMULATED', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.black54)),
+                              Text('YEREL AI', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.black54)),
                             ],
                           ),
                         )
