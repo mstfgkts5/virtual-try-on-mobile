@@ -148,5 +148,9 @@
   "wardrobeCancel": "Cancel",
   "wardrobeDeleted": "Look deleted.",
   "wardrobeDeleteFailed": "Couldn't delete the look. Try again.",
-  "wardrobeShareFailed": "Couldn't share the image."
+  "wardrobeShareFailed": "Couldn't share the image.",
+  "settingsAppearance": "APPEARANCE",
+  "settingsThemeSystem": "System",
+  "settingsThemeLight": "Light",
+  "settingsThemeDark": "Dark"
 }

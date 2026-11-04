@@ -519,4 +519,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get wardrobeShareFailed => 'Couldn\'t share the image.';
+
+  @override
+  String get settingsAppearance => 'APPEARANCE';
+
+  @override
+  String get settingsThemeSystem => 'System';
+
+  @override
+  String get settingsThemeLight => 'Light';
+
+  @override
+  String get settingsThemeDark => 'Dark';
 }

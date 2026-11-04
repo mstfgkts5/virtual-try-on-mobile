@@ -991,6 +991,30 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Görsel paylaşılamadı.'**
   String get wardrobeShareFailed;
+
+  /// No description provided for @settingsAppearance.
+  ///
+  /// In tr, this message translates to:
+  /// **'GÖRÜNÜM'**
+  String get settingsAppearance;
+
+  /// No description provided for @settingsThemeSystem.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sistem'**
+  String get settingsThemeSystem;
+
+  /// No description provided for @settingsThemeLight.
+  ///
+  /// In tr, this message translates to:
+  /// **'Açık'**
+  String get settingsThemeLight;
+
+  /// No description provided for @settingsThemeDark.
+  ///
+  /// In tr, this message translates to:
+  /// **'Koyu'**
+  String get settingsThemeDark;
 }
 
 class _AppLocalizationsDelegate
