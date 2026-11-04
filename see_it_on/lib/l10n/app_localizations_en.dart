@@ -540,4 +540,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboardingCoverLine3 => 'Türkçe & English';
+
+  @override
+  String resultCaption(String category, String seconds) {
+    return '$category — $seconds s, local GPU';
+  }
 }

@@ -253,5 +253,16 @@
   "settingsThemeDark": "Koyu",
   "onboardingIssue": "No. 01 — Sanal Kabin",
   "onboardingCoverLine2": "Yerel yapay zeka",
-  "onboardingCoverLine3": "Türkçe & English"
+  "onboardingCoverLine3": "Türkçe & English",
+  "resultCaption": "{category} — {seconds} sn, yerel GPU",
+  "@resultCaption": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      },
+      "seconds": {
+        "type": "String"
+      }
+    }
+  }
 }
