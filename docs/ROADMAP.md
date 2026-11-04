@@ -29,7 +29,7 @@ Teslim: çalışan uygulama + rapor + sunum.
 - [x] Kayıt ve giriş akışı: Supabase e-posta/şifre (doğrulamasız), oturum hatırlama (AuthGate), Ayarlar'da çıkış, TR/EN hata mesajları (hatalı şifre, kayıtlı e-posta, çok fazla deneme, bağlantı yok), 20 sn zaman aşımı, şifre göster/gizle — 43 test, gerçek hesapla tarayıcıda doğrulandı
 - [ ] (Takip) Çevrimdışı açılışta süresi dolmuş oturum Supabase.initialize'ı askıda bırakabiliyor (kütüphane davranışı) — incele
 - [x] Gardırop yeniden tasarlandı (krem tema, kategori filtresi, 3:4 kart ızgarası, detay: yakınlaştır/paylaş/sil) ve gerçek Supabase verisine bağlandı; kayıtlar kategoriyle, kullanıcının kendi klasörüne
-- [ ] **Kullanıcı:** Supabase SQL Editor'da `supabase/setup_wardrobe.sql` çalıştır (kategori sütunu, RLS, görsel deposu) — bkz. `supabase/README.md`
+- [x] Supabase kurulumu (`supabase/setup_wardrobe.sql`) çalıştırıldı; kaydet → gardırop → filtre → sil gerçek hesapla doğrulandı (2026-11-04)
 - [x] Android release: INTERNET izni + yerel http backend için cleartext izni, uygulama adı "SeeItOn"
 - [ ] Tasarım düzenlemesi: tutarlı tema, koyu mod, geçiş animasyonları
 - [ ] Tekrarlanan kodu temizle (`splash_screen.dart` = `result_screen.dart` kopyası)
