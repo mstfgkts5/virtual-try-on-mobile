@@ -21,6 +21,23 @@ alter table public.wardrobe alter column created_at set default now();
 -- user_id uuid ya da text olabilir; ikisinde de çalışsın diye metin olarak karşılaştırılır
 alter table public.wardrobe enable row level security;
 
+-- Tabloda önceden kalmış başka kurallar (ör. paneldeki "Enable read access for all users")
+-- izin verici kurallar VEYA ile birleştiği için "yalnızca kendi kombinlerin" garantisini bozar.
+-- Bu yüzden aşağıdaki üç kural dışındaki tüm wardrobe kuralları kaldırılır.
+-- (Bu tabloyu yalnızca SeeItOn kullanıyor; kaldırılanlar NOTICE olarak listelenir.)
+do $$
+declare p record;
+begin
+  for p in
+    select policyname from pg_policies
+    where schemaname = 'public' and tablename = 'wardrobe'
+      and policyname not in ('wardrobe_select_own', 'wardrobe_insert_own', 'wardrobe_delete_own')
+  loop
+    raise notice 'Kaldırılan eski kural: %', p.policyname;
+    execute format('drop policy %I on public.wardrobe', p.policyname);
+  end loop;
+end $$;
+
 drop policy if exists "wardrobe_select_own" on public.wardrobe;
 create policy "wardrobe_select_own" on public.wardrobe
   for select to authenticated using (user_id::text = auth.uid()::text);
@@ -49,6 +66,11 @@ create policy "wardrobe_images_delete_own" on storage.objects
   for delete to authenticated
   using (bucket_id = 'wardrobe_images' and (storage.foldername(name))[1] = auth.uid()::text);
 
+-- Görselleri açmak için kural gerekmez: depo public olduğu için /object/public/... adresleri
+-- RLS'ye takılmaz. Bu SELECT kuralı yalnızca silme için (remove() hem SELECT hem DELETE ister)
+-- ve kullanıcının kendi klasörüyle sınırlı; aksi halde anon anahtarla herkesin klasörleri listelenebilirdi.
 drop policy if exists "wardrobe_images_read" on storage.objects;
-create policy "wardrobe_images_read" on storage.objects
-  for select using (bucket_id = 'wardrobe_images');
+drop policy if exists "wardrobe_images_select_own" on storage.objects;
+create policy "wardrobe_images_select_own" on storage.objects
+  for select to authenticated
+  using (bucket_id = 'wardrobe_images' and (storage.foldername(name))[1] = auth.uid()::text);

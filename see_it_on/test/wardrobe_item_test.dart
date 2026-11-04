@@ -41,6 +41,13 @@ void main() {
     expect(daysAgo(DateTime(2026, 10, 28), now), 7);
   });
 
+  test('hiç satır silinmediyse hata', () {
+    expect(() => ensureDeleted(const []), throwsA(isA<NothingDeletedException>()));
+    ensureDeleted(const [
+      {'id': 1},
+    ]); // fırlatmaz
+  });
+
   test('eksik sütun hatası tanınır', () {
     expect(isMissingColumnError(const PostgrestException(message: 'x', code: '42703')), isTrue);
     expect(

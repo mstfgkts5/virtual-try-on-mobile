@@ -78,7 +78,9 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
             : FutureBuilder<List<WardrobeItem>>(
                 future: _future,
                 builder: (context, snap) {
-                  if (snap.connectionState != ConnectionState.done) {
+                  // İskelet yalnızca ilk yüklemede; yenilemede FutureBuilder önceki veriyi tuttuğu için
+                  // liste (ve kaydırma konumu, filtre) ekranda kalır
+                  if (!snap.hasData && !snap.hasError) {
                     return const _SkeletonGrid();
                   }
                   if (snap.hasError) {
