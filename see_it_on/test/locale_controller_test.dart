@@ -30,6 +30,16 @@ void main() {
     expect(c.value.languageCode, 'tr');
   });
 
+  test('depolama hatasında çökmez, cihaz diline düşer', () async {
+    final c = await LocaleController.load(
+      deviceLocale: const Locale('tr'),
+      prefs: () => Future.error(StateError('prefs bozuk')),
+    );
+    expect(c.value.languageCode, 'tr');
+    await c.setLocale(const Locale('en')); // kaydedemese de dil değişir, hata fırlatmaz
+    expect(c.value.languageCode, 'en');
+  });
+
   test('setLocale kalıcıdır', () async {
     SharedPreferences.setMockInitialValues({});
     final c = await LocaleController.load(deviceLocale: const Locale('tr'));
