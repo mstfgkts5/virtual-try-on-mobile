@@ -19,4 +19,28 @@ void main() {
     expect(find.text('Settings'), findsOneWidget);
     expect(find.text('Ayarlar'), findsNothing);
   });
+
+  testWidgets('oturum yoksa hesap bölümü gizli', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    localeController = await LocaleController.load(deviceLocale: const Locale('tr'));
+    await tester.pumpWidget(const SeeItOnApp(home: SettingsScreen(userEmail: null)));
+    await tester.pumpAndSettle();
+    expect(find.text('HESAP'), findsNothing);
+    expect(find.text('Çıkış yap'), findsNothing);
+  });
+
+  testWidgets('oturum varsa e-posta ve çıkış görünür, çıkış çağrılır', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    localeController = await LocaleController.load(deviceLocale: const Locale('tr'));
+    var signOutCalls = 0;
+    await tester.pumpWidget(SeeItOnApp(
+      home: SettingsScreen(userEmail: 'a@b.co', onSignOut: () async => signOutCalls++),
+    ));
+    await tester.pumpAndSettle();
+    expect(find.text('HESAP'), findsOneWidget);
+    expect(find.text('a@b.co olarak giriş yapıldı'), findsOneWidget);
+    await tester.tap(find.text('Çıkış yap'));
+    await tester.pumpAndSettle();
+    expect(signOutCalls, 1);
+  });
 }
