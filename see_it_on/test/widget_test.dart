@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:see_it_on/core/l10n_ext.dart';
 import 'package:see_it_on/models/tryon_request.dart';
 import 'package:see_it_on/screens/login_screen.dart';
 import 'package:see_it_on/screens/onboarding_screen.dart';
@@ -18,10 +20,21 @@ void main() {
     expect(request.toFieldsMap(), {'category': 'lower', 'steps': '30'});
   });
 
-  test('Kategori etiketleri Türkçe', () {
-    expect(ApiService.categoryLabel('upper'), 'Üst Giyim Sonucu');
-    expect(ApiService.categoryLabel('lower'), 'Alt Giyim Sonucu');
-    expect(ApiService.categoryLabel('overall'), 'Tam Kıyafet Sonucu');
+  test('Sonuç başlığı iki dilde', () {
+    final tr = l10nFor('tr'), en = l10nFor('en');
+    expect(tr.resultTitle(categoryName(tr, 'lower')), 'Alt Giyim Sonucu');
+    expect(en.resultTitle(categoryName(en, 'overall')), 'Full outfit result');
+  });
+
+  test('Yükleme adımları iki dilde', () {
+    expect(l10nFor('tr').loadingStepMask, 'Vücut Maskesi');
+    expect(l10nFor('en').loadingStepMask, 'Body mask');
+  });
+
+  test('Bilinen hatalar çevrilir', () {
+    final en = l10nFor('en');
+    expect(ApiService.friendlyError(en, TimeoutException('x')), en.errorTimeout);
+    expect(ApiService.friendlyError(en, Exception('Model henüz yükleniyor')), 'Model henüz yükleniyor');
   });
 
   testWidgets('Açılış ekranı marka adını gösterir', (tester) async {

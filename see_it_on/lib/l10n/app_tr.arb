@@ -99,5 +99,98 @@
   "garmentChino": "Bej Chino",
   "garmentTrousers": "Lacivert Pantolon",
   "garmentSkirt": "Pliseli Etek",
-  "garmentShorts": "Kot Şort"
+  "garmentShorts": "Kot Şort",
+  "categoryBadgeUpper": "ÜST GİYİM",
+  "categoryBadgeLower": "ALT GİYİM",
+  "categoryBadgeOverall": "TAM KIYAFET",
+  "loadingEngine": "CATVTON • YEREL GPU",
+  "loadingProgress": "İLERLEME: {percent}%",
+  "@loadingProgress": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "loadingModelRunning": "DİFÜZYON MODELİ ÇALIŞIYOR",
+  "loadingTitle": "Kıyafet giydiriliyor •",
+  "loadingEta": "Tahmini süre ~40 sn",
+  "loadingFinalTouches": "Son rötuşlar...",
+  "loadingProcessing": "İşleniyor...",
+  "loadingStepMask": "Vücut Maskesi",
+  "loadingStepMaskDesc": "DensePose + SCHP ile giydirilecek bölge bulunur",
+  "loadingStepDiffusion": "Difüzyon (30 adım)",
+  "loadingStepDiffusionDesc": "CatVTON kıyafeti kişinin üzerine çizer",
+  "loadingStepBlend": "Birleştirme",
+  "loadingStepBlendDesc": "Yüz ve arka plan orijinal fotoğraftan korunur",
+  "statusDone": "TAMAM",
+  "statusProcessing": "İŞLENİYOR",
+  "statusQueued": "SIRADA",
+  "loadingCancel": "İptal",
+  "loadingFailed": "Giydirme işlemi başarısız: {reason}",
+  "@loadingFailed": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "errorTimeout": "Sunucu çok uzun süre yanıt vermedi. Lütfen tekrar deneyin.",
+  "errorBackendOffline": "Yapay zeka sunucusuna ulaşılamıyor. Backend açık mı?",
+  "errorServer": "Sunucu hatası ({code})",
+  "@errorServer": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "resultTitle": "{category} Sonucu",
+  "@resultTitle": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "resultOverline": "STÜDYO KARŞILAŞTIRMA",
+  "resultHeading": "Kombin Sonucu",
+  "resultSubtitle": "Sanal giydirme sonucunu inceleyin ve detayları karşılaştırın.",
+  "resultTabSplit": "Sürgü",
+  "resultTabSide": "Yan Yana",
+  "resultTabFade": "Geçiş",
+  "resultBefore": "• ÖNCE",
+  "resultAfter": "✨ SONRA",
+  "resultFullScreen": "Tam Ekran",
+  "resultSaveToGallery": "Galeriye kaydet",
+  "resultDetails": "İşlem Detayları",
+  "resultEngine": "CatVTON • Yerel GPU",
+  "resultRenderTime": "İşlem Süresi",
+  "resultSeconds": "{seconds} sn",
+  "@resultSeconds": {
+    "placeholders": {
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "resultRenderTimeDesc": "Yerel ekran kartında ölçülen süre",
+  "resultCategory": "Kategori",
+  "resultCategoryDesc": "Modelin giydirdiği bölge",
+  "resultSaving": "Kaydediliyor...",
+  "resultAddToWardrobe": "Onayla ve Gardıroba Ekle",
+  "resultNeedLogin": "Lütfen önce giriş yapın.",
+  "resultWardrobeSaved": "✨ Kombin gardırobuna başarıyla eklendi!",
+  "resultWardrobeError": "Kaydedilirken hata oluştu: {reason}",
+  "@resultWardrobeError": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "resultGallerySaved": "Görsel galeriye kaydedildi.",
+  "resultGalleryWeb": "Tarayıcıda galeri yok; Paylaş butonunu ya da tam ekranda sağ tık → kaydet kullanın.",
+  "resultGalleryFailed": "Görsel kaydedilemedi.",
+  "resultShareText": "SeeItOn ile oluşturduğum yapay zeka destekli sanal kombinimi incele! ✨ #SeeItOn #SanalKabin"
 }

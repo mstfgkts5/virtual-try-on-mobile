@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import '../core/l10n_ext.dart';
 import '../core/constants.dart';
 import '../models/tryon_request.dart';
 import '../models/tryon_result.dart';
@@ -32,12 +33,8 @@ class ApiService {
   }
 
   /// Sends multipart/form-data request to Python FastAPI backend
-  Future<TryOnResult> processVirtualTryOn(
-    TryOnRequest request, {
-    void Function(String stepDescription, double progress)? onProgress,
-  }) async {
+  Future<TryOnResult> processVirtualTryOn(TryOnRequest request) async {
     try {
-      onProgress?.call("Sunucuya bağlanılıyor...", 0.15);
 
       final uri = Uri.parse('$_baseUrl${AppConstants.tryOnEndpoint}');
       final multipartRequest = http.MultipartRequest('POST', uri);
@@ -67,24 +64,19 @@ class ApiService {
         '[ApiService] İstek Gönderiliyor -> Kategori: ${fieldsMap['category']}, BaseUrl: $_baseUrl',
       );
 
-      onProgress?.call("Görseller yükleniyor...", 0.35);
-
       // Yerel GPU'da işlem ~10-40 sn sürer; ilk istek model ısınması nedeniyle daha uzun olabilir
       final streamedResponse = await multipartRequest.send().timeout(
         const Duration(seconds: 180),
         onTimeout: () {
-          throw TimeoutException('İstek 180 saniye sonra zaman aşımına uğradı');
+          throw TimeoutException('tryon');
         },
       );
-
-      onProgress?.call("Model işleniyor...", 0.70);
 
       final response = await http.Response.fromStream(streamedResponse);
 
       debugPrint('[ApiService] Yanıt durumu: ${response.statusCode}');
 
       if (response.statusCode == 200) {
-        onProgress?.call("İşlem tamamlandı!", 1.0);
         return _parseSuccessResponse(response, request);
       } else {
         throw Exception(_errorMessage(response));
@@ -104,7 +96,7 @@ class ApiService {
 
     return TryOnResult(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
-      title: categoryLabel(category),
+      title: category,
       category: category,
       resultImageBytes: base64Decode(json['image_base64'] as String),
       // Backend'in 3:4 kırptığı kişi fotoğrafı; yoksa orijinale düş
@@ -123,17 +115,21 @@ class ApiService {
           (jsonDecode(response.body) as Map<String, dynamic>)['detail'];
       if (detail is String) return detail;
     } catch (_) {}
-    return 'Sunucu hatası (${response.statusCode})';
+    return '$_httpErrorPrefix${response.statusCode}';
   }
 
-  static String categoryLabel(String category) {
-    switch (category) {
-      case 'lower':
-        return 'Alt Giyim Sonucu';
-      case 'overall':
-        return 'Tam Kıyafet Sonucu';
-      default:
-        return 'Üst Giyim Sonucu';
+  static const _httpErrorPrefix = 'HTTP ';
+
+  /// Hatayı kullanıcının dilinde gösterilecek metne çevirir.
+  /// Bilinen durumlar (zaman aşımı, sunucuya ulaşılamaması, kodlu HTTP hatası) çevrilir;
+  /// backend'in `detail` metni olduğu gibi gösterilir (backend mesajları kapsam dışı).
+  static String friendlyError(AppLocalizations l, Object error) {
+    if (error is TimeoutException) return l.errorTimeout;
+    if (error is http.ClientException) return l.errorBackendOffline;
+    final message = error.toString().replaceFirst('Exception: ', '');
+    if (message.startsWith(_httpErrorPrefix)) {
+      return l.errorServer(message.substring(_httpErrorPrefix.length));
     }
+    return message;
   }
 }

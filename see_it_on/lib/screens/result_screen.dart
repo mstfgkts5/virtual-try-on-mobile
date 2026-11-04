@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../services/api_service.dart';
+import '../core/l10n_ext.dart';
 import '../services/storage_service.dart';
 
 class ResultScreen extends StatefulWidget {
@@ -27,7 +27,7 @@ class _ResultScreenState extends State<ResultScreen> {
   bool _isSaving = false;
   double _sliderValue = 0.5; // Split mode sürgüsü için
   double _fadeValue = 0.5; // Fade mode şeffaflığı için
-  String _activeTab = "Split Slider";
+  String _activeTab = 'split'; // 'split' / 'side' / 'fade'
 
   // 1. Supabase'e Kaydetme Fonksiyonu
   Future<void> _saveToWardrobe() async {
@@ -40,7 +40,7 @@ class _ResultScreenState extends State<ResultScreen> {
       final user = supabase.auth.currentUser;
 
       if (user == null) {
-        throw Exception("Lütfen önce giriş yapın.");
+        throw Exception(context.l10n.resultNeedLogin);
       }
 
       final fileName =
@@ -61,8 +61,8 @@ class _ResultScreenState extends State<ResultScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('✨ Kombin gardırobuna başarıyla eklendi!'),
+          SnackBar(
+            content: Text(context.l10n.resultWardrobeSaved),
             backgroundColor: Colors.green,
           ),
         );
@@ -71,7 +71,7 @@ class _ResultScreenState extends State<ResultScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Kaydedilirken hata oluştu: $e'),
+            content: Text(context.l10n.resultWardrobeError(e.toString().replaceFirst('Exception: ', ''))),
             backgroundColor: Colors.red,
           ),
         );
@@ -91,10 +91,10 @@ class _ResultScreenState extends State<ResultScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(ok
-            ? 'Görsel galeriye kaydedildi.'
+            ? context.l10n.resultGallerySaved
             : kIsWeb
-                ? 'Tarayıcıda galeri yok; Paylaş butonunu ya da tam ekranda sağ tık → kaydet kullanın.'
-                : 'Görsel kaydedilemedi.'),
+                ? context.l10n.resultGalleryWeb
+                : context.l10n.resultGalleryFailed),
         backgroundColor: ok ? Colors.green : Colors.red,
       ),
     );
@@ -152,7 +152,7 @@ class _ResultScreenState extends State<ResultScreen> {
   }
 
   Widget _buildImageComparisonArea() {
-    if (_activeTab == "Side by Side") {
+    if (_activeTab == 'side') {
       return Stack(
         fit: StackFit.expand,
         children: [
@@ -178,7 +178,7 @@ class _ResultScreenState extends State<ResultScreen> {
           _buildFullScreenButton(),
         ],
       );
-    } else if (_activeTab == "Fade") {
+    } else if (_activeTab == 'fade') {
       return Stack(
         fit: StackFit.expand,
         children: [
@@ -221,10 +221,10 @@ class _ResultScreenState extends State<ResultScreen> {
                   fit: BoxFit.cover,
                   filterQuality: FilterQuality.high,
                 ),
-                const Positioned(
+                Positioned(
                   top: 16,
                   left: 16,
-                  child: _LabelBadge(text: '• ÖNCE', color: Colors.black54),
+                  child: _LabelBadge(text: context.l10n.resultBefore, color: Colors.black54),
                 ),
                 ClipRect(
                   clipper: _SplitImageClipper(_sliderValue),
@@ -239,8 +239,8 @@ class _ResultScreenState extends State<ResultScreen> {
                   right: 16,
                   child: ClipRect(
                     clipper: _SplitImageClipper(1.0 - _sliderValue),
-                    child: const _LabelBadge(
-                      text: '✨ SONRA',
+                    child: _LabelBadge(
+                      text: context.l10n.resultAfter,
                       color: Colors.white12,
                     ),
                   ),
@@ -289,7 +289,7 @@ class _ResultScreenState extends State<ResultScreen> {
         child: GestureDetector(
           onTap: () => _openFullScreenView(
             widget.generatedImageBytes,
-            "✨ ${ApiService.categoryLabel(widget.category)}",
+            "✨ ${context.l10n.resultTitle(categoryName(context.l10n, widget.category))}",
           ),
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -298,13 +298,13 @@ class _ResultScreenState extends State<ResultScreen> {
               borderRadius: BorderRadius.circular(20),
               border: Border.all(color: Colors.white24),
             ),
-            child: const Row(
+            child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(Icons.fullscreen, color: Colors.white, size: 16),
                 SizedBox(width: 6),
                 Text(
-                  'Tam Ekran',
+                  context.l10n.resultFullScreen,
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 12,
@@ -330,7 +330,7 @@ class _ResultScreenState extends State<ResultScreen> {
         ),
         actions: [
           IconButton(
-            tooltip: 'Galeriye kaydet',
+            tooltip: context.l10n.resultSaveToGallery,
             icon: const Icon(Icons.download_outlined),
             onPressed: _saveToGallery,
           ),
@@ -352,8 +352,8 @@ class _ResultScreenState extends State<ResultScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'STUDIO COMPARISON',
+                        Text(
+                          context.l10n.resultOverline,
                           style: TextStyle(
                             color: Colors.grey,
                             fontSize: 11,
@@ -362,8 +362,8 @@ class _ResultScreenState extends State<ResultScreen> {
                           ),
                         ),
                         const SizedBox(height: 4),
-                        const Text(
-                          'Kombin Sonucu',
+                        Text(
+                          context.l10n.resultHeading,
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 20,
@@ -372,7 +372,7 @@ class _ResultScreenState extends State<ResultScreen> {
                         ),
                         const SizedBox(height: 6),
                         Text(
-                          'Sanal giydirme sonucunu inceleyin ve detayları karşılaştırın.',
+                          context.l10n.resultSubtitle,
                           style: TextStyle(
                             color: Colors.grey.shade400,
                             fontSize: 13,
@@ -420,7 +420,7 @@ class _ResultScreenState extends State<ResultScreen> {
               ),
             ),
 
-            if (_activeTab == "Fade")
+            if (_activeTab == 'fade')
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Row(
@@ -459,9 +459,9 @@ class _ResultScreenState extends State<ResultScreen> {
                 ),
                 child: Row(
                   children: [
-                    _buildTabButton("Split Slider", Icons.splitscreen_outlined),
-                    _buildTabButton("Side by Side", Icons.grid_view_outlined),
-                    _buildTabButton("Fade", Icons.blur_on_outlined),
+                    _buildTabButton('split', context.l10n.resultTabSplit, Icons.splitscreen_outlined),
+                    _buildTabButton('side', context.l10n.resultTabSide, Icons.grid_view_outlined),
+                    _buildTabButton('fade', context.l10n.resultTabFade, Icons.blur_on_outlined),
                   ],
                 ),
               ),
@@ -481,8 +481,8 @@ class _ResultScreenState extends State<ResultScreen> {
                         size: 18,
                       ),
                       const SizedBox(width: 8),
-                      const Text(
-                        'İşlem Detayları',
+                      Text(
+                        context.l10n.resultDetails,
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 14,
@@ -491,7 +491,7 @@ class _ResultScreenState extends State<ResultScreen> {
                       ),
                       const Spacer(),
                       Text(
-                        'CatVTON • Yerel GPU',
+                        context.l10n.resultEngine,
                         style: TextStyle(
                           color: Colors.grey.shade600,
                           fontSize: 12,
@@ -505,17 +505,15 @@ class _ResultScreenState extends State<ResultScreen> {
                   Row(
                     children: [
                       _buildInfoCard(
-                        "İşlem Süresi",
-                        "${widget.renderTimeSec.toStringAsFixed(1)} sn",
-                        "Yerel ekran kartında ölçülen süre",
+                        context.l10n.resultRenderTime,
+                        context.l10n.resultSeconds(widget.renderTimeSec.toStringAsFixed(1)),
+                        context.l10n.resultRenderTimeDesc,
                       ),
                       const SizedBox(width: 12),
                       _buildInfoCard(
-                        "Kategori",
-                        ApiService.categoryLabel(
-                          widget.category,
-                        ).replaceAll(' Sonucu', ''),
-                        "Modelin giydirdiği bölge",
+                        context.l10n.resultCategory,
+                        categoryName(context.l10n, widget.category),
+                        context.l10n.resultCategoryDesc,
                       ),
                     ],
                   ),
@@ -539,7 +537,7 @@ class _ResultScreenState extends State<ResultScreen> {
                         Icons.share_outlined,
                         color: Colors.white,
                       ),
-                      onPressed: () => StorageService().shareOutfit(widget.generatedImageBytes),
+                      onPressed: () => StorageService().shareOutfit(widget.generatedImageBytes, message: context.l10n.resultShareText),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -558,8 +556,8 @@ class _ResultScreenState extends State<ResultScreen> {
                           : const Icon(Icons.check, color: Colors.black),
                       label: Text(
                         _isSaving
-                            ? 'Kaydediliyor...'
-                            : 'Onayla ve Gardıroba Ekle',
+                            ? context.l10n.resultSaving
+                            : context.l10n.resultAddToWardrobe,
                         style: const TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
@@ -585,11 +583,11 @@ class _ResultScreenState extends State<ResultScreen> {
     );
   }
 
-  Widget _buildTabButton(String text, IconData icon) {
-    bool isActive = _activeTab == text;
+  Widget _buildTabButton(String id, String text, IconData icon) {
+    bool isActive = _activeTab == id;
     return Expanded(
       child: GestureDetector(
-        onTap: () => setState(() => _activeTab = text),
+        onTap: () => setState(() => _activeTab = id),
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 12),
           decoration: BoxDecoration(
