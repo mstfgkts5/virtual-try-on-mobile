@@ -11,15 +11,22 @@ Teslim: çalışan uygulama + rapor + sunum.
 - [ ] Gerçek manken fotoğraflarıyla uygunluk değerlendirmesi ve test
 
 ## 2. Hafta (10–16 Kasım) – Alt giyim ve hatalar
-- [ ] Uygulamaya kategori seçimi (Üst / Alt / Tam kıyafet)
-- [ ] Örnek alt giyim katalogu (pantolon, etek, şort)
+- [x] Uygulamaya kategori seçimi (Üst / Alt / Tam kıyafet)
+- [x] 8 test mankeni üretildi (Türk görünümü, kadın 160 cm / erkek 185 cm, S-M-L-XL) ve uygulama asset'lerine eklendi
+- [x] Geliştirme için "girişi atla" butonu (sadece debug derlemede)
+- [x] Örnek alt giyim katalogu (pantolon, etek, şort): RealVisXL ile 5 ürün fotoğrafı üretildi, uygulamada "Örnek" seçici
+- [x] Alt giyim testi: chino / kumaş pantolon / kot başarılı (~40 sn). **Bilinen sınır:** hedef kıyafet mevcut kıyafetten kısaysa (şort, midi etek) sonuç uzuyor, çünkü CatVTON maskeyi mevcut kıyafetten çıkarıyor → raporda belgelenecek, uygulamada ipucu gösteriliyor
+- [ ] (İsteğe bağlı) Kısa alt giyim için maskeyi kıyafet uzunluğuna göre kısaltma
+- [ ] Alt giyimde renk doygunluğu biraz düşüyor (kot) → incele
 - [ ] Zaman aşımı, bağlantı ve model hataları için düzgün hata ekranları
 - [ ] Sahte değerleri kaldır (fit score, simüle ilerleme çubuğu, kullanılmayan fit/pose ayarları)
-- [ ] Önce/sonra karşılaştırmasını düzelt: backend 3:4 kırpılmış kişi fotoğrafını da döndürsün, karşılaştırma onu kullansın
+- [x] Önce/sonra karşılaştırmasını düzelt: backend 3:4 kırpılmış kişi fotoğrafını da döndürsün, karşılaştırma onu kullansın
 
 ## 3. Hafta (17–23 Kasım) – Çoklu açı, gardırop, tasarım
 - [ ] **Çoklu Açı Sanal Deneme:** kullanıcı önden / yandan / arkadan fotoğraf yükler, kıyafetin ön ve arka görseli kullanılır, her açı ayrı işlenir; sonuç ekranında kaydırarak / döndürme animasyonuyla açılar arası geçiş
 - [ ] Yan ve arka açı kalitesini test et, sınırları raporda belgele
+- [x] **Türkçe / İngilizce dil desteği** (Flutter gen-l10n): tüm ekranlar iki dilli, Ayarlar ekranından TR/EN, seçim kalıcı, 23 otomatik test
+- [ ] Kayıt ve giriş akışı: kullanıcı kendi hesabını açıp giriş yapabilsin (Supabase Auth), hata mesajları Türkçe, oturum açıkken uygulama doğrudan ana ekrana gitsin, çıkış yap butonu
 - [ ] Gardırobu gerçek Supabase verisine bağla
 - [ ] Tasarım düzenlemesi: tutarlı tema, koyu mod, geçiş animasyonları
 - [ ] Tekrarlanan kodu temizle (`splash_screen.dart` = `result_screen.dart` kopyası)

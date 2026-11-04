@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../core/l10n_ext.dart';
 import 'home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -12,7 +14,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  
+
   bool _isLoading = false;
   bool _isLogin = true; // true ise Giriş Yap, false ise Kayıt Ol ekranı
 
@@ -22,7 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final password = _passwordController.text.trim();
 
     if (email.isEmpty || password.isEmpty) {
-      _showError('Lütfen e-posta ve şifrenizi girin.');
+      _showError(context.l10n.loginMissingFields);
       return;
     }
 
@@ -53,9 +55,11 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       }
     } on AuthException catch (e) {
-      _showError(e.message); // Supabase'den gelen hata mesajı (Örn: Yanlış şifre)
+      _showError(
+        e.message,
+      ); // Supabase'den gelen hata mesajı (Örn: Yanlış şifre)
     } catch (e) {
-      _showError('Beklenmeyen bir hata oluştu.');
+      if (mounted) _showError(context.l10n.errorUnexpected);
     } finally {
       if (mounted) {
         setState(() {
@@ -103,16 +107,24 @@ class _LoginScreenState extends State<LoginScreen> {
                     color: Colors.white,
                     shape: BoxShape.circle,
                     boxShadow: [
-                      BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, spreadRadius: 2)
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.05),
+                        blurRadius: 10,
+                        spreadRadius: 2,
+                      ),
                     ],
                   ),
-                  child: const Icon(Icons.checkroom, color: textColor, size: 32),
+                  child: const Icon(
+                    Icons.checkroom,
+                    color: textColor,
+                    size: 32,
+                  ),
                 ),
                 const SizedBox(height: 24),
-                
+
                 // Başlık
                 Text(
-                  _isLogin ? 'Welcome Back' : 'Join SeeItOn',
+                  _isLogin ? context.l10n.loginTitle : context.l10n.signupTitle,
                   style: const TextStyle(
                     color: textColor,
                     fontSize: 32,
@@ -123,30 +135,35 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  _isLogin 
-                      ? 'Sign in to access your digital wardrobe.' 
-                      : 'Create an account to start fusing your silhouette.',
-                  style: TextStyle(color: textColor.withValues(alpha: 0.6), fontSize: 14),
+                  _isLogin
+                      ? context.l10n.loginSubtitle
+                      : context.l10n.signupSubtitle,
+                  style: TextStyle(
+                    color: textColor.withValues(alpha: 0.6),
+                    fontSize: 14,
+                  ),
                 ),
                 const SizedBox(height: 40),
 
                 // E-Posta Alanı
                 _buildTextField(
                   controller: _emailController,
-                  hintText: 'Email Address',
+                  hintText: context.l10n.loginEmailHint,
                   icon: Icons.email_outlined,
                   obscureText: false,
-                  textInputAction: TextInputAction.next, // Enter'a basınca şifreye geçer
+                  textInputAction:
+                      TextInputAction.next, // Enter'a basınca şifreye geçer
                 ),
                 const SizedBox(height: 16),
 
                 // Şifre Alanı
                 _buildTextField(
                   controller: _passwordController,
-                  hintText: 'Password',
+                  hintText: context.l10n.loginPasswordHint,
                   icon: Icons.lock_outline,
                   obscureText: true,
-                  textInputAction: TextInputAction.done, // Enter/Bitti tuşunu gösterir
+                  textInputAction:
+                      TextInputAction.done, // Enter/Bitti tuşunu gösterir
                   onSubmitted: (_) {
                     if (!_isLoading) {
                       _authenticate(); // Enter'a basıldığında giriş fonksiyonunu tetikler
@@ -164,18 +181,27 @@ class _LoginScreenState extends State<LoginScreen> {
                       backgroundColor: const Color(0xFF221F1E),
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 18),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
                       elevation: 0,
                     ),
                     child: _isLoading
                         ? const SizedBox(
                             height: 20,
                             width: 20,
-                            child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2,
+                            ),
                           )
                         : Text(
-                            _isLogin ? 'Log In' : 'Sign Up',
-                            style: const TextStyle(fontSize: 16, fontFamily: 'Georgia', fontWeight: FontWeight.bold),
+                            _isLogin ? context.l10n.loginButton : context.l10n.signupButton,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontFamily: 'Georgia',
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                   ),
                 ),
@@ -191,18 +217,52 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                     child: Text.rich(
                       TextSpan(
-                        text: _isLogin ? "Don't have an account? " : "Already have an account? ",
-                        style: TextStyle(color: textColor.withValues(alpha: 0.6), fontSize: 13),
+                        text: _isLogin
+                            ? context.l10n.loginNoAccount
+                            : context.l10n.loginHaveAccount,
+                        style: TextStyle(
+                          color: textColor.withValues(alpha: 0.6),
+                          fontSize: 13,
+                        ),
                         children: [
                           TextSpan(
-                            text: _isLogin ? 'Sign Up' : 'Log In',
-                            style: const TextStyle(color: textColor, fontWeight: FontWeight.bold),
+                            text: _isLogin ? context.l10n.signupButton : context.l10n.loginButton,
+                            style: const TextStyle(
+                              color: textColor,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ],
                       ),
                     ),
                   ),
                 ),
+
+                // Sadece debug derlemede görünür; release (teslim) sürümünde derlenmez.
+                // Gardıroba kaydetme gibi oturum gerektiren işlemler bu modda çalışmaz.
+                if (kDebugMode)
+                  Center(
+                    child: TextButton.icon(
+                      onPressed: () => Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const HomeScreen(),
+                        ),
+                      ),
+                      icon: Icon(
+                        Icons.developer_mode,
+                        size: 16,
+                        color: textColor.withValues(alpha: 0.5),
+                      ),
+                      label: Text(
+                        context.l10n.loginSkipDev,
+                        style: TextStyle(
+                          color: textColor.withValues(alpha: 0.5),
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+                  ),
               ],
             ),
           ),
@@ -230,7 +290,11 @@ class _LoginScreenState extends State<LoginScreen> {
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: TextStyle(color: textColor.withValues(alpha: 0.4)),
-        prefixIcon: Icon(icon, color: textColor.withValues(alpha: 0.4), size: 20),
+        prefixIcon: Icon(
+          icon,
+          color: textColor.withValues(alpha: 0.4),
+          size: 20,
+        ),
         filled: true,
         fillColor: Colors.white.withValues(alpha: 0.6),
         contentPadding: const EdgeInsets.symmetric(vertical: 18),
@@ -240,7 +304,10 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: textColor.withValues(alpha: 0.1), width: 2),
+          borderSide: BorderSide(
+            color: textColor.withValues(alpha: 0.1),
+            width: 2,
+          ),
         ),
       ),
     );

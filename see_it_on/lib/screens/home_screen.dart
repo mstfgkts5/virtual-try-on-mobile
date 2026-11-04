@@ -1,7 +1,9 @@
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import '../core/l10n_ext.dart';
 import 'loading_screen.dart';
+import 'settings_screen.dart';
 import 'wardrobe_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -16,27 +18,195 @@ class _HomeScreenState extends State<HomeScreen> {
   Uint8List? _garmentImageBytes;
   final ImagePicker _picker = ImagePicker();
 
+  // Denenecek kıyafet bölgesi: backend'e 'upper' / 'lower' / 'overall' olarak gider
+  String _category = 'upper';
+  // Metinler (ad, ipucu) çeviri dosyalarında: categoryName / categoryHint.
+  // Alt giyim ipucu, CatVTON'un kısa kıyafeti uzun kıyafetin üstüne uzatma sınırını anlatır.
+  static const _categories = [
+    {
+      'id': 'upper',
+      'icon': Icons.checkroom,
+    },
+    {
+      'id': 'lower',
+      'icon': Icons.straighten,
+    },
+    {
+      'id': 'overall',
+      'icon': Icons.accessibility_new,
+    },
+  ];
+  Map<String, Object> get _selectedCategory =>
+      _categories.firstWhere((c) => c['id'] == _category);
+
   int _currentNavigationIndex = 0;
   late PageController _rackController;
-  int _currentRackIndex = 1;
-
-  final List<Map<String, dynamic>> _rackItems = [
-  {'name': 'Vintage Leather', 'type': 'Jacket', 'color': 0xFF2C2C2C},
-  {'name': 'Crimson Memory', 'type': 'LS Shirt', 'color': 0xFF8B0000},
-  {'name': 'Silk Button-up', 'type': 'Shirt', 'color': 0xFFFDF5E6},
-  {'name': 'Denim Over-shirt', 'type': 'Jacket', 'color': 0xFF4682B4},
-];
+  int _currentRackIndex = 1; // Raf, _sampleGarments listesini gösterir
 
   @override
   void initState() {
     super.initState();
-    _rackController = PageController(viewportFraction: 0.35, initialPage: _currentRackIndex);
+    _rackController = PageController(
+      viewportFraction: 0.35,
+      initialPage: _currentRackIndex,
+    );
   }
 
   @override
   void dispose() {
     _rackController.dispose();
     super.dispose();
+  }
+
+  // tools/generate_mannequins.py ile üretilen hazır mankenler (gerçek kişi fotoğrafı değildir)
+  static const _mannequins = [
+    {'id': 'w-s', 'info': '160 cm • 50 kg'},
+    {'id': 'w-m', 'info': '160 cm • 58 kg'},
+    {'id': 'w-l', 'info': '160 cm • 67 kg'},
+    {'id': 'w-xl', 'info': '160 cm • 76 kg'},
+    {'id': 'm-s', 'info': '185 cm • 72 kg'},
+    {'id': 'm-m', 'info': '185 cm • 80 kg'},
+    {'id': 'm-l', 'info': '185 cm • 90 kg'},
+    {'id': 'm-xl', 'info': '185 cm • 100 kg'},
+  ];
+  // tools/generate_garments.py ile üretilen örnek ürün fotoğrafları (gerçek marka ürünü değildir)
+  static const _sampleGarments = [
+    {'id': 'blazer', 'category': 'upper'},
+    {'id': 'jeans-w', 'category': 'lower'},
+    {'id': 'chino-m', 'category': 'lower'},
+    {'id': 'trousers-m', 'category': 'lower'},
+    {'id': 'skirt-w', 'category': 'lower'},
+    {'id': 'shorts-w', 'category': 'lower'},
+  ];
+  List<Map<String, String>> get _garmentsForCategory =>
+      _sampleGarments.where((g) => g['category'] == _category).toList();
+
+  void _showGarmentPicker() {
+    const textColor = Color(0xFF1E1C1A);
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.7),
+      backgroundColor: const Color(0xFFF6F4EF),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(28))),
+      builder: (ctx) => SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(context.l10n.homeSamplePickerTitle(categoryName(context.l10n, _category)), style: const TextStyle(color: textColor, fontSize: 20, fontFamily: 'Georgia', fontWeight: FontWeight.bold)),
+              const SizedBox(height: 16),
+              GridView(
+                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: 130,
+                  mainAxisSpacing: 12,
+                  crossAxisSpacing: 10,
+                  childAspectRatio: 0.8,
+                ),
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                children: _garmentsForCategory.map((g) {
+                  final asset = 'assets/images/garments/${g['id']}.jpg';
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.pop(ctx);
+                      _loadAsset(false, asset);
+                    },
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(14),
+                            child: Image.asset(asset, fit: BoxFit.cover, width: double.infinity),
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(garmentName(context.l10n, g['id']!), style: const TextStyle(color: textColor, fontSize: 12, fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                  );
+                }).toList(),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _openSettings() {
+    Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingsScreen()));
+  }
+
+  Future<void> _loadAsset(bool isPerson, String assetPath) async {
+    final data = await rootBundle.load(assetPath);
+    setState(() {
+      if (isPerson) {
+        _personImageBytes = data.buffer.asUint8List();
+      } else {
+        _garmentImageBytes = data.buffer.asUint8List();
+      }
+    });
+  }
+
+  void _showMannequinPicker() {
+    const textColor = Color(0xFF1E1C1A);
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.85),
+      backgroundColor: const Color(0xFFF6F4EF),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(28))),
+      builder: (ctx) => SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(context.l10n.homeMannequinPickerTitle, style: const TextStyle(color: textColor, fontSize: 20, fontFamily: 'Georgia', fontWeight: FontWeight.bold)),
+              const SizedBox(height: 4),
+              Text(context.l10n.homeMannequinPickerHint, style: TextStyle(color: textColor.withValues(alpha: 0.6), fontSize: 12)),
+              const SizedBox(height: 16),
+              // Kart genişliği sabit tutulur; geniş ekranda (web/tablet) kartlar büyüyüp taşmaz
+              GridView(
+                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: 110,
+                  mainAxisSpacing: 12,
+                  crossAxisSpacing: 10,
+                  childAspectRatio: 0.52,
+                ),
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                children: _mannequins.map((m) {
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.pop(ctx);
+                      _loadAsset(true, 'assets/images/mannequins/${m['id']}.jpg');
+                    },
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(14),
+                            child: Image.asset('assets/images/mannequins/${m['id']}.jpg', fit: BoxFit.cover, width: double.infinity),
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(mannequinName(context.l10n, m['id']!), style: const TextStyle(color: textColor, fontSize: 12, fontWeight: FontWeight.bold)),
+                        Text(m['info']!, style: TextStyle(color: textColor.withValues(alpha: 0.5), fontSize: 9)),
+                      ],
+                    ),
+                  );
+                }).toList(),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Future<void> _pickImage(bool isPerson, ImageSource source) async {
@@ -64,8 +234,8 @@ class _HomeScreenState extends State<HomeScreen> {
               Expanded(
                 child: Text(
                   _personImageBytes == null
-                      ? 'Lütfen önce kendi fotoğrafınızı (Adım 1) yükleyin!'
-                      : 'Lütfen denemek istediğiniz kıyafeti (Adım 2) seçin!',
+                      ? context.l10n.homeNeedPerson
+                      : context.l10n.homeNeedGarment,
                   style: const TextStyle(fontWeight: FontWeight.w600),
                 ),
               ),
@@ -73,38 +243,46 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           backgroundColor: const Color(0xFFE11D48),
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
           margin: const EdgeInsets.all(16),
         ),
       );
       return;
     }
-    
+
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => LoadingScreen(
           personImageBytes: _personImageBytes!,
           garmentImageBytes: _garmentImageBytes!,
+          category: _category,
         ),
       ),
     );
   }
 
-  void _selectRecommendedGarment(int index) {
+  // Raftaki kıyafeti 2. adıma yükler ve kategoriyi kıyafete göre değiştirir
+  Future<void> _selectRackGarment(int index) async {
+    final garment = _sampleGarments[index];
+    setState(() => _category = garment['category']!);
+    await _loadAsset(false, 'assets/images/garments/${garment['id']}.jpg');
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Kombin seçildi!'),
-        backgroundColor: Colors.green,
-        duration: Duration(seconds: 2),
+      SnackBar(
+        content: Text(context.l10n.homeRackSelected(garmentName(context.l10n, garment['id']!))),
+        backgroundColor: const Color(0xFF221F1E),
+        duration: const Duration(seconds: 3),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    const backgroundColor = Color(0xFFF6F4EF); 
-    const textColor = Color(0xFF1E1C1A); 
+    const backgroundColor = Color(0xFFF6F4EF);
+    const textColor = Color(0xFF1E1C1A);
 
     return Scaffold(
       backgroundColor: backgroundColor,
@@ -116,11 +294,21 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Container(
               padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(color: textColor.withValues(alpha: 0.05), shape: BoxShape.circle),
+              decoration: BoxDecoration(
+                color: textColor.withValues(alpha: 0.05),
+                shape: BoxShape.circle,
+              ),
               child: const Icon(Icons.blur_on, color: textColor, size: 16),
             ),
             const SizedBox(width: 10),
-            const Text('SeeItOn', style: TextStyle(color: textColor, fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text(
+              'SeeItOn',
+              style: TextStyle(
+                color: textColor,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ],
         ),
         actions: [
@@ -133,8 +321,10 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             },
           ),
-          IconButton(icon: const Icon(Icons.notifications_outlined, color: textColor), onPressed: () {}),
-          IconButton(icon: const Icon(Icons.person_outline, color: textColor), onPressed: () {}),
+          IconButton(
+            icon: const Icon(Icons.person_outline, color: textColor),
+            onPressed: _openSettings,
+          ),
         ],
       ),
       body: SafeArea(
@@ -146,22 +336,28 @@ class _HomeScreenState extends State<HomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 10),
-                const Text(
-                  'Studio Fitting Room', 
+                Text(
+                  context.l10n.homeTitle,
                   style: TextStyle(
-                    color: textColor, 
-                    fontSize: 32, 
+                    color: textColor,
+                    fontSize: 32,
                     fontFamily: 'Georgia',
                     fontWeight: FontWeight.w500,
-                    letterSpacing: -0.5
-                  )
+                    letterSpacing: -0.5,
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Kendi stilini saniyeler içinde oluştur.', 
-                  style: TextStyle(color: textColor.withValues(alpha: 0.6), fontSize: 13)
+                  context.l10n.homeSubtitle,
+                  style: TextStyle(
+                    color: textColor.withValues(alpha: 0.6),
+                    fontSize: 13,
+                  ),
                 ),
                 const SizedBox(height: 24),
+
+                _buildCategorySelector(textColor),
+                const SizedBox(height: 20),
 
                 Stack(
                   alignment: Alignment.center,
@@ -169,46 +365,85 @@ class _HomeScreenState extends State<HomeScreen> {
                     Column(
                       children: [
                         _buildUploadCard(
-                          title: "ADIM 1  •  Kendi Fotoğrafın",
+                          title: context.l10n.homeStepPerson,
                           isPerson: true,
                           imageBytes: _personImageBytes,
                           icon: Icons.add_a_photo_outlined,
-                          mainText: "Fotoğraf Yükle",
-                          subText: "Net bir boy aynası selfie'si\nveya düz durduğunuz bir fotoğraf",
+                          mainText: context.l10n.homeUploadPhoto,
+                          subText:
+                              context.l10n.homeUploadPhotoHint,
                           buttons: [
-                            _buildCardButton(Icons.photo_library_outlined, "Galeri", () => _pickImage(true, ImageSource.gallery)),
-                            _buildCardButton(Icons.camera_alt_outlined, "Kamera", () => _pickImage(true, ImageSource.camera)),
+                            _buildCardButton(
+                              Icons.photo_library_outlined,
+                              context.l10n.homeGallery,
+                              () => _pickImage(true, ImageSource.gallery),
+                            ),
+                            _buildCardButton(
+                              Icons.camera_alt_outlined,
+                              context.l10n.homeCamera,
+                              () => _pickImage(true, ImageSource.camera),
+                            ),
+                            _buildCardButton(
+                              Icons.accessibility_new,
+                              context.l10n.homeMannequin,
+                              _showMannequinPicker,
+                            ),
                           ],
                         ),
                         const SizedBox(height: 16),
 
                         _buildUploadCard(
-                          title: "ADIM 2  •  Üst Giyim",
+                          title: context.l10n.homeStepGarment(categoryName(context.l10n, _category)),
                           isPerson: false,
                           imageBytes: _garmentImageBytes,
-                          icon: Icons.checkroom,
-                          mainText: "Kıyafet Yükle",
-                          subText: "E-ticaret sitesinden ekran görüntüsü\nveya net çekilmiş bir kazak/tişört",
+                          icon: _selectedCategory['icon'] as IconData,
+                          mainText: context.l10n.homeUploadGarment,
+                          subText: categoryHint(context.l10n, _category),
                           buttons: [
-                            _buildCardButton(Icons.photo_library_outlined, "Galeri", () => _pickImage(false, ImageSource.gallery)),
-                            _buildCardButton(Icons.camera_alt_outlined, "Kamera", () => _pickImage(false, ImageSource.camera)),
+                            _buildCardButton(
+                              Icons.photo_library_outlined,
+                              context.l10n.homeGallery,
+                              () => _pickImage(false, ImageSource.gallery),
+                            ),
+                            _buildCardButton(
+                              Icons.camera_alt_outlined,
+                              context.l10n.homeCamera,
+                              () => _pickImage(false, ImageSource.camera),
+                            ),
+                            if (_garmentsForCategory.isNotEmpty)
+                              _buildCardButton(
+                                Icons.style_outlined,
+                                context.l10n.homeSample,
+                                _showGarmentPicker,
+                              ),
                           ],
                         ),
                       ],
                     ),
-                    
+
                     IgnorePointer(
                       child: Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           shape: BoxShape.circle,
-                          border: Border.all(color: const Color(0xFFF0EBE1), width: 1),
+                          border: Border.all(
+                            color: const Color(0xFFF0EBE1),
+                            width: 1,
+                          ),
                           boxShadow: [
-                            BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, spreadRadius: 2)
-                          ]
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.05),
+                              blurRadius: 10,
+                              spreadRadius: 2,
+                            ),
+                          ],
                         ),
-                        child: const Icon(Icons.link, color: textColor, size: 16),
+                        child: const Icon(
+                          Icons.link,
+                          color: textColor,
+                          size: 16,
+                        ),
                       ),
                     ),
                   ],
@@ -223,30 +458,42 @@ class _HomeScreenState extends State<HomeScreen> {
                       backgroundColor: const Color(0xFF221F1E),
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 20),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
                       elevation: 0,
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text(
-                          'Üzerimde Gör', 
+                        Text(
+                          context.l10n.homeTryOn,
                           style: TextStyle(
-                            color: Colors.white, 
-                            fontSize: 18, 
+                            color: Colors.white,
+                            fontSize: 18,
                             fontFamily: 'Georgia',
-                            fontWeight: FontWeight.bold
-                          )
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         const SizedBox(width: 12),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.15), 
-                            borderRadius: BorderRadius.circular(12)
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 4,
                           ),
-                          child: const Text('Try On', style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold)),
-                        )
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.15),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            context.l10n.homeTryOnBadge,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -270,6 +517,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 context,
                 MaterialPageRoute(builder: (context) => const WardrobeScreen()),
               );
+            } else if (index == 2) {
+              _openSettings();
             } else {
               setState(() {
                 _currentNavigationIndex = index;
@@ -280,15 +529,96 @@ class _HomeScreenState extends State<HomeScreen> {
           unselectedItemColor: textColor.withValues(alpha: 0.4),
           showSelectedLabels: true,
           showUnselectedLabels: true,
-          selectedLabelStyle: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1),
+          selectedLabelStyle: const TextStyle(
+            fontSize: 10,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1,
+          ),
           unselectedLabelStyle: const TextStyle(fontSize: 10, letterSpacing: 1),
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.auto_awesome), label: 'TRY ON'),
-            BottomNavigationBarItem(icon: Icon(Icons.checkroom), label: 'WARDROBE'),
-            BottomNavigationBarItem(icon: Icon(Icons.tune), label: 'PROFILE'),
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.auto_awesome),
+              label: context.l10n.navTryOn,
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.checkroom),
+              label: context.l10n.navWardrobe,
+            ),
+            BottomNavigationBarItem(icon: Icon(Icons.tune), label: context.l10n.navProfile),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildCategorySelector(Color textColor) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          context.l10n.homeWhatToTry,
+          style: TextStyle(
+            color: textColor.withValues(alpha: 0.6),
+            fontSize: 11,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1,
+          ),
+        ),
+        const SizedBox(height: 10),
+        Container(
+          padding: const EdgeInsets.all(4),
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.4),
+            borderRadius: BorderRadius.circular(30),
+            border: Border.all(color: Colors.white, width: 2),
+          ),
+          child: Row(
+            children: _categories.map((c) {
+              final isActive = c['id'] == _category;
+              return Expanded(
+                child: GestureDetector(
+                  onTap: () => setState(() => _category = c['id'] as String),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 220),
+                    curve: Curves.easeOut,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    decoration: BoxDecoration(
+                      color: isActive
+                          ? const Color(0xFF221F1E)
+                          : Colors.transparent,
+                      borderRadius: BorderRadius.circular(26),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          c['icon'] as IconData,
+                          size: 15,
+                          color: isActive
+                              ? Colors.white
+                              : textColor.withValues(alpha: 0.6),
+                        ),
+                        const SizedBox(width: 6),
+                        Flexible(
+                          child: Text(
+                            categoryName(context.l10n, c['id'] as String),
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: isActive ? Colors.white : textColor,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+        ),
+      ],
     );
   }
 
@@ -296,8 +626,13 @@ class _HomeScreenState extends State<HomeScreen> {
     return Column(
       children: [
         Text(
-          "GÜNÜN KOMBİN ÖNERİLERİ", 
-          style: TextStyle(color: textColor.withValues(alpha: 0.5), fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 1.2)
+          context.l10n.homeRackTitle,
+          style: TextStyle(
+            color: textColor.withValues(alpha: 0.5),
+            fontSize: 11,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1.2,
+          ),
         ),
         const SizedBox(height: 20),
         SizedBox(
@@ -315,8 +650,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     color: Colors.grey.shade400,
                     borderRadius: BorderRadius.circular(2),
                     boxShadow: [
-                      BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 2, offset: const Offset(0, 2))
-                    ]
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.1),
+                        blurRadius: 2,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -327,7 +666,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     _currentRackIndex = index;
                   });
                 },
-                itemCount: _rackItems.length,
+                itemCount: _sampleGarments.length,
                 itemBuilder: (context, index) {
                   return AnimatedBuilder(
                     animation: _rackController,
@@ -357,28 +696,52 @@ class _HomeScreenState extends State<HomeScreen> {
                           height: 20,
                           decoration: BoxDecoration(
                             border: Border(
-                              top: BorderSide(color: Colors.grey.shade600, width: 2),
-                              left: BorderSide(color: Colors.grey.shade600, width: 2),
-                              right: BorderSide(color: Colors.grey.shade600, width: 2),
+                              top: BorderSide(
+                                color: Colors.grey.shade600,
+                                width: 2,
+                              ),
+                              left: BorderSide(
+                                color: Colors.grey.shade600,
+                                width: 2,
+                              ),
+                              right: BorderSide(
+                                color: Colors.grey.shade600,
+                                width: 2,
+                              ),
                             ),
-                            borderRadius: const BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(10),
+                              topRight: Radius.circular(10),
+                            ),
                           ),
                         ),
                         GestureDetector(
                           onTap: () {
-                            _rackController.animateToPage(index, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+                            _rackController.animateToPage(
+                              index,
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.easeInOut,
+                            );
                           },
                           child: Container(
                             height: 140,
                             width: 100,
+                            clipBehavior: Clip.antiAlias,
                             decoration: BoxDecoration(
-                              color: Color(_rackItems[index]['color'] as int),
+                              color: Colors.white,
                               borderRadius: BorderRadius.circular(12),
                               boxShadow: [
-                                BoxShadow(color: Colors.black.withValues(alpha: 0.2), blurRadius: 10, offset: const Offset(0, 5))
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.2),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 5),
+                                ),
                               ],
                             ),
-                            child: const Icon(Icons.checkroom, color: Colors.white54, size: 40),
+                            child: Image.asset(
+                              'assets/images/garments/${_sampleGarments[index]['id']}.jpg',
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
                       ],
@@ -389,37 +752,53 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
-        
+
         AnimatedSwitcher(
           duration: const Duration(milliseconds: 300),
           child: Column(
             key: ValueKey<int>(_currentRackIndex),
             children: [
               Text(
-                _rackItems[_currentRackIndex]['name'] as String,
-                style: const TextStyle(color: Color(0xFF1E1C1A), fontSize: 16, fontWeight: FontWeight.bold, fontFamily: 'Georgia'),
+                garmentName(context.l10n, _sampleGarments[_currentRackIndex]['id']!),
+                style: const TextStyle(
+                  color: Color(0xFF1E1C1A),
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Georgia',
+                ),
               ),
               const SizedBox(height: 4),
               Text(
-                _rackItems[_currentRackIndex]['type'] as String,
-                style: TextStyle(color: const Color(0xFF1E1C1A).withValues(alpha: 0.5), fontSize: 12),
+                categoryName(context.l10n, _sampleGarments[_currentRackIndex]['category']!),
+                style: TextStyle(
+                  color: const Color(0xFF1E1C1A).withValues(alpha: 0.5),
+                  fontSize: 12,
+                ),
               ),
               const SizedBox(height: 12),
               InkWell(
-                onTap: () => _selectRecommendedGarment(_currentRackIndex),
+                onTap: () => _selectRackGarment(_currentRackIndex),
                 borderRadius: BorderRadius.circular(20),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 8,
+                  ),
                   decoration: BoxDecoration(
-                    color: textColor, 
+                    color: textColor,
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: const Text(
-                    'BU PARÇAYI SEÇ', 
-                    style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1)
+                  child: Text(
+                    context.l10n.homeRackSelect,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1,
+                    ),
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -447,11 +826,19 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: TextStyle(color: textColor.withValues(alpha: 0.6), fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 1)),
+          Text(
+            title,
+            style: TextStyle(
+              color: textColor.withValues(alpha: 0.6),
+              fontSize: 11,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1,
+            ),
+          ),
           const SizedBox(height: 16),
-          
+
           GestureDetector(
-            onTap: () => _pickImage(isPerson, ImageSource.gallery), 
+            onTap: () => _pickImage(isPerson, ImageSource.gallery),
             child: Container(
               height: 160,
               width: double.infinity,
@@ -459,10 +846,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
-                  BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 10, spreadRadius: 2)
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.02),
+                    blurRadius: 10,
+                    spreadRadius: 2,
+                  ),
                 ],
                 image: imageBytes != null
-                    ? DecorationImage(image: MemoryImage(imageBytes), fit: BoxFit.contain)
+                    ? DecorationImage(
+                        image: MemoryImage(imageBytes),
+                        fit: BoxFit.contain,
+                      )
                     : null,
               ),
               child: imageBytes == null
@@ -471,19 +865,35 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         Container(
                           padding: const EdgeInsets.all(12),
-                          decoration: const BoxDecoration(color: Color(0xFFF0EBE1), shape: BoxShape.circle),
-                          child: Icon(icon, color: textColor.withValues(alpha: 0.6), size: 24),
+                          decoration: const BoxDecoration(
+                            color: Color(0xFFF0EBE1),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            icon,
+                            color: textColor.withValues(alpha: 0.6),
+                            size: 24,
+                          ),
                         ),
                         const SizedBox(height: 12),
                         Text(
-                          mainText, 
-                          style: const TextStyle(color: textColor, fontSize: 16, fontFamily: 'Georgia', fontWeight: FontWeight.bold)
+                          mainText,
+                          style: const TextStyle(
+                            color: textColor,
+                            fontSize: 16,
+                            fontFamily: 'Georgia',
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         const SizedBox(height: 6),
                         Text(
-                          subText, 
-                          textAlign: TextAlign.center, 
-                          style: TextStyle(color: textColor.withValues(alpha: 0.6), fontSize: 11, height: 1.4)
+                          subText,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: textColor.withValues(alpha: 0.6),
+                            fontSize: 11,
+                            height: 1.4,
+                          ),
                         ),
                       ],
                     )
@@ -496,30 +906,45 @@ class _HomeScreenState extends State<HomeScreen> {
             runSpacing: 8,
             alignment: WrapAlignment.center,
             children: buttons,
-          )
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildCardButton(IconData icon, String label, VoidCallback onTap, {bool isRound = false}) {
+  Widget _buildCardButton(
+    IconData icon,
+    String label,
+    VoidCallback onTap, {
+    bool isRound = false,
+  }) {
     const textColor = Color(0xFF1E1C1A);
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(isRound ? 30 : 12),
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: isRound ? 16 : 12, vertical: 10),
+        padding: EdgeInsets.symmetric(
+          horizontal: isRound ? 16 : 12,
+          vertical: 10,
+        ),
         decoration: BoxDecoration(
-          color: Colors.transparent, 
-          borderRadius: BorderRadius.circular(isRound ? 30 : 12), 
-          border: Border.all(color: textColor.withValues(alpha: 0.15))
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(isRound ? 30 : 12),
+          border: Border.all(color: textColor.withValues(alpha: 0.15)),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(icon, color: textColor.withValues(alpha: 0.6), size: 14),
             const SizedBox(width: 6),
-            Text(label, style: const TextStyle(color: textColor, fontSize: 12, fontWeight: FontWeight.w600)),
+            Text(
+              label,
+              style: const TextStyle(
+                color: textColor,
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ],
         ),
       ),

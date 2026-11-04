@@ -1,15 +1,22 @@
-import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../core/l10n_ext.dart';
+import '../services/storage_service.dart';
 
 class ResultScreen extends StatefulWidget {
-  final Uint8List originalImageBytes;  // Kullanıcının yüklediği orijinal fotoğraf
+  final Uint8List
+  originalImageBytes; // Modele giren (3:4 kırpılmış) kişi fotoğrafı
   final Uint8List generatedImageBytes; // AI'dan dönen giydirilmiş fotoğraf
+  final String category; // 'upper', 'lower', 'overall'
+  final double renderTimeSec;
 
   const ResultScreen({
-    super.key, 
-    required this.originalImageBytes, 
-    required this.generatedImageBytes
+    super.key,
+    required this.originalImageBytes,
+    required this.generatedImageBytes,
+    this.category = 'upper',
+    this.renderTimeSec = 0,
   });
 
   @override
@@ -19,8 +26,8 @@ class ResultScreen extends StatefulWidget {
 class _ResultScreenState extends State<ResultScreen> {
   bool _isSaving = false;
   double _sliderValue = 0.5; // Split mode sürgüsü için
-  double _fadeValue = 0.5;   // Fade mode şeffaflığı için
-  String _activeTab = "Split Slider";
+  double _fadeValue = 0.5; // Fade mode şeffaflığı için
+  String _activeTab = 'split'; // 'split' / 'side' / 'fade'
 
   // 1. Supabase'e Kaydetme Fonksiyonu
   Future<void> _saveToWardrobe() async {
@@ -33,10 +40,11 @@ class _ResultScreenState extends State<ResultScreen> {
       final user = supabase.auth.currentUser;
 
       if (user == null) {
-        throw Exception("Lütfen önce giriş yapın.");
+        throw Exception(context.l10n.resultNeedLogin);
       }
 
-      final fileName = '${user.id}_${DateTime.now().millisecondsSinceEpoch}.png';
+      final fileName =
+          '${user.id}_${DateTime.now().millisecondsSinceEpoch}.png';
 
       await supabase.storage
           .from('wardrobe_images')
@@ -53,8 +61,8 @@ class _ResultScreenState extends State<ResultScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('✨ Kombin gardırobuna başarıyla eklendi!'),
+          SnackBar(
+            content: Text(context.l10n.resultWardrobeSaved),
             backgroundColor: Colors.green,
           ),
         );
@@ -63,7 +71,7 @@ class _ResultScreenState extends State<ResultScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Kaydedilirken hata oluştu: $e'),
+            content: Text(context.l10n.resultWardrobeError(e.toString().replaceFirst('Exception: ', ''))),
             backgroundColor: Colors.red,
           ),
         );
@@ -75,6 +83,21 @@ class _ResultScreenState extends State<ResultScreen> {
         });
       }
     }
+  }
+
+  Future<void> _saveToGallery() async {
+    final ok = await StorageService().saveToGallery(widget.generatedImageBytes);
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(ok
+            ? context.l10n.resultGallerySaved
+            : kIsWeb
+                ? context.l10n.resultGalleryWeb
+                : context.l10n.resultGalleryFailed),
+        backgroundColor: ok ? Colors.green : Colors.red,
+      ),
+    );
   }
 
   // 2. Tam ekran görüntüleme modalı
@@ -96,9 +119,22 @@ class _ResultScreenState extends State<ResultScreen> {
               top: 40,
               left: 20,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(color: Colors.black54, borderRadius: BorderRadius.circular(20)),
-                child: Text(title, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12)),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.black54,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  title,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                  ),
+                ),
               ),
             ),
             Positioned(
@@ -116,86 +152,130 @@ class _ResultScreenState extends State<ResultScreen> {
   }
 
   Widget _buildImageComparisonArea() {
-    if (_activeTab == "Side by Side") {
+    if (_activeTab == 'side') {
       return Stack(
         fit: StackFit.expand,
         children: [
           Row(
             children: [
-              Expanded(child: Image.memory(widget.originalImageBytes, fit: BoxFit.cover, filterQuality: FilterQuality.high)),
+              Expanded(
+                child: Image.memory(
+                  widget.originalImageBytes,
+                  fit: BoxFit.cover,
+                  filterQuality: FilterQuality.high,
+                ),
+              ),
               Container(width: 2, color: Colors.white24),
-              Expanded(child: Image.memory(widget.generatedImageBytes, fit: BoxFit.cover, filterQuality: FilterQuality.high)),
+              Expanded(
+                child: Image.memory(
+                  widget.generatedImageBytes,
+                  fit: BoxFit.cover,
+                  filterQuality: FilterQuality.high,
+                ),
+              ),
             ],
           ),
           _buildFullScreenButton(),
         ],
       );
-    } else if (_activeTab == "Fade") {
+    } else if (_activeTab == 'fade') {
       return Stack(
         fit: StackFit.expand,
         children: [
-          Image.memory(widget.originalImageBytes, fit: BoxFit.cover, filterQuality: FilterQuality.high),
+          Image.memory(
+            widget.originalImageBytes,
+            fit: BoxFit.cover,
+            filterQuality: FilterQuality.high,
+          ),
           Opacity(
             opacity: _fadeValue,
-            child: Image.memory(widget.generatedImageBytes, fit: BoxFit.cover, filterQuality: FilterQuality.high),
+            child: Image.memory(
+              widget.generatedImageBytes,
+              fit: BoxFit.cover,
+              filterQuality: FilterQuality.high,
+            ),
           ),
           _buildFullScreenButton(),
         ],
       );
     } else {
-      // Varsayılan: Split Slider
-      return GestureDetector(
-        onHorizontalDragUpdate: (details) {
-          setState(() {
-            _sliderValue = (details.localPosition.dx / MediaQuery.of(context).size.width).clamp(0.0, 1.0);
-          });
-        },
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            Image.memory(
-              widget.originalImageBytes, 
-              fit: BoxFit.cover,
-              filterQuality: FilterQuality.high,
-            ),
-            const Positioned(
-              top: 16, left: 16,
-              child: _LabelBadge(text: '• ÖNCE', color: Colors.black54),
-            ),
-            ClipRect(
-              clipper: _SplitImageClipper(_sliderValue),
-              child: Image.memory(
-                widget.generatedImageBytes, 
-                fit: BoxFit.cover,
-                filterQuality: FilterQuality.high,
-              ),
-            ),
-            Positioned(
-              top: 16,
-              right: 16,
-              child: ClipRect(
-                clipper: _SplitImageClipper(1.0 - _sliderValue),
-                child: const _LabelBadge(text: '✨ SONRA', color: Colors.white12),
-              ),
-            ),
-            Positioned(
-              top: 0, bottom: 0,
-              left: MediaQuery.of(context).size.width * _sliderValue - 14,
-              child: Row(
-                children: [
-                  Container(width: 2, color: Colors.white),
-                  Container(
-                    padding: const EdgeInsets.all(4),
-                    decoration: BoxDecoration(color: Colors.black, shape: BoxShape.circle, border: Border.all(color: Colors.white, width: 2)),
-                    child: const Icon(Icons.unfold_more_outlined, color: Colors.white, size: 16),
+      // Varsayılan: Split Slider. Konum ekran genişliğine değil kartın kendi genişliğine göre
+      // hesaplanır; aksi halde kenar boşlukları yüzünden tutamaç ile kesim çizgisi kayıyor
+      return LayoutBuilder(
+        builder: (context, constraints) {
+          final width = constraints.maxWidth;
+          return GestureDetector(
+            onHorizontalDragUpdate: (details) {
+              setState(() {
+                _sliderValue = (details.localPosition.dx / width).clamp(
+                  0.0,
+                  1.0,
+                );
+              });
+            },
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                Image.memory(
+                  widget.originalImageBytes,
+                  fit: BoxFit.cover,
+                  filterQuality: FilterQuality.high,
+                ),
+                Positioned(
+                  top: 16,
+                  left: 16,
+                  child: _LabelBadge(text: context.l10n.resultBefore, color: Colors.black54),
+                ),
+                ClipRect(
+                  clipper: _SplitImageClipper(_sliderValue),
+                  child: Image.memory(
+                    widget.generatedImageBytes,
+                    fit: BoxFit.cover,
+                    filterQuality: FilterQuality.high,
                   ),
-                  Container(width: 2, color: Colors.white),
-                ],
-              ),
+                ),
+                Positioned(
+                  top: 16,
+                  right: 16,
+                  child: ClipRect(
+                    clipper: _SplitImageClipper(1.0 - _sliderValue),
+                    child: _LabelBadge(
+                      text: context.l10n.resultAfter,
+                      color: Colors.white12,
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: 0,
+                  bottom: 0,
+                  // Tutamaç kesim çizgisinin tam ortasına oturur (çizgi + daire aynı merkezde)
+                  left: width * _sliderValue - 16,
+                  width: 32,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Container(width: 2, color: Colors.white),
+                      Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: Colors.black,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 2),
+                        ),
+                        child: const Icon(
+                          Icons.unfold_more_outlined,
+                          color: Colors.white,
+                          size: 16,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                _buildFullScreenButton(),
+              ],
             ),
-            _buildFullScreenButton(),
-          ],
-        ),
+          );
+        },
       );
     }
   }
@@ -203,23 +283,34 @@ class _ResultScreenState extends State<ResultScreen> {
   Widget _buildFullScreenButton() {
     return Positioned(
       bottom: 16,
-      left: 0, right: 0,
+      left: 0,
+      right: 0,
       child: Center(
         child: GestureDetector(
-          onTap: () => _openFullScreenView(widget.generatedImageBytes, "✨ Üst Giyim Sonucu"),
+          onTap: () => _openFullScreenView(
+            widget.generatedImageBytes,
+            "✨ ${context.l10n.resultTitle(categoryName(context.l10n, widget.category))}",
+          ),
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
               color: Colors.black.withValues(alpha: 0.7),
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: Colors.white24)
+              border: Border.all(color: Colors.white24),
             ),
-            child: const Row(
+            child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(Icons.fullscreen, color: Colors.white, size: 16),
                 SizedBox(width: 6),
-                Text('Tam Ekran', style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold)),
+                Text(
+                  context.l10n.resultFullScreen,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ],
             ),
           ),
@@ -233,10 +324,16 @@ class _ResultScreenState extends State<ResultScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFF121212),
       appBar: AppBar(
-        title: const Text('SeeItOn', style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.2)),
+        title: const Text(
+          'SeeItOn',
+          style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.2),
+        ),
         actions: [
-          IconButton(icon: const Icon(Icons.notifications_outlined), onPressed: () {}),
-          IconButton(icon: const Icon(Icons.person_outline), onPressed: () {}),
+          IconButton(
+            tooltip: context.l10n.resultSaveToGallery,
+            icon: const Icon(Icons.download_outlined),
+            onPressed: _saveToGallery,
+          ),
         ],
       ),
       body: SingleChildScrollView(
@@ -244,7 +341,10 @@ class _ResultScreenState extends State<ResultScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20.0,
+                vertical: 10,
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -252,13 +352,32 @@ class _ResultScreenState extends State<ResultScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('STUDIO COMPARISON', style: TextStyle(color: Colors.grey, fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 1.5)),
+                        Text(
+                          context.l10n.resultOverline,
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.5,
+                          ),
+                        ),
                         const SizedBox(height: 4),
-                        const Text('Kombin Sonucu', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                        Text(
+                          context.l10n.resultHeading,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                         const SizedBox(height: 6),
                         Text(
-                          'Sanal giydirme sonucunu inceleyin ve detayları karşılaştırın.',
-                          style: TextStyle(color: Colors.grey.shade400, fontSize: 13, height: 1.4),
+                          context.l10n.resultSubtitle,
+                          style: TextStyle(
+                            color: Colors.grey.shade400,
+                            fontSize: 13,
+                            height: 1.4,
+                          ),
                         ),
                       ],
                     ),
@@ -267,31 +386,50 @@ class _ResultScreenState extends State<ResultScreen> {
                     onTap: () => Navigator.pop(context),
                     child: Container(
                       padding: const EdgeInsets.all(8),
-                      decoration: const BoxDecoration(color: Colors.white10, shape: BoxShape.circle),
-                      child: const Icon(Icons.close, color: Colors.white, size: 20),
+                      decoration: const BoxDecoration(
+                        color: Colors.white10,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.close,
+                        color: Colors.white,
+                        size: 20,
+                      ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
 
-            Container(
-              height: 450,
-              margin: const EdgeInsets.all(16),
-              clipBehavior: Clip.antiAlias,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(32),
-                border: Border.all(color: Colors.grey.shade900, width: 2),
+            // Sonuç 3:4 (768x1024) olduğu için kutu da 3:4; geniş ekranda görsel kırpılmaz
+            Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 480),
+                child: AspectRatio(
+                  aspectRatio: 3 / 4,
+                  child: Container(
+                    margin: const EdgeInsets.all(16),
+                    clipBehavior: Clip.antiAlias,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(32),
+                      border: Border.all(color: Colors.grey.shade900, width: 2),
+                    ),
+                    child: _buildImageComparisonArea(),
+                  ),
+                ),
               ),
-              child: _buildImageComparisonArea(),
             ),
 
-            if (_activeTab == "Fade")
+            if (_activeTab == 'fade')
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Row(
                   children: [
-                    const Icon(Icons.person_outline, color: Colors.grey, size: 18),
+                    const Icon(
+                      Icons.person_outline,
+                      color: Colors.grey,
+                      size: 18,
+                    ),
                     Expanded(
                       child: Slider(
                         value: _fadeValue,
@@ -315,12 +453,15 @@ class _ResultScreenState extends State<ResultScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Container(
                 padding: const EdgeInsets.all(4),
-                decoration: BoxDecoration(color: const Color(0xFF1E1E1E), borderRadius: BorderRadius.circular(16)),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF1E1E1E),
+                  borderRadius: BorderRadius.circular(16),
+                ),
                 child: Row(
                   children: [
-                    _buildTabButton("Split Slider", Icons.splitscreen_outlined),
-                    _buildTabButton("Side by Side", Icons.grid_view_outlined),
-                    _buildTabButton("Fade", Icons.blur_on_outlined),
+                    _buildTabButton('split', context.l10n.resultTabSplit, Icons.splitscreen_outlined),
+                    _buildTabButton('side', context.l10n.resultTabSide, Icons.grid_view_outlined),
+                    _buildTabButton('fade', context.l10n.resultTabFade, Icons.blur_on_outlined),
                   ],
                 ),
               ),
@@ -334,20 +475,46 @@ class _ResultScreenState extends State<ResultScreen> {
                 children: [
                   Row(
                     children: [
-                      const Icon(Icons.check_circle_outline, color: Colors.white, size: 18),
+                      const Icon(
+                        Icons.check_circle_outline,
+                        color: Colors.white,
+                        size: 18,
+                      ),
                       const SizedBox(width: 8),
-                      const Text('Kumaş & Doku Analizi', style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
+                      Text(
+                        context.l10n.resultDetails,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                       const Spacer(),
-                      Text('Local Model', style: TextStyle(color: Colors.grey.shade600, fontSize: 12)),
+                      Text(
+                        context.l10n.resultEngine,
+                        style: TextStyle(
+                          color: Colors.grey.shade600,
+                          fontSize: 12,
+                        ),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 16),
 
+                  // Gösterilen değerler backend'in ölçtüğü gerçek değerlerdir
                   Row(
                     children: [
-                      _buildInfoCard("Desen Doğruluğu", "+99.4%", "Doğal omuz ve kumaş dökümü"),
+                      _buildInfoCard(
+                        context.l10n.resultRenderTime,
+                        context.l10n.resultSeconds(widget.renderTimeSec.toStringAsFixed(1)),
+                        context.l10n.resultRenderTimeDesc,
+                      ),
                       const SizedBox(width: 12),
-                      _buildInfoCard("Işık Uyumu", "1:1 Studio", "Gerçekçi ortam ışığı ve gölgeler"),
+                      _buildInfoCard(
+                        context.l10n.resultCategory,
+                        categoryName(context.l10n, widget.category),
+                        context.l10n.resultCategoryDesc,
+                      ),
                     ],
                   ),
                 ],
@@ -360,24 +527,49 @@ class _ResultScreenState extends State<ResultScreen> {
               child: Row(
                 children: [
                   Container(
-                    decoration: BoxDecoration(color: const Color(0xFF1E1E1E), borderRadius: BorderRadius.circular(16), border: Border.all(color: Colors.grey.shade900)),
-                    child: IconButton(icon: const Icon(Icons.share_outlined, color: Colors.white), onPressed: () {}),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF1E1E1E),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: Colors.grey.shade900),
+                    ),
+                    child: IconButton(
+                      icon: const Icon(
+                        Icons.share_outlined,
+                        color: Colors.white,
+                      ),
+                      onPressed: () => StorageService().shareOutfit(widget.generatedImageBytes, message: context.l10n.resultShareText),
+                    ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: ElevatedButton.icon(
                       onPressed: _isSaving ? null : _saveToWardrobe,
-                      icon: _isSaving 
-                          ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.black))
+                      icon: _isSaving
+                          ? const SizedBox(
+                              width: 18,
+                              height: 18,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.black,
+                              ),
+                            )
                           : const Icon(Icons.check, color: Colors.black),
                       label: Text(
-                        _isSaving ? 'Kaydediliyor...' : 'Onayla ve Gardıroba Ekle', 
-                        style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 14)
+                        _isSaving
+                            ? context.l10n.resultSaving
+                            : context.l10n.resultAddToWardrobe,
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
                       ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 18),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
                       ),
                     ),
                   ),
@@ -391,11 +583,11 @@ class _ResultScreenState extends State<ResultScreen> {
     );
   }
 
-  Widget _buildTabButton(String text, IconData icon) {
-    bool isActive = _activeTab == text;
+  Widget _buildTabButton(String id, String text, IconData icon) {
+    bool isActive = _activeTab == id;
     return Expanded(
       child: GestureDetector(
-        onTap: () => setState(() => _activeTab = text),
+        onTap: () => setState(() => _activeTab = id),
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 12),
           decoration: BoxDecoration(
@@ -405,9 +597,20 @@ class _ResultScreenState extends State<ResultScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon, color: isActive ? Colors.white : Colors.grey, size: 14),
+              Icon(
+                icon,
+                color: isActive ? Colors.white : Colors.grey,
+                size: 14,
+              ),
               const SizedBox(width: 6),
-              Text(text, style: TextStyle(color: isActive ? Colors.white : Colors.grey, fontSize: 11, fontWeight: FontWeight.bold)),
+              Text(
+                text,
+                style: TextStyle(
+                  color: isActive ? Colors.white : Colors.grey,
+                  fontSize: 11,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ],
           ),
         ),
@@ -419,15 +622,40 @@ class _ResultScreenState extends State<ResultScreen> {
     return Expanded(
       child: Container(
         padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(color: const Color(0xFF191919), borderRadius: BorderRadius.circular(20), border: Border.all(color: Colors.grey.shade900)),
+        decoration: BoxDecoration(
+          color: const Color(0xFF191919),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: Colors.grey.shade900),
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title, style: const TextStyle(color: Colors.grey, fontSize: 10, fontWeight: FontWeight.bold)),
+            Text(
+              title,
+              style: const TextStyle(
+                color: Colors.grey,
+                fontSize: 10,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             const SizedBox(height: 6),
-            Text(value, style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+            Text(
+              value,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             const SizedBox(height: 6),
-            Text(desc, style: TextStyle(color: Colors.grey.shade600, fontSize: 10, height: 1.3)),
+            Text(
+              desc,
+              style: TextStyle(
+                color: Colors.grey.shade600,
+                fontSize: 10,
+                height: 1.3,
+              ),
+            ),
           ],
         ),
       ),
@@ -457,8 +685,19 @@ class _LabelBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(30)),
-      child: Text(text, style: const TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.bold, letterSpacing: 1.0)),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(30),
+      ),
+      child: Text(
+        text,
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 9,
+          fontWeight: FontWeight.bold,
+          letterSpacing: 1.0,
+        ),
+      ),
     );
   }
 }

@@ -4,7 +4,7 @@ Proje dört ana katmandan oluşmaktadır:
 
 1. **Mobile Client (Flutter):** Kullanıcı arayüzü, kamera/galeri erişimi ve durum yönetimi.
 2. **Backend API (Python / FastAPI):** Mobil uygulamadan gelen istekleri karşılayan, veritabanı işlemlerini yöneten ve AI modeline köprü görevi gören sunucu.
-3. **AI Engine:** Görsel birleştirme işlemlerini gerçekleştiren yapay zeka difüzyon modeli (Örn: IDM-VTON).
+3. **AI Engine:** Görsel birleştirme işlemlerini yerel GPU üzerinde gerçekleştiren difüzyon modeli (CatVTON; vücut maskesi için DensePose + SCHP).
 4. **Database (Supabase):** Kimlik doğrulama ve veri saklama.
 
 ## Sequence Diagram

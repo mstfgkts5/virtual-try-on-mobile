@@ -1,4 +1,5 @@
 import asyncio
+import base64
 import io
 import os
 import sys
@@ -6,7 +7,6 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import Response
 from PIL import Image, UnidentifiedImageError
 
 sys.stdout.reconfigure(encoding="utf-8")  # Windows konsolunda Türkçe log'lar için
@@ -46,7 +46,6 @@ app.add_middleware(
     allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
-    expose_headers=["X-Render-Time", "X-Category"],
 )
 
 
@@ -104,14 +103,23 @@ async def process_tryon(
         print(f"[HATA] Çıkarım hatası: {e}")
         raise HTTPException(status_code=500, detail=f"Model çalıştırılamadı: {e}")
 
-    buffer = io.BytesIO()
-    output.image.save(buffer, format="PNG")
     print(f"[SeeItOn] Tamamlandı ({output.render_time_sec} sn)")
-    return Response(
-        content=buffer.getvalue(),
-        media_type="image/png",
-        headers={"X-Render-Time": str(output.render_time_sec), "X-Category": output.category},
-    )
+    # Kırpılmış kişi fotoğrafı da dönülür; uygulama önce/sonra karşılaştırmasını
+    # orijinal (kırpılmamış) fotoğrafla yaparsa iki görsel üst üste oturmaz
+    return {
+        "image_base64": _encode(output.image, "PNG"),
+        "person_base64": _encode(output.person, "JPEG"),
+        "category": output.category,
+        "render_time": output.render_time_sec,
+        "width": output.image.width,
+        "height": output.image.height,
+    }
+
+
+def _encode(image: Image.Image, fmt: str) -> str:
+    buffer = io.BytesIO()
+    image.save(buffer, format=fmt, **({"quality": 95} if fmt == "JPEG" else {}))
+    return base64.b64encode(buffer.getvalue()).decode("ascii")
 
 
 if __name__ == "__main__":

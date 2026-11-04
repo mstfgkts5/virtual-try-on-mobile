@@ -50,7 +50,15 @@ Swagger dokümantasyonu: `http://localhost:8000/docs`
 | `steps` | sayı | 10–50 arası difüzyon adımı (varsayılan 30) |
 | `seed` | sayı | Tekrarlanabilir sonuç için (varsayılan 42) |
 
-Yanıt: `image/png`. `X-Render-Time` başlığı gerçek işlem süresini (sn), `X-Category` kullanılan kategoriyi verir.
+Yanıt (JSON):
+
+| Alan | Açıklama |
+|---|---|
+| `image_base64` | Sonuç görseli (PNG, 768×1024) |
+| `person_base64` | Modele giren 3:4 kırpılmış kişi fotoğrafı (JPEG); önce/sonra karşılaştırması bununla yapılır |
+| `category` | Kullanılan kategori (`upper` / `lower` / `overall`) |
+| `render_time` | Gerçek işlem süresi (sn) |
+| `width`, `height` | Sonuç boyutu |
 
 ---
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../core/l10n_ext.dart';
 import 'login_screen.dart';
 
 class OnboardingScreen extends StatelessWidget {
@@ -57,9 +58,9 @@ class OnboardingScreen extends StatelessWidget {
                       offset: const Offset(0, 10),
                     ),
                   ],
-                  // İnternetten çekilen şık arka plan görseli
+                  // Yerel görsel: demo sırasında internet olmasa da açılış ekranı boş kalmaz
                   image: const DecorationImage(
-                    image: NetworkImage('https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=1000&auto=format&fit=crop'),
+                    image: AssetImage('assets/images/onboarding_hero.png'),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -90,31 +91,44 @@ class OnboardingScreen extends StatelessWidget {
                           child: const Icon(Icons.checkroom, color: Colors.black54, size: 20),
                         ),
                         const SizedBox(width: 12),
-                        const Expanded(
+                        Expanded(
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.start,
+                            // Rozet metnin altında: dar ekranda ve uzun (TR/EN) metinlerde satır sıkışmaz
                             children: [
-                              Text('Tweed Structured Blazer', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.black87)),
-                              Text('Zero-calibration live drape', style: TextStyle(color: Colors.black54, fontSize: 10)),
+                              Text(
+                                context.l10n.onboardingCardTitle,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.black87),
+                              ),
+                              Text(
+                                context.l10n.onboardingCardSubtitle,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(color: Colors.black54, fontSize: 10),
+                              ),
+                              const SizedBox(height: 6),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.black12),
+                                  borderRadius: BorderRadius.circular(12),
+                                  color: const Color(0xFFFAF9F6),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(Icons.memory, size: 11, color: Colors.black54),
+                                    const SizedBox(width: 4),
+                                    Text(context.l10n.onboardingBadge, style: const TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: Colors.black54)),
+                                  ],
+                                ),
+                              ),
                             ],
                           ),
                         ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.black12),
-                            borderRadius: BorderRadius.circular(12),
-                            color: const Color(0xFFFAF9F6),
-                          ),
-                          child: const Row(
-                            children: [
-                              Icon(Icons.tune, size: 12, color: Colors.black54),
-                              SizedBox(width: 4),
-                              Text('SIMULATED', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.black54)),
-                            ],
-                          ),
-                        )
                       ],
                     ),
                   ),
@@ -127,8 +141,8 @@ class OnboardingScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 30.0),
                 child: Column(
                   children: [
-                    const Text(
-                      'Try On Any Outfit\nInstantly',
+                    Text(
+                      context.l10n.onboardingTitle,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.black87,
@@ -139,8 +153,8 @@ class OnboardingScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    const Text(
-                      'Upload your photo, select any designer garment, and preview realistic photoreal draping in seconds.',
+                    Text(
+                      context.l10n.onboardingSubtitle,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.black54,
@@ -174,10 +188,10 @@ class OnboardingScreen extends StatelessWidget {
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                           elevation: 0,
                         ),
-                        child: const Row(
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text('Get Started', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                            Text(context.l10n.onboardingStart, style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
                             SizedBox(width: 8),
                             Icon(Icons.arrow_forward, color: Colors.white, size: 20),
                           ],
@@ -190,14 +204,14 @@ class OnboardingScreen extends StatelessWidget {
                       onTap: () {
                         Navigator.push(context, MaterialPageRoute(builder: (_) => const LoginScreen()));
                       },
-                      child: const Padding(
+                      child: Padding(
                         padding: EdgeInsets.only(bottom: 30.0),
                         child: Text.rich(
                           TextSpan(
-                            text: 'Already have an account? ',
+                            text: context.l10n.onboardingHaveAccount,
                             style: TextStyle(color: Colors.black54),
                             children: [
-                              TextSpan(text: 'Log In', style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold)),
+                              TextSpan(text: context.l10n.loginButton, style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold)),
                             ],
                           ),
                         ),
