@@ -4,6 +4,7 @@ class TryOnResult {
   final String id;
   final String title;
   final String designer;
+  final String category; // 'upper', 'lower', 'overall'
   final Uint8List? resultImageBytes;
   final String? resultAssetPath;
   final Uint8List? originalPersonBytes;
@@ -19,6 +20,7 @@ class TryOnResult {
     required this.id,
     required this.title,
     this.designer = 'Maison K.',
+    this.category = 'upper',
     this.resultImageBytes,
     this.resultAssetPath,
     this.originalPersonBytes,

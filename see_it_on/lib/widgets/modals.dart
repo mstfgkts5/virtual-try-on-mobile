@@ -297,25 +297,9 @@ class AppModals {
                   ),
                 ),
               ),
-              const SizedBox(height: 14),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text('Simulated Mock Fallback:', style: TextStyle(color: Colors.white, fontSize: 13)),
-                  Switch(
-                    value: apiService.useMockMode,
-                    activeColor: Colors.white,
-                    onChanged: (val) {
-                      setState(() {
-                        apiService.useMockMode = val;
-                      });
-                    },
-                  ),
-                ],
-              ),
               const SizedBox(height: 6),
               const Text(
-                'If your FastAPI IDM-VTON server is offline, fallback mode ensures full interactive simulation without errors.',
+                'Gerçek telefonda bilgisayarın yerel Wi-Fi IP adresini girin (örn. http://192.168.1.35:8000).',
                 style: TextStyle(color: AppColors.textMuted, fontSize: 11),
               ),
             ],
