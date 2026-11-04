@@ -13,4 +13,20 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get homeTitle => 'Stüdyo Kabin';
+
+  @override
+  String get settingsTitle => 'Ayarlar';
+
+  @override
+  String get settingsLanguage => 'DİL';
+
+  @override
+  String get settingsLanguageHint =>
+      'Uygulamanın dili. Seçimin bu cihazda hatırlanır.';
+
+  @override
+  String get settingsLanguageTr => 'Türkçe';
+
+  @override
+  String get settingsLanguageEn => 'English';
 }

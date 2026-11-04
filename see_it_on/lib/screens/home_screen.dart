@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'loading_screen.dart';
+import 'settings_screen.dart';
 import 'wardrobe_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -138,6 +139,10 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+
+  void _openSettings() {
+    Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingsScreen()));
   }
 
   Future<void> _loadAsset(bool isPerson, String assetPath) async {
@@ -322,12 +327,8 @@ class _HomeScreenState extends State<HomeScreen> {
             },
           ),
           IconButton(
-            icon: const Icon(Icons.notifications_outlined, color: textColor),
-            onPressed: () {},
-          ),
-          IconButton(
             icon: const Icon(Icons.person_outline, color: textColor),
-            onPressed: () {},
+            onPressed: _openSettings,
           ),
         ],
       ),
@@ -521,6 +522,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 context,
                 MaterialPageRoute(builder: (context) => const WardrobeScreen()),
               );
+            } else if (index == 2) {
+              _openSettings();
             } else {
               setState(() {
                 _currentNavigationIndex = index;

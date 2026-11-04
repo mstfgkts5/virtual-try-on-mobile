@@ -13,4 +13,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeTitle => 'Studio Fitting Room';
+
+  @override
+  String get settingsTitle => 'Settings';
+
+  @override
+  String get settingsLanguage => 'LANGUAGE';
+
+  @override
+  String get settingsLanguageHint =>
+      'The app language. Your choice is remembered on this device.';
+
+  @override
+  String get settingsLanguageTr => 'Türkçe';
+
+  @override
+  String get settingsLanguageEn => 'English';
 }

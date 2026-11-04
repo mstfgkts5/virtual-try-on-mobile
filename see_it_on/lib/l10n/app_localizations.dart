@@ -109,6 +109,36 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Stüdyo Kabin'**
   String get homeTitle;
+
+  /// No description provided for @settingsTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ayarlar'**
+  String get settingsTitle;
+
+  /// No description provided for @settingsLanguage.
+  ///
+  /// In tr, this message translates to:
+  /// **'DİL'**
+  String get settingsLanguage;
+
+  /// No description provided for @settingsLanguageHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Uygulamanın dili. Seçimin bu cihazda hatırlanır.'**
+  String get settingsLanguageHint;
+
+  /// No description provided for @settingsLanguageTr.
+  ///
+  /// In tr, this message translates to:
+  /// **'Türkçe'**
+  String get settingsLanguageTr;
+
+  /// No description provided for @settingsLanguageEn.
+  ///
+  /// In tr, this message translates to:
+  /// **'English'**
+  String get settingsLanguageEn;
 }
 
 class _AppLocalizationsDelegate
