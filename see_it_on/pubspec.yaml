@@ -9,6 +9,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  intl: any
+  shared_preferences: ^2.5.0
   cupertino_icons: ^1.0.8
   supabase_flutter: ^1.10.3
   image_picker: ^1.2.3
@@ -24,7 +28,8 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-  
+  generate: true # lib/l10n/*.arb -> AppLocalizations
+
   # Flutter alt klasörleri otomatik eklemez; her klasör ayrı yazılmalı
   assets:
     - assets/images/
