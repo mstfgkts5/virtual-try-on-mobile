@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:see_it_on/models/wardrobe_item.dart';
@@ -97,5 +99,26 @@ void main() {
   testWidgets('EN başlık', (tester) async {
     await _open(tester, FakeWardrobeRepository(items: [_item('1', 'upper', 0)]), lang: 'en');
     expect(find.text('MY WARDROBE'), findsOneWidget);
+  });
+
+  testWidgets('yenilenirken liste ekranda kalır', (tester) async {
+    final repo = FakeWardrobeRepository(items: [_item('1', 'lower', 0), _item('2', 'upper', 1)]);
+    await _open(tester, repo);
+    final l = l10nFor('tr');
+
+    await tester.tap(find.byKey(const ValueKey('wardrobe-card-1')));
+    await tester.pumpAndSettle();
+    repo.gate = Completer<void>(); // silmeden sonraki yenileme beklesin
+    await tester.tap(find.byTooltip(l.wardrobeDelete));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(l.wardrobeDeleteConfirm));
+    await tester.pumpAndSettle();
+
+    // Yenileme sürüyor: önceki liste görünmeye devam eder (iskelete dönmez)
+    expect(find.byKey(const ValueKey('wardrobe-card-2')), findsOneWidget);
+
+    repo.gate!.complete();
+    await tester.pumpAndSettle();
+    expect(_cards(), findsNWidgets(1));
   });
 }

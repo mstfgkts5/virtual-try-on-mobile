@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:see_it_on/models/wardrobe_item.dart';
@@ -10,6 +11,9 @@ class FakeWardrobeRepository implements WardrobeRepository {
   final String? email;
   final List<WardrobeItem> items;
   bool failFetch;
+
+  /// Verilirse fetch() bu tamamlanana kadar bekler (yenileme sırasındaki görünümü test etmek için).
+  Completer<void>? gate;
   final deleted = <String>[];
   final added = <String>[]; // eklenen kategoriler
 
@@ -18,6 +22,7 @@ class FakeWardrobeRepository implements WardrobeRepository {
 
   @override
   Future<List<WardrobeItem>> fetch() async {
+    if (gate != null) await gate!.future;
     if (failFetch) throw Exception('offline');
     return List.of(items);
   }

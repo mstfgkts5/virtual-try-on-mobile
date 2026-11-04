@@ -22,6 +22,16 @@ class NotSignedInException implements Exception {
   const NotSignedInException();
 }
 
+/// Silme isteği hata vermeden 0 satır sildiğinde fırlatılır (ör. RLS açık ama silme kuralı yok);
+/// aksi halde ekran "silindi" der ve kombin yenilemede geri gelir.
+class NothingDeletedException implements Exception {
+  const NothingDeletedException();
+}
+
+void ensureDeleted(List<dynamic> deletedRows) {
+  if (deletedRows.isEmpty) throw const NothingDeletedException();
+}
+
 /// `category` sütunu tabloda henüz yoksa PostgREST bu hatalardan birini döndürür.
 bool isMissingColumnError(Object error) =>
     error is PostgrestException &&
@@ -71,7 +81,9 @@ class SupabaseWardrobeRepository implements WardrobeRepository {
 
   @override
   Future<void> delete(WardrobeItem item) async {
-    await _client.from('wardrobe').delete().eq('id', item.id);
+    // select(): silinen satırları geri döndürür; boşsa gerçekte hiçbir şey silinmemiştir
+    final deleted = await _client.from('wardrobe').delete().eq('id', item.id).select('id');
+    ensureDeleted(deleted as List);
     final path = item.storagePath;
     if (path == null) return;
     try {
