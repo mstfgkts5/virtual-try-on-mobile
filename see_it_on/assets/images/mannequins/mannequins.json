@@ -1,0 +1,74 @@
+[
+  {
+    "id": "W-S",
+    "gender": "female",
+    "size": "S",
+    "height_cm": 160,
+    "weight_kg": 50,
+    "seed": 1003,
+    "asset": "assets/images/mannequins/w-s.jpg"
+  },
+  {
+    "id": "W-M",
+    "gender": "female",
+    "size": "M",
+    "height_cm": 160,
+    "weight_kg": 58,
+    "seed": 1003,
+    "asset": "assets/images/mannequins/w-m.jpg"
+  },
+  {
+    "id": "W-L",
+    "gender": "female",
+    "size": "L",
+    "height_cm": 160,
+    "weight_kg": 67,
+    "seed": 1003,
+    "asset": "assets/images/mannequins/w-l.jpg"
+  },
+  {
+    "id": "W-XL",
+    "gender": "female",
+    "size": "XL",
+    "height_cm": 160,
+    "weight_kg": 76,
+    "seed": 1003,
+    "asset": "assets/images/mannequins/w-xl.jpg"
+  },
+  {
+    "id": "M-S",
+    "gender": "male",
+    "size": "S",
+    "height_cm": 185,
+    "weight_kg": 72,
+    "seed": 1003,
+    "asset": "assets/images/mannequins/m-s.jpg"
+  },
+  {
+    "id": "M-M",
+    "gender": "male",
+    "size": "M",
+    "height_cm": 185,
+    "weight_kg": 80,
+    "seed": 1003,
+    "asset": "assets/images/mannequins/m-m.jpg"
+  },
+  {
+    "id": "M-L",
+    "gender": "male",
+    "size": "L",
+    "height_cm": 185,
+    "weight_kg": 90,
+    "seed": 1003,
+    "asset": "assets/images/mannequins/m-l.jpg"
+  },
+  {
+    "id": "M-XL",
+    "gender": "male",
+    "size": "XL",
+    "height_cm": 185,
+    "weight_kg": 100,
+    "seed": 1000,
+    "asset": "assets/images/mannequins/m-xl.jpg"
+  }
+]
