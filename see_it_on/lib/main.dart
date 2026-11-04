@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'core/l10n_ext.dart';
 import 'core/locale_controller.dart';
-import 'screens/onboarding_screen.dart';
+import 'screens/auth_gate.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,7 +19,7 @@ Future<void> main() async {
 }
 
 class SeeItOnApp extends StatelessWidget {
-  const SeeItOnApp({super.key, this.home = const OnboardingScreen()});
+  const SeeItOnApp({super.key, this.home = const AuthGate()});
 
   final Widget home;
 
