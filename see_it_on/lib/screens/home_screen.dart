@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import '../core/design/widgets.dart';
 import '../core/l10n_ext.dart';
 import 'loading_screen.dart';
 import 'settings_screen.dart';
@@ -18,26 +19,15 @@ class _HomeScreenState extends State<HomeScreen> {
   Uint8List? _garmentImageBytes;
   final ImagePicker _picker = ImagePicker();
 
-  // Denenecek kıyafet bölgesi: backend'e 'upper' / 'lower' / 'overall' olarak gider
-  String _category = 'upper';
+  // Denenecek kıyafet bölgesi: backend'e 'upper' / 'lower' / 'overall' olarak gider.
   // Metinler (ad, ipucu) çeviri dosyalarında: categoryName / categoryHint.
   // Alt giyim ipucu, CatVTON'un kısa kıyafeti uzun kıyafetin üstüne uzatma sınırını anlatır.
-  static const _categories = [
-    {
-      'id': 'upper',
-      'icon': Icons.checkroom,
-    },
-    {
-      'id': 'lower',
-      'icon': Icons.straighten,
-    },
-    {
-      'id': 'overall',
-      'icon': Icons.accessibility_new,
-    },
-  ];
-  Map<String, Object> get _selectedCategory =>
-      _categories.firstWhere((c) => c['id'] == _category);
+  String _category = 'upper';
+  static const _categoryIcons = {
+    'upper': Icons.checkroom,
+    'lower': Icons.straighten,
+    'overall': Icons.accessibility_new,
+  };
 
   int _currentNavigationIndex = 0;
   late PageController _rackController;
@@ -46,10 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _rackController = PageController(
-      viewportFraction: 0.35,
-      initialPage: _currentRackIndex,
-    );
+    _rackController = PageController(viewportFraction: 0.35, initialPage: _currentRackIndex);
   }
 
   @override
@@ -81,14 +68,23 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Map<String, String>> get _garmentsForCategory =>
       _sampleGarments.where((g) => g['category'] == _category).toList();
 
-  void _showGarmentPicker() {
-    const textColor = Color(0xFF1E1C1A);
+  /// Manken ve örnek kıyafet seçicilerinin ortak alt sayfası
+  void _showPickerSheet({
+    required String title,
+    String? hint,
+    required double maxHeightFactor,
+    required double maxCrossAxisExtent,
+    required double childAspectRatio,
+    required List<({String asset, String name, String? info, VoidCallback onTap})> items,
+  }) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.7),
-      backgroundColor: const Color(0xFFF6F4EF),
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(28))),
+      constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * maxHeightFactor),
+      backgroundColor: context.tokens.paper,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(SeeItOnTokens.radiusLg)),
+      ),
       builder: (ctx) => SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
@@ -96,38 +92,46 @@ class _HomeScreenState extends State<HomeScreen> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(context.l10n.homeSamplePickerTitle(categoryName(context.l10n, _category)), style: const TextStyle(color: textColor, fontSize: 20, fontFamily: 'Georgia', fontWeight: FontWeight.bold)),
-              const SizedBox(height: 16),
+              EditorialHeading(title, size: 22),
+              if (hint != null) ...[const SizedBox(height: 4), Caption(hint)],
+              const HairlineDivider(verticalPadding: 14),
+              // Kart genişliği sabit tutulur; geniş ekranda (web/tablet) kartlar büyüyüp taşmaz
               GridView(
-                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: 130,
+                gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: maxCrossAxisExtent,
                   mainAxisSpacing: 12,
                   crossAxisSpacing: 10,
-                  childAspectRatio: 0.8,
+                  childAspectRatio: childAspectRatio,
                 ),
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                children: _garmentsForCategory.map((g) {
-                  final asset = 'assets/images/garments/${g['id']}.jpg';
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.pop(ctx);
-                      _loadAsset(false, asset);
-                    },
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(14),
-                            child: Image.asset(asset, fit: BoxFit.cover, width: double.infinity),
+                children: [
+                  for (final item in items)
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pop(ctx);
+                        item.onTap();
+                      },
+                      child: Column(
+                        children: [
+                          Expanded(
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(SeeItOnTokens.radiusSm),
+                              child: Image.asset(item.asset, fit: BoxFit.cover, width: double.infinity),
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 6),
-                        Text(garmentName(context.l10n, g['id']!), style: const TextStyle(color: textColor, fontSize: 12, fontWeight: FontWeight.bold)),
-                      ],
+                          const SizedBox(height: 6),
+                          Text(
+                            item.name,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(ctx).textTheme.labelLarge!.copyWith(fontSize: 12),
+                          ),
+                          if (item.info != null) Text(item.info!, style: Theme.of(ctx).textTheme.bodySmall!.copyWith(fontSize: 9)),
+                        ],
+                      ),
                     ),
-                  );
-                }).toList(),
+                ],
               ),
             ],
           ),
@@ -136,9 +140,47 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _openSettings() {
-    Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingsScreen()));
+  void _showGarmentPicker() {
+    final l = context.l10n;
+    _showPickerSheet(
+      title: l.homeSamplePickerTitle(categoryName(l, _category)),
+      maxHeightFactor: 0.7,
+      maxCrossAxisExtent: 130,
+      childAspectRatio: 0.8,
+      items: [
+        for (final g in _garmentsForCategory)
+          (
+            asset: 'assets/images/garments/${g['id']}.jpg',
+            name: garmentName(l, g['id']!),
+            info: null,
+            onTap: () => _loadAsset(false, 'assets/images/garments/${g['id']}.jpg'),
+          ),
+      ],
+    );
   }
+
+  void _showMannequinPicker() {
+    final l = context.l10n;
+    _showPickerSheet(
+      title: l.homeMannequinPickerTitle,
+      hint: l.homeMannequinPickerHint,
+      maxHeightFactor: 0.85,
+      maxCrossAxisExtent: 110,
+      childAspectRatio: 0.52,
+      items: [
+        for (final m in _mannequins)
+          (
+            asset: 'assets/images/mannequins/${m['id']}.jpg',
+            name: mannequinName(l, m['id']!),
+            info: m['info'],
+            onTap: () => _loadAsset(true, 'assets/images/mannequins/${m['id']}.jpg'),
+          ),
+      ],
+    );
+  }
+
+  void _openSettings() => pushEditorial(context, const SettingsScreen());
+  void _openWardrobe() => pushEditorial(context, const WardrobeScreen());
 
   Future<void> _loadAsset(bool isPerson, String assetPath) async {
     final data = await rootBundle.load(assetPath);
@@ -149,64 +191,6 @@ class _HomeScreenState extends State<HomeScreen> {
         _garmentImageBytes = data.buffer.asUint8List();
       }
     });
-  }
-
-  void _showMannequinPicker() {
-    const textColor = Color(0xFF1E1C1A);
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.85),
-      backgroundColor: const Color(0xFFF6F4EF),
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(28))),
-      builder: (ctx) => SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(context.l10n.homeMannequinPickerTitle, style: const TextStyle(color: textColor, fontSize: 20, fontFamily: 'Georgia', fontWeight: FontWeight.bold)),
-              const SizedBox(height: 4),
-              Text(context.l10n.homeMannequinPickerHint, style: TextStyle(color: textColor.withValues(alpha: 0.6), fontSize: 12)),
-              const SizedBox(height: 16),
-              // Kart genişliği sabit tutulur; geniş ekranda (web/tablet) kartlar büyüyüp taşmaz
-              GridView(
-                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: 110,
-                  mainAxisSpacing: 12,
-                  crossAxisSpacing: 10,
-                  childAspectRatio: 0.52,
-                ),
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                children: _mannequins.map((m) {
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.pop(ctx);
-                      _loadAsset(true, 'assets/images/mannequins/${m['id']}.jpg');
-                    },
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(14),
-                            child: Image.asset('assets/images/mannequins/${m['id']}.jpg', fit: BoxFit.cover, width: double.infinity),
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        Text(mannequinName(context.l10n, m['id']!), style: const TextStyle(color: textColor, fontSize: 12, fontWeight: FontWeight.bold)),
-                        Text(m['info']!, style: TextStyle(color: textColor.withValues(alpha: 0.5), fontSize: 9)),
-                      ],
-                    ),
-                  );
-                }).toList(),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
   }
 
   Future<void> _pickImage(bool isPerson, ImageSource source) async {
@@ -225,41 +209,34 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _onTryOnPressed(BuildContext context) {
     if (_personImageBytes == null || _garmentImageBytes == null) {
+      final t = context.tokens;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
+          backgroundColor: t.danger,
+          margin: const EdgeInsets.all(16),
           content: Row(
             children: [
-              const Icon(Icons.info_outline, color: Colors.white, size: 20),
+              Icon(Icons.info_outline, color: t.paper, size: 20),
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
-                  _personImageBytes == null
-                      ? context.l10n.homeNeedPerson
-                      : context.l10n.homeNeedGarment,
-                  style: const TextStyle(fontWeight: FontWeight.w600),
+                  _personImageBytes == null ? context.l10n.homeNeedPerson : context.l10n.homeNeedGarment,
+                  style: TextStyle(color: t.paper, fontWeight: FontWeight.w600),
                 ),
               ),
             ],
           ),
-          backgroundColor: const Color(0xFFE11D48),
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          margin: const EdgeInsets.all(16),
         ),
       );
       return;
     }
 
-    Navigator.push(
+    pushEditorial(
       context,
-      MaterialPageRoute(
-        builder: (context) => LoadingScreen(
-          personImageBytes: _personImageBytes!,
-          garmentImageBytes: _garmentImageBytes!,
-          category: _category,
-        ),
+      LoadingScreen(
+        personImageBytes: _personImageBytes!,
+        garmentImageBytes: _garmentImageBytes!,
+        category: _category,
       ),
     );
   }
@@ -273,7 +250,6 @@ class _HomeScreenState extends State<HomeScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(context.l10n.homeRackSelected(garmentName(context.l10n, garment['id']!))),
-        backgroundColor: const Color(0xFF221F1E),
         duration: const Duration(seconds: 3),
       ),
     );
@@ -281,433 +257,188 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const backgroundColor = Color(0xFFF6F4EF);
-    const textColor = Color(0xFF1E1C1A);
+    final l = context.l10n;
+    final t = context.tokens;
 
     return Scaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor: t.paper,
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: textColor.withValues(alpha: 0.05),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(Icons.blur_on, color: textColor, size: 16),
-            ),
-            const SizedBox(width: 10),
-            const Text(
-              'SeeItOn',
-              style: TextStyle(
-                color: textColor,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
+        title: const Text('SeeItOn'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.checkroom, color: textColor),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const WardrobeScreen()),
-              );
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.person_outline, color: textColor),
-            onPressed: _openSettings,
-          ),
+          IconButton(tooltip: l.navWardrobe, icon: const Icon(Icons.checkroom_outlined), onPressed: _openWardrobe),
+          IconButton(tooltip: l.navProfile, icon: const Icon(Icons.person_outline), onPressed: _openSettings),
         ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 10),
-                Text(
-                  context.l10n.homeTitle,
-                  style: TextStyle(
-                    color: textColor,
-                    fontSize: 32,
-                    fontFamily: 'Georgia',
-                    fontWeight: FontWeight.w500,
-                    letterSpacing: -0.5,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  context.l10n.homeSubtitle,
-                  style: TextStyle(
-                    color: textColor.withValues(alpha: 0.6),
-                    fontSize: 13,
-                  ),
-                ),
-                const SizedBox(height: 24),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 6),
+              EditorialHeading(l.homeTitle),
+              const SizedBox(height: 4),
+              Caption(l.homeSubtitle, italic: true),
+              const HairlineDivider(verticalPadding: 18),
 
-                _buildCategorySelector(textColor),
-                const SizedBox(height: 20),
+              EditorialOverline(l.homeWhatToTry),
+              const SizedBox(height: 10),
+              SegmentedPills<String>(
+                options: [for (final id in _categoryIcons.keys) (id, categoryName(l, id))],
+                icons: _categoryIcons,
+                value: _category,
+                onChanged: (id) => setState(() => _category = id),
+              ),
+              const SizedBox(height: 20),
 
-                Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Column(
-                      children: [
-                        _buildUploadCard(
-                          title: context.l10n.homeStepPerson,
-                          isPerson: true,
-                          imageBytes: _personImageBytes,
-                          icon: Icons.add_a_photo_outlined,
-                          mainText: context.l10n.homeUploadPhoto,
-                          subText:
-                              context.l10n.homeUploadPhotoHint,
-                          buttons: [
-                            _buildCardButton(
-                              Icons.photo_library_outlined,
-                              context.l10n.homeGallery,
-                              () => _pickImage(true, ImageSource.gallery),
-                            ),
-                            _buildCardButton(
-                              Icons.camera_alt_outlined,
-                              context.l10n.homeCamera,
-                              () => _pickImage(true, ImageSource.camera),
-                            ),
-                            _buildCardButton(
-                              Icons.accessibility_new,
-                              context.l10n.homeMannequin,
-                              _showMannequinPicker,
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 16),
-
-                        _buildUploadCard(
-                          title: context.l10n.homeStepGarment(categoryName(context.l10n, _category)),
-                          isPerson: false,
-                          imageBytes: _garmentImageBytes,
-                          icon: _selectedCategory['icon'] as IconData,
-                          mainText: context.l10n.homeUploadGarment,
-                          subText: categoryHint(context.l10n, _category),
-                          buttons: [
-                            _buildCardButton(
-                              Icons.photo_library_outlined,
-                              context.l10n.homeGallery,
-                              () => _pickImage(false, ImageSource.gallery),
-                            ),
-                            _buildCardButton(
-                              Icons.camera_alt_outlined,
-                              context.l10n.homeCamera,
-                              () => _pickImage(false, ImageSource.camera),
-                            ),
-                            if (_garmentsForCategory.isNotEmpty)
-                              _buildCardButton(
-                                Icons.style_outlined,
-                                context.l10n.homeSample,
-                                _showGarmentPicker,
-                              ),
-                          ],
-                        ),
-                      ],
-                    ),
-
-                    IgnorePointer(
-                      child: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: const Color(0xFFF0EBE1),
-                            width: 1,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.05),
-                              blurRadius: 10,
-                              spreadRadius: 2,
-                            ),
-                          ],
-                        ),
-                        child: const Icon(
-                          Icons.link,
-                          color: textColor,
-                          size: 16,
-                        ),
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  Column(
+                    children: [
+                      _buildUploadCard(
+                        title: l.homeStepPerson,
+                        isPerson: true,
+                        imageBytes: _personImageBytes,
+                        icon: Icons.add_a_photo_outlined,
+                        mainText: l.homeUploadPhoto,
+                        subText: l.homeUploadPhotoHint,
+                        buttons: [
+                          _buildCardButton(Icons.photo_library_outlined, l.homeGallery, () => _pickImage(true, ImageSource.gallery)),
+                          _buildCardButton(Icons.camera_alt_outlined, l.homeCamera, () => _pickImage(true, ImageSource.camera)),
+                          _buildCardButton(Icons.accessibility_new, l.homeMannequin, _showMannequinPicker),
+                        ],
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 32),
-
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () => _onTryOnPressed(context),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF221F1E),
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 20),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
+                      const SizedBox(height: 16),
+                      _buildUploadCard(
+                        title: l.homeStepGarment(categoryName(l, _category)),
+                        isPerson: false,
+                        imageBytes: _garmentImageBytes,
+                        icon: _categoryIcons[_category]!,
+                        mainText: l.homeUploadGarment,
+                        subText: categoryHint(l, _category),
+                        buttons: [
+                          _buildCardButton(Icons.photo_library_outlined, l.homeGallery, () => _pickImage(false, ImageSource.gallery)),
+                          _buildCardButton(Icons.camera_alt_outlined, l.homeCamera, () => _pickImage(false, ImageSource.camera)),
+                          if (_garmentsForCategory.isNotEmpty)
+                            _buildCardButton(Icons.style_outlined, l.homeSample, _showGarmentPicker),
+                        ],
                       ),
-                      elevation: 0,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          context.l10n.homeTryOn,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontFamily: 'Georgia',
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.15),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Text(
-                            context.l10n.homeTryOnBadge,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 11,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ],
+                    ],
+                  ),
+                  // İki adımı birbirine bağlayan küçük düğüm
+                  IgnorePointer(
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: t.paper,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: t.line),
+                      ),
+                      child: Icon(Icons.link, color: t.ink, size: 16),
                     ),
                   ),
-                ),
-                const SizedBox(height: 40),
+                ],
+              ),
+              const SizedBox(height: 28),
 
-                _buildAnimatedRack(textColor),
-                const SizedBox(height: 40),
-              ],
-            ),
+              PillButton(
+                label: l.homeTryOn,
+                icon: Icons.auto_awesome,
+                expand: true,
+                onPressed: () => _onTryOnPressed(context),
+              ),
+              const SizedBox(height: 8),
+              Center(child: Caption(l.homeTryOnBadge)),
+              const HairlineDivider(verticalPadding: 28),
+
+              _buildAnimatedRack(),
+              const SizedBox(height: 32),
+            ],
           ),
         ),
       ),
-      bottomNavigationBar: Theme(
-        data: Theme.of(context).copyWith(canvasColor: const Color(0xFFF0EBE1)),
+      bottomNavigationBar: DecoratedBox(
+        decoration: BoxDecoration(border: Border(top: BorderSide(color: t.line))),
         child: BottomNavigationBar(
           currentIndex: _currentNavigationIndex,
           onTap: (index) {
             if (index == 1) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const WardrobeScreen()),
-              );
+              _openWardrobe();
             } else if (index == 2) {
               _openSettings();
             } else {
-              setState(() {
-                _currentNavigationIndex = index;
-              });
+              setState(() => _currentNavigationIndex = index);
             }
           },
-          selectedItemColor: textColor,
-          unselectedItemColor: textColor.withValues(alpha: 0.4),
-          showSelectedLabels: true,
-          showUnselectedLabels: true,
-          selectedLabelStyle: const TextStyle(
-            fontSize: 10,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 1,
-          ),
-          unselectedLabelStyle: const TextStyle(fontSize: 10, letterSpacing: 1),
           items: [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.auto_awesome),
-              label: context.l10n.navTryOn,
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.checkroom),
-              label: context.l10n.navWardrobe,
-            ),
-            BottomNavigationBarItem(icon: Icon(Icons.tune), label: context.l10n.navProfile),
+            BottomNavigationBarItem(icon: const Icon(Icons.auto_awesome), label: l.navTryOn),
+            BottomNavigationBarItem(icon: const Icon(Icons.checkroom), label: l.navWardrobe),
+            BottomNavigationBarItem(icon: const Icon(Icons.tune), label: l.navProfile),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildCategorySelector(Color textColor) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          context.l10n.homeWhatToTry,
-          style: TextStyle(
-            color: textColor.withValues(alpha: 0.6),
-            fontSize: 11,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 1,
-          ),
-        ),
-        const SizedBox(height: 10),
-        Container(
-          padding: const EdgeInsets.all(4),
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.4),
-            borderRadius: BorderRadius.circular(30),
-            border: Border.all(color: Colors.white, width: 2),
-          ),
-          child: Row(
-            children: _categories.map((c) {
-              final isActive = c['id'] == _category;
-              return Expanded(
-                child: GestureDetector(
-                  onTap: () => setState(() => _category = c['id'] as String),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 220),
-                    curve: Curves.easeOut,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    decoration: BoxDecoration(
-                      color: isActive
-                          ? const Color(0xFF221F1E)
-                          : Colors.transparent,
-                      borderRadius: BorderRadius.circular(26),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          c['icon'] as IconData,
-                          size: 15,
-                          color: isActive
-                              ? Colors.white
-                              : textColor.withValues(alpha: 0.6),
-                        ),
-                        const SizedBox(width: 6),
-                        Flexible(
-                          child: Text(
-                            categoryName(context.l10n, c['id'] as String),
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              color: isActive ? Colors.white : textColor,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            }).toList(),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildAnimatedRack(Color textColor) {
+  Widget _buildAnimatedRack() {
+    final l = context.l10n;
+    final t = context.tokens;
+    final current = _sampleGarments[_currentRackIndex];
     return Column(
       children: [
-        Text(
-          context.l10n.homeRackTitle,
-          style: TextStyle(
-            color: textColor.withValues(alpha: 0.5),
-            fontSize: 11,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 1.2,
-          ),
-        ),
+        EditorialOverline(l.homeRackTitle),
         const SizedBox(height: 20),
         SizedBox(
           height: 220,
           child: Stack(
             alignment: Alignment.topCenter,
             children: [
+              // Askı çubuğu
               Positioned(
                 top: 30,
                 left: 0,
                 right: 0,
                 child: Container(
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade400,
-                    borderRadius: BorderRadius.circular(2),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.1),
-                        blurRadius: 2,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
+                  height: 3,
+                  decoration: BoxDecoration(color: t.muted, borderRadius: BorderRadius.circular(2)),
                 ),
               ),
               PageView.builder(
                 controller: _rackController,
-                onPageChanged: (int index) {
-                  setState(() {
-                    _currentRackIndex = index;
-                  });
-                },
+                onPageChanged: (index) => setState(() => _currentRackIndex = index),
                 itemCount: _sampleGarments.length,
                 itemBuilder: (context, index) {
                   return AnimatedBuilder(
                     animation: _rackController,
                     builder: (context, child) {
-                      double value = 1.0;
+                      double value;
                       if (_rackController.position.haveDimensions) {
                         value = _rackController.page! - index;
                         value = (1 - (value.abs() * 0.4)).clamp(0.0, 1.0);
                       } else {
                         value = (index == _currentRackIndex) ? 1.0 : 0.6;
                       }
-
                       return Center(
                         child: Transform.scale(
                           scale: Curves.easeOut.transform(value),
-                          child: Opacity(
-                            opacity: value.clamp(0.4, 1.0),
-                            child: child,
-                          ),
+                          child: Opacity(opacity: value.clamp(0.4, 1.0), child: child),
                         ),
                       );
                     },
                     child: Column(
                       children: [
+                        // Askı kancası
                         Container(
                           width: 15,
                           height: 20,
                           decoration: BoxDecoration(
                             border: Border(
-                              top: BorderSide(
-                                color: Colors.grey.shade600,
-                                width: 2,
-                              ),
-                              left: BorderSide(
-                                color: Colors.grey.shade600,
-                                width: 2,
-                              ),
-                              right: BorderSide(
-                                color: Colors.grey.shade600,
-                                width: 2,
-                              ),
+                              top: BorderSide(color: t.muted, width: 2),
+                              left: BorderSide(color: t.muted, width: 2),
+                              right: BorderSide(color: t.muted, width: 2),
                             ),
                             borderRadius: const BorderRadius.only(
                               topLeft: Radius.circular(10),
@@ -716,27 +447,19 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                         GestureDetector(
-                          onTap: () {
-                            _rackController.animateToPage(
-                              index,
-                              duration: const Duration(milliseconds: 300),
-                              curve: Curves.easeInOut,
-                            );
-                          },
+                          onTap: () => _rackController.animateToPage(
+                            index,
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeInOut,
+                          ),
                           child: Container(
                             height: 140,
                             width: 100,
                             clipBehavior: Clip.antiAlias,
                             decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(12),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.2),
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 5),
-                                ),
-                              ],
+                              color: t.surface,
+                              borderRadius: BorderRadius.circular(SeeItOnTokens.radiusSm),
+                              border: Border.all(color: t.line),
                             ),
                             child: Image.asset(
                               'assets/images/garments/${_sampleGarments[index]['id']}.jpg',
@@ -752,52 +475,21 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
-
         AnimatedSwitcher(
           duration: const Duration(milliseconds: 300),
           child: Column(
             key: ValueKey<int>(_currentRackIndex),
             children: [
               Text(
-                garmentName(context.l10n, _sampleGarments[_currentRackIndex]['id']!),
-                style: const TextStyle(
-                  color: Color(0xFF1E1C1A),
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'Georgia',
-                ),
+                garmentName(l, current['id']!),
+                style: Theme.of(context).textTheme.headlineSmall!.copyWith(fontSize: 18),
               ),
-              const SizedBox(height: 4),
-              Text(
-                categoryName(context.l10n, _sampleGarments[_currentRackIndex]['category']!),
-                style: TextStyle(
-                  color: const Color(0xFF1E1C1A).withValues(alpha: 0.5),
-                  fontSize: 12,
-                ),
-              ),
+              const SizedBox(height: 2),
+              Caption(categoryName(l, current['category']!), italic: true),
               const SizedBox(height: 12),
-              InkWell(
-                onTap: () => _selectRackGarment(_currentRackIndex),
-                borderRadius: BorderRadius.circular(20),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 8,
-                  ),
-                  decoration: BoxDecoration(
-                    color: textColor,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    context.l10n.homeRackSelect,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1,
-                    ),
-                  ),
-                ),
+              PillButton(
+                label: l.homeRackSelect,
+                onPressed: () => _selectRackGarment(_currentRackIndex),
               ),
             ],
           ),
@@ -815,137 +507,78 @@ class _HomeScreenState extends State<HomeScreen> {
     required String subText,
     required List<Widget> buttons,
   }) {
-    const textColor = Color(0xFF1E1C1A);
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.4),
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.white, width: 2),
-      ),
+    final t = context.tokens;
+    final text = Theme.of(context).textTheme;
+    return EditorialCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style: TextStyle(
-              color: textColor.withValues(alpha: 0.6),
-              fontSize: 11,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1,
-            ),
-          ),
-          const SizedBox(height: 16),
-
+          EditorialOverline(title),
+          const SizedBox(height: 14),
           GestureDetector(
             onTap: () => _pickImage(isPerson, ImageSource.gallery),
             child: Container(
               height: 160,
               width: double.infinity,
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.02),
-                    blurRadius: 10,
-                    spreadRadius: 2,
-                  ),
-                ],
+                color: t.paper,
+                borderRadius: BorderRadius.circular(SeeItOnTokens.radiusMd),
+                border: Border.all(color: t.line),
                 image: imageBytes != null
-                    ? DecorationImage(
-                        image: MemoryImage(imageBytes),
-                        fit: BoxFit.contain,
-                      )
+                    ? DecorationImage(image: MemoryImage(imageBytes), fit: BoxFit.contain)
                     : null,
               ),
               child: imageBytes == null
-                  ? Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: const BoxDecoration(
-                            color: Color(0xFFF0EBE1),
-                            shape: BoxShape.circle,
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(icon, color: t.muted, size: 26),
+                          const SizedBox(height: 10),
+                          Text(mainText, style: text.headlineSmall!.copyWith(fontSize: 17)),
+                          const SizedBox(height: 6),
+                          Text(
+                            subText,
+                            textAlign: TextAlign.center,
+                            maxLines: 3,
+                            overflow: TextOverflow.ellipsis,
+                            style: text.bodySmall!.copyWith(height: 1.4),
                           ),
-                          child: Icon(
-                            icon,
-                            color: textColor.withValues(alpha: 0.6),
-                            size: 24,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        Text(
-                          mainText,
-                          style: const TextStyle(
-                            color: textColor,
-                            fontSize: 16,
-                            fontFamily: 'Georgia',
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        Text(
-                          subText,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: textColor.withValues(alpha: 0.6),
-                            fontSize: 11,
-                            height: 1.4,
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     )
                   : null,
             ),
           ),
-          const SizedBox(height: 16),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            alignment: WrapAlignment.center,
-            children: buttons,
+          const SizedBox(height: 14),
+          SizedBox(
+            width: double.infinity,
+            child: Wrap(spacing: 8, runSpacing: 8, alignment: WrapAlignment.center, children: buttons),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildCardButton(
-    IconData icon,
-    String label,
-    VoidCallback onTap, {
-    bool isRound = false,
-  }) {
-    const textColor = Color(0xFF1E1C1A);
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(isRound ? 30 : 12),
-      child: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: isRound ? 16 : 12,
-          vertical: 10,
-        ),
-        decoration: BoxDecoration(
-          color: Colors.transparent,
-          borderRadius: BorderRadius.circular(isRound ? 30 : 12),
-          border: Border.all(color: textColor.withValues(alpha: 0.15)),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, color: textColor.withValues(alpha: 0.6), size: 14),
-            const SizedBox(width: 6),
-            Text(
-              label,
-              style: const TextStyle(
-                color: textColor,
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
+  Widget _buildCardButton(IconData icon, String label, VoidCallback onTap) {
+    final t = context.tokens;
+    return Material(
+      color: Colors.transparent,
+      shape: StadiumBorder(side: BorderSide(color: t.line)),
+      child: InkWell(
+        onTap: onTap,
+        customBorder: const StadiumBorder(),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, color: t.muted, size: 14),
+              const SizedBox(width: 6),
+              Text(label, style: Theme.of(context).textTheme.labelLarge!.copyWith(fontSize: 12)),
+            ],
+          ),
         ),
       ),
     );
