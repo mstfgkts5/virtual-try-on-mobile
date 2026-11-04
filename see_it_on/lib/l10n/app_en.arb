@@ -1,5 +1,10 @@
 {
   "@@locale": "en",
   "appName": "SeeItOn",
-  "homeTitle": "Studio Fitting Room"
+  "homeTitle": "Studio Fitting Room",
+  "settingsTitle": "Settings",
+  "settingsLanguage": "LANGUAGE",
+  "settingsLanguageHint": "The app language. Your choice is remembered on this device.",
+  "settingsLanguageTr": "Türkçe",
+  "settingsLanguageEn": "English"
 }

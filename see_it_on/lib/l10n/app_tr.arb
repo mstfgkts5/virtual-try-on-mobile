@@ -1,5 +1,10 @@
 {
   "@@locale": "tr",
   "appName": "SeeItOn",
-  "homeTitle": "Stüdyo Kabin"
+  "homeTitle": "Stüdyo Kabin",
+  "settingsTitle": "Ayarlar",
+  "settingsLanguage": "DİL",
+  "settingsLanguageHint": "Uygulamanın dili. Seçimin bu cihazda hatırlanır.",
+  "settingsLanguageTr": "Türkçe",
+  "settingsLanguageEn": "English"
 }
