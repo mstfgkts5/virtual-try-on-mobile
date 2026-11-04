@@ -30,7 +30,8 @@ class _HomeScreenState extends State<HomeScreen> {
       'label': 'Alt Giyim',
       'icon': Icons.straighten,
       'hint':
-          'Pantolon, etek veya şort\nfotoğrafı (tam boy kişi fotoğrafı önerilir)',
+          // CatVTON maskeyi mevcut kıyafete göre çıkardığı için kısa kıyafet uzun kıyafetin üstüne uzar
+          'Pantolon, etek veya şort fotoğrafı. Şort/kısa etek için\nüzerinde kısa kıyafet olan bir fotoğraf daha iyi sonuç verir',
     },
     {
       'id': 'overall',
@@ -79,7 +80,72 @@ class _HomeScreenState extends State<HomeScreen> {
     {'id': 'm-l', 'label': 'Erkek L', 'info': '185 cm • 90 kg'},
     {'id': 'm-xl', 'label': 'Erkek XL', 'info': '185 cm • 100 kg'},
   ];
-  static const _sampleGarmentAsset = 'assets/images/sample_garment_blazer.png';
+  // tools/generate_garments.py ile üretilen örnek ürün fotoğrafları (gerçek marka ürünü değildir)
+  static const _sampleGarments = [
+    {'id': 'blazer', 'category': 'upper', 'label': 'Ekose Blazer'},
+    {'id': 'jeans-w', 'category': 'lower', 'label': 'Mavi Kot'},
+    {'id': 'chino-m', 'category': 'lower', 'label': 'Bej Chino'},
+    {'id': 'trousers-m', 'category': 'lower', 'label': 'Lacivert Pantolon'},
+    {'id': 'skirt-w', 'category': 'lower', 'label': 'Pliseli Etek'},
+    {'id': 'shorts-w', 'category': 'lower', 'label': 'Kot Şort'},
+  ];
+  List<Map<String, String>> get _garmentsForCategory =>
+      _sampleGarments.where((g) => g['category'] == _category).toList();
+
+  void _showGarmentPicker() {
+    const textColor = Color(0xFF1E1C1A);
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.7),
+      backgroundColor: const Color(0xFFF6F4EF),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(28))),
+      builder: (ctx) => SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Örnek ${_selectedCategory['label']}', style: const TextStyle(color: textColor, fontSize: 20, fontFamily: 'Georgia', fontWeight: FontWeight.bold)),
+              const SizedBox(height: 16),
+              GridView(
+                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: 130,
+                  mainAxisSpacing: 12,
+                  crossAxisSpacing: 10,
+                  childAspectRatio: 0.8,
+                ),
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                children: _garmentsForCategory.map((g) {
+                  final asset = 'assets/images/garments/${g['id']}.jpg';
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.pop(ctx);
+                      _loadAsset(false, asset);
+                    },
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(14),
+                            child: Image.asset(asset, fit: BoxFit.cover, width: double.infinity),
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(g['label']!, style: const TextStyle(color: textColor, fontSize: 12, fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                  );
+                }).toList(),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
   Future<void> _loadAsset(bool isPerson, String assetPath) async {
     final data = await rootBundle.load(assetPath);
@@ -350,11 +416,11 @@ class _HomeScreenState extends State<HomeScreen> {
                               "Kamera",
                               () => _pickImage(false, ImageSource.camera),
                             ),
-                            if (_category == 'upper')
+                            if (_garmentsForCategory.isNotEmpty)
                               _buildCardButton(
                                 Icons.style_outlined,
                                 "Örnek",
-                                () => _loadAsset(false, _sampleGarmentAsset),
+                                _showGarmentPicker,
                               ),
                           ],
                         ),
