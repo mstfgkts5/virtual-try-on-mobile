@@ -29,4 +29,66 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get settingsLanguageEn => 'English';
+
+  @override
+  String get onboardingCardTitle => 'Üst • Alt • Tam Kıyafet';
+
+  @override
+  String get onboardingCardSubtitle => 'Tek fotoğrafla saniyeler içinde dene';
+
+  @override
+  String get onboardingBadge => 'YEREL AI';
+
+  @override
+  String get onboardingTitle => 'Her Kıyafeti\nAnında Dene';
+
+  @override
+  String get onboardingSubtitle =>
+      'Fotoğrafını yükle, bir kıyafet seç ve saniyeler içinde üzerinde gerçekçi görünümünü izle.';
+
+  @override
+  String get onboardingStart => 'Hemen Başla';
+
+  @override
+  String get onboardingHaveAccount => 'Zaten hesabın var mı? ';
+
+  @override
+  String get loginTitle => 'Tekrar Hoş Geldin';
+
+  @override
+  String get signupTitle => 'SeeItOn\'a Katıl';
+
+  @override
+  String get loginSubtitle => 'Dijital gardırobuna erişmek için giriş yap.';
+
+  @override
+  String get signupSubtitle =>
+      'Kıyafetleri üzerinde denemeye başlamak için hesap oluştur.';
+
+  @override
+  String get loginEmailHint => 'E-posta adresi';
+
+  @override
+  String get loginPasswordHint => 'Şifre';
+
+  @override
+  String get loginButton => 'Giriş Yap';
+
+  @override
+  String get signupButton => 'Kayıt Ol';
+
+  @override
+  String get loginNoAccount => 'Hesabın yok mu? ';
+
+  @override
+  String get loginHaveAccount => 'Zaten hesabın var mı? ';
+
+  @override
+  String get loginSkipDev => 'Girişi atla (geliştirici modu)';
+
+  @override
+  String get loginMissingFields => 'Lütfen e-posta ve şifrenizi girin.';
+
+  @override
+  String get errorUnexpected => 'Beklenmeyen bir hata oluştu.';
 }

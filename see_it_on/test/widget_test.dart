@@ -1,10 +1,12 @@
 import 'dart:typed_data';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:see_it_on/models/tryon_request.dart';
+import 'package:see_it_on/screens/login_screen.dart';
 import 'package:see_it_on/screens/onboarding_screen.dart';
 import 'package:see_it_on/services/api_service.dart';
+
+import 'helpers.dart';
 
 void main() {
   test('TryOnRequest kategoriyi backend formatında gönderir', () {
@@ -23,7 +25,27 @@ void main() {
   });
 
   testWidgets('Açılış ekranı marka adını gösterir', (tester) async {
-    await tester.pumpWidget(const MaterialApp(home: OnboardingScreen()));
+    await tester.pumpWidget(localized(const OnboardingScreen()));
     expect(find.text('SeeItOn'), findsOneWidget);
+  });
+
+  testWidgets('Açılış ekranı TR başlığı', (tester) async {
+    await tester.pumpWidget(localized(const OnboardingScreen()));
+    expect(find.text('Her Kıyafeti\nAnında Dene'), findsOneWidget);
+  });
+
+  testWidgets('Açılış ekranı EN başlığı', (tester) async {
+    await tester.pumpWidget(localized(const OnboardingScreen(), lang: 'en'));
+    expect(find.text('Try On Any Outfit\nInstantly'), findsOneWidget);
+  });
+
+  testWidgets('Giriş ekranı TR', (tester) async {
+    await tester.pumpWidget(localized(const LoginScreen()));
+    expect(find.text('Tekrar Hoş Geldin'), findsOneWidget);
+  });
+
+  testWidgets('Giriş ekranı EN', (tester) async {
+    await tester.pumpWidget(localized(const LoginScreen(), lang: 'en'));
+    expect(find.text('Welcome Back'), findsOneWidget);
   });
 }
