@@ -26,5 +26,78 @@
   "loginHaveAccount": "Zaten hesabın var mı? ",
   "loginSkipDev": "Girişi atla (geliştirici modu)",
   "loginMissingFields": "Lütfen e-posta ve şifrenizi girin.",
-  "errorUnexpected": "Beklenmeyen bir hata oluştu."
+  "errorUnexpected": "Beklenmeyen bir hata oluştu.",
+  "homeSubtitle": "Kendi stilini saniyeler içinde oluştur.",
+  "homeWhatToTry": "NE DENEMEK İSTİYORSUN?",
+  "categoryUpper": "Üst Giyim",
+  "categoryLower": "Alt Giyim",
+  "categoryOverall": "Tam Kıyafet",
+  "categoryUpperHint": "Tişört, gömlek, kazak, ceket\nveya hırka fotoğrafı",
+  "categoryLowerHint": "Pantolon, etek veya şort fotoğrafı. Şort/kısa etek için\nüzerinde kısa kıyafet olan bir fotoğraf daha iyi sonuç verir",
+  "categoryOverallHint": "Elbise veya tulum\nfotoğrafı (tam boy kişi fotoğrafı önerilir)",
+  "homeStepPerson": "ADIM 1  •  Kendi Fotoğrafın",
+  "homeStepGarment": "ADIM 2  •  {category}",
+  "@homeStepGarment": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "homeUploadPhoto": "Fotoğraf Yükle",
+  "homeUploadPhotoHint": "Net bir boy aynası selfie'si\nveya düz durduğunuz bir fotoğraf",
+  "homeUploadGarment": "Kıyafet Yükle",
+  "homeGallery": "Galeri",
+  "homeCamera": "Kamera",
+  "homeMannequin": "Manken",
+  "homeSample": "Örnek",
+  "homeTryOn": "Üzerimde Gör",
+  "homeTryOnBadge": "Try On",
+  "homeNeedPerson": "Lütfen önce kendi fotoğrafınızı (Adım 1) yükleyin!",
+  "homeNeedGarment": "Lütfen denemek istediğiniz kıyafeti (Adım 2) seçin!",
+  "homeRackTitle": "ÖRNEK KIYAFET RAFI",
+  "homeRackSelect": "BU PARÇAYI SEÇ",
+  "homeRackSelected": "{garment} seçildi. Şimdi fotoğrafını ekle ve \"Üzerimde Gör\"e bas.",
+  "@homeRackSelected": {
+    "placeholders": {
+      "garment": {
+        "type": "String"
+      }
+    }
+  },
+  "homeSamplePickerTitle": "Örnek {category}",
+  "@homeSamplePickerTitle": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "homeMannequinPickerTitle": "Hazır Manken Seç",
+  "homeMannequinPickerHint": "Kendi fotoğrafın yerine bir bedeni seçerek dene.",
+  "navTryOn": "DENE",
+  "navWardrobe": "GARDIROP",
+  "navProfile": "PROFİL",
+  "mannequinWomen": "Kadın {size}",
+  "@mannequinWomen": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "mannequinMen": "Erkek {size}",
+  "@mannequinMen": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "garmentBlazer": "Ekose Blazer",
+  "garmentJeans": "Mavi Kot",
+  "garmentChino": "Bej Chino",
+  "garmentTrousers": "Lacivert Pantolon",
+  "garmentSkirt": "Pliseli Etek",
+  "garmentShorts": "Kot Şort"
 }
