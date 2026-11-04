@@ -1,40 +1,10 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:see_it_on/models/wardrobe_item.dart';
 import 'package:see_it_on/screens/wardrobe_screen.dart';
-import 'package:see_it_on/services/wardrobe_repository.dart';
 
+import 'fakes.dart';
 import 'helpers.dart';
-
-class FakeWardrobeRepository implements WardrobeRepository {
-  FakeWardrobeRepository({this.email = 'a@b.co', List<WardrobeItem>? items, this.failFetch = false})
-      : items = items ?? [];
-
-  final String? email;
-  final List<WardrobeItem> items;
-  bool failFetch;
-  final deleted = <String>[];
-
-  @override
-  String? get currentUserEmail => email;
-
-  @override
-  Future<List<WardrobeItem>> fetch() async {
-    if (failFetch) throw Exception('offline');
-    return List.of(items);
-  }
-
-  @override
-  Future<void> add(Uint8List pngBytes, String category) async {}
-
-  @override
-  Future<void> delete(WardrobeItem item) async {
-    deleted.add(item.id);
-    items.removeWhere((i) => i.id == item.id);
-  }
-}
 
 WardrobeItem _item(String id, String category, int daysBack) => WardrobeItem(
       id: id,
