@@ -35,3 +35,23 @@ flutter:
     - assets/images/
     - assets/images/mannequins/
     - assets/images/garments/
+
+  # Dergi tarzı tipografi (SIL Open Font License, lisanslar assets/fonts/OFL-*.txt).
+  # Statik ağırlık dosyaları: FontWeight her platformda doğru dosyayı seçer.
+  fonts:
+    - family: PlayfairDisplay
+      fonts:
+        - asset: assets/fonts/PlayfairDisplay-Regular.ttf
+        - asset: assets/fonts/PlayfairDisplay-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/PlayfairDisplay-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/PlayfairDisplay-Italic.ttf
+          style: italic
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter-Regular.ttf
+        - asset: assets/fonts/Inter-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Inter-SemiBold.ttf
+          weight: 600
