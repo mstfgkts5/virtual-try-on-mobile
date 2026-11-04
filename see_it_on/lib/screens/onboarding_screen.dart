@@ -95,27 +95,40 @@ class OnboardingScreen extends StatelessWidget {
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.start,
+                            // Rozet metnin altında: dar ekranda ve uzun (TR/EN) metinlerde satır sıkışmaz
                             children: [
-                              Text(context.l10n.onboardingCardTitle, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.black87)),
-                              Text(context.l10n.onboardingCardSubtitle, style: TextStyle(color: Colors.black54, fontSize: 10)),
+                              Text(
+                                context.l10n.onboardingCardTitle,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.black87),
+                              ),
+                              Text(
+                                context.l10n.onboardingCardSubtitle,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(color: Colors.black54, fontSize: 10),
+                              ),
+                              const SizedBox(height: 6),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.black12),
+                                  borderRadius: BorderRadius.circular(12),
+                                  color: const Color(0xFFFAF9F6),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(Icons.memory, size: 11, color: Colors.black54),
+                                    const SizedBox(width: 4),
+                                    Text(context.l10n.onboardingBadge, style: const TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: Colors.black54)),
+                                  ],
+                                ),
+                              ),
                             ],
                           ),
                         ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.black12),
-                            borderRadius: BorderRadius.circular(12),
-                            color: const Color(0xFFFAF9F6),
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(Icons.memory, size: 12, color: Colors.black54),
-                              SizedBox(width: 4),
-                              Text(context.l10n.onboardingBadge, style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.black54)),
-                            ],
-                          ),
-                        )
                       ],
                     ),
                   ),
