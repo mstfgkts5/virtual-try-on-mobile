@@ -26,5 +26,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   
+  # Flutter alt klasörleri otomatik eklemez; her klasör ayrı yazılmalı
   assets:
-    - assets/
+    - assets/images/
+    - assets/images/mannequins/

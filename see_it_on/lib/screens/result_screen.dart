@@ -232,8 +232,11 @@ class _ResultScreenState extends State<ResultScreen> {
                 Positioned(
                   top: 0,
                   bottom: 0,
-                  left: width * _sliderValue - 14,
-                  child: Row(
+                  // Tutamaç kesim çizgisinin tam ortasına oturur (çizgi + daire aynı merkezde)
+                  left: width * _sliderValue - 16,
+                  width: 32,
+                  child: Stack(
+                    alignment: Alignment.center,
                     children: [
                       Container(width: 2, color: Colors.white),
                       Container(
@@ -249,7 +252,6 @@ class _ResultScreenState extends State<ResultScreen> {
                           size: 16,
                         ),
                       ),
-                      Container(width: 2, color: Colors.white),
                     ],
                   ),
                 ),
@@ -383,15 +385,23 @@ class _ResultScreenState extends State<ResultScreen> {
               ),
             ),
 
-            Container(
-              height: 450,
-              margin: const EdgeInsets.all(16),
-              clipBehavior: Clip.antiAlias,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(32),
-                border: Border.all(color: Colors.grey.shade900, width: 2),
+            // Sonuç 3:4 (768x1024) olduğu için kutu da 3:4; geniş ekranda görsel kırpılmaz
+            Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 480),
+                child: AspectRatio(
+                  aspectRatio: 3 / 4,
+                  child: Container(
+                    margin: const EdgeInsets.all(16),
+                    clipBehavior: Clip.antiAlias,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(32),
+                      border: Border.all(color: Colors.grey.shade900, width: 2),
+                    ),
+                    child: _buildImageComparisonArea(),
+                  ),
+                ),
               ),
-              child: _buildImageComparisonArea(),
             ),
 
             if (_activeTab == "Fade")

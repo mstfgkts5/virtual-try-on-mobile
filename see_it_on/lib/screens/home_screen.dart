@@ -1,5 +1,5 @@
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'loading_screen.dart';
 import 'wardrobe_screen.dart';
@@ -66,6 +66,88 @@ class _HomeScreenState extends State<HomeScreen> {
   void dispose() {
     _rackController.dispose();
     super.dispose();
+  }
+
+  // tools/generate_mannequins.py ile üretilen hazır mankenler (gerçek kişi fotoğrafı değildir)
+  static const _mannequins = [
+    {'id': 'w-s', 'label': 'Kadın S', 'info': '160 cm • 50 kg'},
+    {'id': 'w-m', 'label': 'Kadın M', 'info': '160 cm • 58 kg'},
+    {'id': 'w-l', 'label': 'Kadın L', 'info': '160 cm • 67 kg'},
+    {'id': 'w-xl', 'label': 'Kadın XL', 'info': '160 cm • 76 kg'},
+    {'id': 'm-s', 'label': 'Erkek S', 'info': '185 cm • 72 kg'},
+    {'id': 'm-m', 'label': 'Erkek M', 'info': '185 cm • 80 kg'},
+    {'id': 'm-l', 'label': 'Erkek L', 'info': '185 cm • 90 kg'},
+    {'id': 'm-xl', 'label': 'Erkek XL', 'info': '185 cm • 100 kg'},
+  ];
+  static const _sampleGarmentAsset = 'assets/images/sample_garment_blazer.png';
+
+  Future<void> _loadAsset(bool isPerson, String assetPath) async {
+    final data = await rootBundle.load(assetPath);
+    setState(() {
+      if (isPerson) {
+        _personImageBytes = data.buffer.asUint8List();
+      } else {
+        _garmentImageBytes = data.buffer.asUint8List();
+      }
+    });
+  }
+
+  void _showMannequinPicker() {
+    const textColor = Color(0xFF1E1C1A);
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.85),
+      backgroundColor: const Color(0xFFF6F4EF),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(28))),
+      builder: (ctx) => SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('Hazır Manken Seç', style: TextStyle(color: textColor, fontSize: 20, fontFamily: 'Georgia', fontWeight: FontWeight.bold)),
+              const SizedBox(height: 4),
+              Text('Kendi fotoğrafın yerine bir bedeni seçerek dene.', style: TextStyle(color: textColor.withValues(alpha: 0.6), fontSize: 12)),
+              const SizedBox(height: 16),
+              // Kart genişliği sabit tutulur; geniş ekranda (web/tablet) kartlar büyüyüp taşmaz
+              GridView(
+                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: 110,
+                  mainAxisSpacing: 12,
+                  crossAxisSpacing: 10,
+                  childAspectRatio: 0.52,
+                ),
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                children: _mannequins.map((m) {
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.pop(ctx);
+                      _loadAsset(true, 'assets/images/mannequins/${m['id']}.jpg');
+                    },
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(14),
+                            child: Image.asset('assets/images/mannequins/${m['id']}.jpg', fit: BoxFit.cover, width: double.infinity),
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(m['label']!, style: const TextStyle(color: textColor, fontSize: 12, fontWeight: FontWeight.bold)),
+                        Text(m['info']!, style: TextStyle(color: textColor.withValues(alpha: 0.5), fontSize: 9)),
+                      ],
+                    ),
+                  );
+                }).toList(),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Future<void> _pickImage(bool isPerson, ImageSource source) async {
@@ -241,6 +323,11 @@ class _HomeScreenState extends State<HomeScreen> {
                               "Kamera",
                               () => _pickImage(true, ImageSource.camera),
                             ),
+                            _buildCardButton(
+                              Icons.accessibility_new,
+                              "Manken",
+                              _showMannequinPicker,
+                            ),
                           ],
                         ),
                         const SizedBox(height: 16),
@@ -263,6 +350,12 @@ class _HomeScreenState extends State<HomeScreen> {
                               "Kamera",
                               () => _pickImage(false, ImageSource.camera),
                             ),
+                            if (_category == 'upper')
+                              _buildCardButton(
+                                Icons.style_outlined,
+                                "Örnek",
+                                () => _loadAsset(false, _sampleGarmentAsset),
+                              ),
                           ],
                         ),
                       ],
