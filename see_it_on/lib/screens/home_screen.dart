@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import '../core/l10n_ext.dart';
 import 'loading_screen.dart';
 import 'settings_screen.dart';
 import 'wardrobe_screen.dart';
@@ -19,26 +20,20 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // Denenecek kıyafet bölgesi: backend'e 'upper' / 'lower' / 'overall' olarak gider
   String _category = 'upper';
+  // Metinler (ad, ipucu) çeviri dosyalarında: categoryName / categoryHint.
+  // Alt giyim ipucu, CatVTON'un kısa kıyafeti uzun kıyafetin üstüne uzatma sınırını anlatır.
   static const _categories = [
     {
       'id': 'upper',
-      'label': 'Üst Giyim',
       'icon': Icons.checkroom,
-      'hint': 'Tişört, gömlek, kazak, ceket\nveya hırka fotoğrafı',
     },
     {
       'id': 'lower',
-      'label': 'Alt Giyim',
       'icon': Icons.straighten,
-      'hint':
-          // CatVTON maskeyi mevcut kıyafete göre çıkardığı için kısa kıyafet uzun kıyafetin üstüne uzar
-          'Pantolon, etek veya şort fotoğrafı. Şort/kısa etek için\nüzerinde kısa kıyafet olan bir fotoğraf daha iyi sonuç verir',
     },
     {
       'id': 'overall',
-      'label': 'Tam Kıyafet',
       'icon': Icons.accessibility_new,
-      'hint': 'Elbise veya tulum\nfotoğrafı (tam boy kişi fotoğrafı önerilir)',
     },
   ];
   Map<String, Object> get _selectedCategory =>
@@ -65,23 +60,23 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // tools/generate_mannequins.py ile üretilen hazır mankenler (gerçek kişi fotoğrafı değildir)
   static const _mannequins = [
-    {'id': 'w-s', 'label': 'Kadın S', 'info': '160 cm • 50 kg'},
-    {'id': 'w-m', 'label': 'Kadın M', 'info': '160 cm • 58 kg'},
-    {'id': 'w-l', 'label': 'Kadın L', 'info': '160 cm • 67 kg'},
-    {'id': 'w-xl', 'label': 'Kadın XL', 'info': '160 cm • 76 kg'},
-    {'id': 'm-s', 'label': 'Erkek S', 'info': '185 cm • 72 kg'},
-    {'id': 'm-m', 'label': 'Erkek M', 'info': '185 cm • 80 kg'},
-    {'id': 'm-l', 'label': 'Erkek L', 'info': '185 cm • 90 kg'},
-    {'id': 'm-xl', 'label': 'Erkek XL', 'info': '185 cm • 100 kg'},
+    {'id': 'w-s', 'info': '160 cm • 50 kg'},
+    {'id': 'w-m', 'info': '160 cm • 58 kg'},
+    {'id': 'w-l', 'info': '160 cm • 67 kg'},
+    {'id': 'w-xl', 'info': '160 cm • 76 kg'},
+    {'id': 'm-s', 'info': '185 cm • 72 kg'},
+    {'id': 'm-m', 'info': '185 cm • 80 kg'},
+    {'id': 'm-l', 'info': '185 cm • 90 kg'},
+    {'id': 'm-xl', 'info': '185 cm • 100 kg'},
   ];
   // tools/generate_garments.py ile üretilen örnek ürün fotoğrafları (gerçek marka ürünü değildir)
   static const _sampleGarments = [
-    {'id': 'blazer', 'category': 'upper', 'label': 'Ekose Blazer'},
-    {'id': 'jeans-w', 'category': 'lower', 'label': 'Mavi Kot'},
-    {'id': 'chino-m', 'category': 'lower', 'label': 'Bej Chino'},
-    {'id': 'trousers-m', 'category': 'lower', 'label': 'Lacivert Pantolon'},
-    {'id': 'skirt-w', 'category': 'lower', 'label': 'Pliseli Etek'},
-    {'id': 'shorts-w', 'category': 'lower', 'label': 'Kot Şort'},
+    {'id': 'blazer', 'category': 'upper'},
+    {'id': 'jeans-w', 'category': 'lower'},
+    {'id': 'chino-m', 'category': 'lower'},
+    {'id': 'trousers-m', 'category': 'lower'},
+    {'id': 'skirt-w', 'category': 'lower'},
+    {'id': 'shorts-w', 'category': 'lower'},
   ];
   List<Map<String, String>> get _garmentsForCategory =>
       _sampleGarments.where((g) => g['category'] == _category).toList();
@@ -101,7 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Örnek ${_selectedCategory['label']}', style: const TextStyle(color: textColor, fontSize: 20, fontFamily: 'Georgia', fontWeight: FontWeight.bold)),
+              Text(context.l10n.homeSamplePickerTitle(categoryName(context.l10n, _category)), style: const TextStyle(color: textColor, fontSize: 20, fontFamily: 'Georgia', fontWeight: FontWeight.bold)),
               const SizedBox(height: 16),
               GridView(
                 gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
@@ -128,7 +123,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                         const SizedBox(height: 6),
-                        Text(g['label']!, style: const TextStyle(color: textColor, fontSize: 12, fontWeight: FontWeight.bold)),
+                        Text(garmentName(context.l10n, g['id']!), style: const TextStyle(color: textColor, fontSize: 12, fontWeight: FontWeight.bold)),
                       ],
                     ),
                   );
@@ -171,9 +166,9 @@ class _HomeScreenState extends State<HomeScreen> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Hazır Manken Seç', style: TextStyle(color: textColor, fontSize: 20, fontFamily: 'Georgia', fontWeight: FontWeight.bold)),
+              Text(context.l10n.homeMannequinPickerTitle, style: const TextStyle(color: textColor, fontSize: 20, fontFamily: 'Georgia', fontWeight: FontWeight.bold)),
               const SizedBox(height: 4),
-              Text('Kendi fotoğrafın yerine bir bedeni seçerek dene.', style: TextStyle(color: textColor.withValues(alpha: 0.6), fontSize: 12)),
+              Text(context.l10n.homeMannequinPickerHint, style: TextStyle(color: textColor.withValues(alpha: 0.6), fontSize: 12)),
               const SizedBox(height: 16),
               // Kart genişliği sabit tutulur; geniş ekranda (web/tablet) kartlar büyüyüp taşmaz
               GridView(
@@ -200,7 +195,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                         const SizedBox(height: 6),
-                        Text(m['label']!, style: const TextStyle(color: textColor, fontSize: 12, fontWeight: FontWeight.bold)),
+                        Text(mannequinName(context.l10n, m['id']!), style: const TextStyle(color: textColor, fontSize: 12, fontWeight: FontWeight.bold)),
                         Text(m['info']!, style: TextStyle(color: textColor.withValues(alpha: 0.5), fontSize: 9)),
                       ],
                     ),
@@ -239,8 +234,8 @@ class _HomeScreenState extends State<HomeScreen> {
               Expanded(
                 child: Text(
                   _personImageBytes == null
-                      ? 'Lütfen önce kendi fotoğrafınızı (Adım 1) yükleyin!'
-                      : 'Lütfen denemek istediğiniz kıyafeti (Adım 2) seçin!',
+                      ? context.l10n.homeNeedPerson
+                      : context.l10n.homeNeedGarment,
                   style: const TextStyle(fontWeight: FontWeight.w600),
                 ),
               ),
@@ -277,7 +272,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('${garment['label']} seçildi. Şimdi fotoğrafını ekle ve "Üzerimde Gör"e bas.'),
+        content: Text(context.l10n.homeRackSelected(garmentName(context.l10n, garment['id']!))),
         backgroundColor: const Color(0xFF221F1E),
         duration: const Duration(seconds: 3),
       ),
@@ -341,8 +336,8 @@ class _HomeScreenState extends State<HomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 10),
-                const Text(
-                  'Studio Fitting Room',
+                Text(
+                  context.l10n.homeTitle,
                   style: TextStyle(
                     color: textColor,
                     fontSize: 32,
@@ -353,7 +348,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Kendi stilini saniyeler içinde oluştur.',
+                  context.l10n.homeSubtitle,
                   style: TextStyle(
                     color: textColor.withValues(alpha: 0.6),
                     fontSize: 13,
@@ -370,27 +365,27 @@ class _HomeScreenState extends State<HomeScreen> {
                     Column(
                       children: [
                         _buildUploadCard(
-                          title: "ADIM 1  •  Kendi Fotoğrafın",
+                          title: context.l10n.homeStepPerson,
                           isPerson: true,
                           imageBytes: _personImageBytes,
                           icon: Icons.add_a_photo_outlined,
-                          mainText: "Fotoğraf Yükle",
+                          mainText: context.l10n.homeUploadPhoto,
                           subText:
-                              "Net bir boy aynası selfie'si\nveya düz durduğunuz bir fotoğraf",
+                              context.l10n.homeUploadPhotoHint,
                           buttons: [
                             _buildCardButton(
                               Icons.photo_library_outlined,
-                              "Galeri",
+                              context.l10n.homeGallery,
                               () => _pickImage(true, ImageSource.gallery),
                             ),
                             _buildCardButton(
                               Icons.camera_alt_outlined,
-                              "Kamera",
+                              context.l10n.homeCamera,
                               () => _pickImage(true, ImageSource.camera),
                             ),
                             _buildCardButton(
                               Icons.accessibility_new,
-                              "Manken",
+                              context.l10n.homeMannequin,
                               _showMannequinPicker,
                             ),
                           ],
@@ -398,27 +393,27 @@ class _HomeScreenState extends State<HomeScreen> {
                         const SizedBox(height: 16),
 
                         _buildUploadCard(
-                          title: "ADIM 2  •  ${_selectedCategory['label']}",
+                          title: context.l10n.homeStepGarment(categoryName(context.l10n, _category)),
                           isPerson: false,
                           imageBytes: _garmentImageBytes,
                           icon: _selectedCategory['icon'] as IconData,
-                          mainText: "Kıyafet Yükle",
-                          subText: _selectedCategory['hint'] as String,
+                          mainText: context.l10n.homeUploadGarment,
+                          subText: categoryHint(context.l10n, _category),
                           buttons: [
                             _buildCardButton(
                               Icons.photo_library_outlined,
-                              "Galeri",
+                              context.l10n.homeGallery,
                               () => _pickImage(false, ImageSource.gallery),
                             ),
                             _buildCardButton(
                               Icons.camera_alt_outlined,
-                              "Kamera",
+                              context.l10n.homeCamera,
                               () => _pickImage(false, ImageSource.camera),
                             ),
                             if (_garmentsForCategory.isNotEmpty)
                               _buildCardButton(
                                 Icons.style_outlined,
-                                "Örnek",
+                                context.l10n.homeSample,
                                 _showGarmentPicker,
                               ),
                           ],
@@ -471,8 +466,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text(
-                          'Üzerimde Gör',
+                        Text(
+                          context.l10n.homeTryOn,
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 18,
@@ -490,8 +485,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             color: Colors.white.withValues(alpha: 0.15),
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: const Text(
-                            'Try On',
+                          child: Text(
+                            context.l10n.homeTryOnBadge,
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 11,
@@ -540,16 +535,16 @@ class _HomeScreenState extends State<HomeScreen> {
             letterSpacing: 1,
           ),
           unselectedLabelStyle: const TextStyle(fontSize: 10, letterSpacing: 1),
-          items: const [
+          items: [
             BottomNavigationBarItem(
               icon: Icon(Icons.auto_awesome),
-              label: 'TRY ON',
+              label: context.l10n.navTryOn,
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.checkroom),
-              label: 'WARDROBE',
+              label: context.l10n.navWardrobe,
             ),
-            BottomNavigationBarItem(icon: Icon(Icons.tune), label: 'PROFILE'),
+            BottomNavigationBarItem(icon: Icon(Icons.tune), label: context.l10n.navProfile),
           ],
         ),
       ),
@@ -561,7 +556,7 @@ class _HomeScreenState extends State<HomeScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'NE DENEMEK İSTİYORSUN?',
+          context.l10n.homeWhatToTry,
           style: TextStyle(
             color: textColor.withValues(alpha: 0.6),
             fontSize: 11,
@@ -606,7 +601,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         const SizedBox(width: 6),
                         Flexible(
                           child: Text(
-                            c['label'] as String,
+                            categoryName(context.l10n, c['id'] as String),
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               color: isActive ? Colors.white : textColor,
@@ -631,7 +626,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Column(
       children: [
         Text(
-          "ÖRNEK KIYAFET RAFI",
+          context.l10n.homeRackTitle,
           style: TextStyle(
             color: textColor.withValues(alpha: 0.5),
             fontSize: 11,
@@ -764,7 +759,7 @@ class _HomeScreenState extends State<HomeScreen> {
             key: ValueKey<int>(_currentRackIndex),
             children: [
               Text(
-                _sampleGarments[_currentRackIndex]['label']!,
+                garmentName(context.l10n, _sampleGarments[_currentRackIndex]['id']!),
                 style: const TextStyle(
                   color: Color(0xFF1E1C1A),
                   fontSize: 16,
@@ -774,7 +769,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               const SizedBox(height: 4),
               Text(
-                _categories.firstWhere((c) => c['id'] == _sampleGarments[_currentRackIndex]['category'])['label'] as String,
+                categoryName(context.l10n, _sampleGarments[_currentRackIndex]['category']!),
                 style: TextStyle(
                   color: const Color(0xFF1E1C1A).withValues(alpha: 0.5),
                   fontSize: 12,
@@ -793,8 +788,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     color: textColor,
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: const Text(
-                    'BU PARÇAYI SEÇ',
+                  child: Text(
+                    context.l10n.homeRackSelect,
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 10,

@@ -259,6 +259,234 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Beklenmeyen bir hata oluştu.'**
   String get errorUnexpected;
+
+  /// No description provided for @homeSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kendi stilini saniyeler içinde oluştur.'**
+  String get homeSubtitle;
+
+  /// No description provided for @homeWhatToTry.
+  ///
+  /// In tr, this message translates to:
+  /// **'NE DENEMEK İSTİYORSUN?'**
+  String get homeWhatToTry;
+
+  /// No description provided for @categoryUpper.
+  ///
+  /// In tr, this message translates to:
+  /// **'Üst Giyim'**
+  String get categoryUpper;
+
+  /// No description provided for @categoryLower.
+  ///
+  /// In tr, this message translates to:
+  /// **'Alt Giyim'**
+  String get categoryLower;
+
+  /// No description provided for @categoryOverall.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tam Kıyafet'**
+  String get categoryOverall;
+
+  /// No description provided for @categoryUpperHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tişört, gömlek, kazak, ceket\nveya hırka fotoğrafı'**
+  String get categoryUpperHint;
+
+  /// No description provided for @categoryLowerHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Pantolon, etek veya şort fotoğrafı. Şort/kısa etek için\nüzerinde kısa kıyafet olan bir fotoğraf daha iyi sonuç verir'**
+  String get categoryLowerHint;
+
+  /// No description provided for @categoryOverallHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Elbise veya tulum\nfotoğrafı (tam boy kişi fotoğrafı önerilir)'**
+  String get categoryOverallHint;
+
+  /// No description provided for @homeStepPerson.
+  ///
+  /// In tr, this message translates to:
+  /// **'ADIM 1  •  Kendi Fotoğrafın'**
+  String get homeStepPerson;
+
+  /// No description provided for @homeStepGarment.
+  ///
+  /// In tr, this message translates to:
+  /// **'ADIM 2  •  {category}'**
+  String homeStepGarment(String category);
+
+  /// No description provided for @homeUploadPhoto.
+  ///
+  /// In tr, this message translates to:
+  /// **'Fotoğraf Yükle'**
+  String get homeUploadPhoto;
+
+  /// No description provided for @homeUploadPhotoHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Net bir boy aynası selfie\'si\nveya düz durduğunuz bir fotoğraf'**
+  String get homeUploadPhotoHint;
+
+  /// No description provided for @homeUploadGarment.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kıyafet Yükle'**
+  String get homeUploadGarment;
+
+  /// No description provided for @homeGallery.
+  ///
+  /// In tr, this message translates to:
+  /// **'Galeri'**
+  String get homeGallery;
+
+  /// No description provided for @homeCamera.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kamera'**
+  String get homeCamera;
+
+  /// No description provided for @homeMannequin.
+  ///
+  /// In tr, this message translates to:
+  /// **'Manken'**
+  String get homeMannequin;
+
+  /// No description provided for @homeSample.
+  ///
+  /// In tr, this message translates to:
+  /// **'Örnek'**
+  String get homeSample;
+
+  /// No description provided for @homeTryOn.
+  ///
+  /// In tr, this message translates to:
+  /// **'Üzerimde Gör'**
+  String get homeTryOn;
+
+  /// No description provided for @homeTryOnBadge.
+  ///
+  /// In tr, this message translates to:
+  /// **'Try On'**
+  String get homeTryOnBadge;
+
+  /// No description provided for @homeNeedPerson.
+  ///
+  /// In tr, this message translates to:
+  /// **'Lütfen önce kendi fotoğrafınızı (Adım 1) yükleyin!'**
+  String get homeNeedPerson;
+
+  /// No description provided for @homeNeedGarment.
+  ///
+  /// In tr, this message translates to:
+  /// **'Lütfen denemek istediğiniz kıyafeti (Adım 2) seçin!'**
+  String get homeNeedGarment;
+
+  /// No description provided for @homeRackTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'ÖRNEK KIYAFET RAFI'**
+  String get homeRackTitle;
+
+  /// No description provided for @homeRackSelect.
+  ///
+  /// In tr, this message translates to:
+  /// **'BU PARÇAYI SEÇ'**
+  String get homeRackSelect;
+
+  /// No description provided for @homeRackSelected.
+  ///
+  /// In tr, this message translates to:
+  /// **'{garment} seçildi. Şimdi fotoğrafını ekle ve \"Üzerimde Gör\"e bas.'**
+  String homeRackSelected(String garment);
+
+  /// No description provided for @homeSamplePickerTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Örnek {category}'**
+  String homeSamplePickerTitle(String category);
+
+  /// No description provided for @homeMannequinPickerTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hazır Manken Seç'**
+  String get homeMannequinPickerTitle;
+
+  /// No description provided for @homeMannequinPickerHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kendi fotoğrafın yerine bir bedeni seçerek dene.'**
+  String get homeMannequinPickerHint;
+
+  /// No description provided for @navTryOn.
+  ///
+  /// In tr, this message translates to:
+  /// **'DENE'**
+  String get navTryOn;
+
+  /// No description provided for @navWardrobe.
+  ///
+  /// In tr, this message translates to:
+  /// **'GARDIROP'**
+  String get navWardrobe;
+
+  /// No description provided for @navProfile.
+  ///
+  /// In tr, this message translates to:
+  /// **'PROFİL'**
+  String get navProfile;
+
+  /// No description provided for @mannequinWomen.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kadın {size}'**
+  String mannequinWomen(String size);
+
+  /// No description provided for @mannequinMen.
+  ///
+  /// In tr, this message translates to:
+  /// **'Erkek {size}'**
+  String mannequinMen(String size);
+
+  /// No description provided for @garmentBlazer.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ekose Blazer'**
+  String get garmentBlazer;
+
+  /// No description provided for @garmentJeans.
+  ///
+  /// In tr, this message translates to:
+  /// **'Mavi Kot'**
+  String get garmentJeans;
+
+  /// No description provided for @garmentChino.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bej Chino'**
+  String get garmentChino;
+
+  /// No description provided for @garmentTrousers.
+  ///
+  /// In tr, this message translates to:
+  /// **'Lacivert Pantolon'**
+  String get garmentTrousers;
+
+  /// No description provided for @garmentSkirt.
+  ///
+  /// In tr, this message translates to:
+  /// **'Pliseli Etek'**
+  String get garmentSkirt;
+
+  /// No description provided for @garmentShorts.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kot Şort'**
+  String get garmentShorts;
 }
 
 class _AppLocalizationsDelegate
