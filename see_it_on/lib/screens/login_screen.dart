@@ -46,16 +46,14 @@ class _LoginScreenState extends State<LoginScreen> {
 
     try {
       if (_isLogin) {
-        await Supabase.instance.client.auth.signInWithPassword(
-          email: email,
-          password: password,
-        );
+        await Supabase.instance.client.auth
+            .signInWithPassword(email: email, password: password)
+            .timeout(authRequestTimeout);
       } else {
         // E-posta doğrulaması kapalı olduğu için kayıt olan kullanıcı hemen oturum açmış olur
-        await Supabase.instance.client.auth.signUp(
-          email: email,
-          password: password,
-        );
+        await Supabase.instance.client.auth
+            .signUp(email: email, password: password)
+            .timeout(authRequestTimeout);
       }
 
       // Ana ekrana geçişi AuthGate yapar (oturum değişikliğini dinliyor);

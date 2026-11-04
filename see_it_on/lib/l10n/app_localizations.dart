@@ -907,6 +907,12 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Çıkış yap'**
   String get settingsSignOut;
+
+  /// No description provided for @authErrorRateLimit.
+  ///
+  /// In tr, this message translates to:
+  /// **'Çok fazla deneme yapıldı. Lütfen biraz bekleyip tekrar dene.'**
+  String get authErrorRateLimit;
 }
 
 class _AppLocalizationsDelegate

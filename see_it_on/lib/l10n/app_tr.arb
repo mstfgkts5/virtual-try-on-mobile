@@ -232,5 +232,6 @@
       }
     }
   },
-  "settingsSignOut": "Çıkış yap"
+  "settingsSignOut": "Çıkış yap",
+  "authErrorRateLimit": "Çok fazla deneme yapıldı. Lütfen biraz bekleyip tekrar dene."
 }
