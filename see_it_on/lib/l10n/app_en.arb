@@ -152,5 +152,8 @@
   "settingsAppearance": "APPEARANCE",
   "settingsThemeSystem": "System",
   "settingsThemeLight": "Light",
-  "settingsThemeDark": "Dark"
+  "settingsThemeDark": "Dark",
+  "onboardingIssue": "No. 01 — The Fitting Room",
+  "onboardingCoverLine2": "Local AI",
+  "onboardingCoverLine3": "Türkçe & English"
 }

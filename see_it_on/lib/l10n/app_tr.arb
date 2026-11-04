@@ -250,5 +250,8 @@
   "settingsAppearance": "GÖRÜNÜM",
   "settingsThemeSystem": "Sistem",
   "settingsThemeLight": "Açık",
-  "settingsThemeDark": "Koyu"
+  "settingsThemeDark": "Koyu",
+  "onboardingIssue": "No. 01 — Sanal Kabin",
+  "onboardingCoverLine2": "Yerel yapay zeka",
+  "onboardingCoverLine3": "Türkçe & English"
 }

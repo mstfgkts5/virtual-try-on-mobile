@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../core/design/widgets.dart';
 import '../core/l10n_ext.dart';
 import '../services/auth_errors.dart';
 import 'home_screen.dart';
@@ -40,9 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    setState(() {
-      _isLoading = true;
-    });
+    setState(() => _isLoading = true);
 
     try {
       if (_isLogin) {
@@ -62,21 +61,13 @@ class _LoginScreenState extends State<LoginScreen> {
     } catch (e) {
       if (mounted) _showError(authErrorMessage(context.l10n, e));
     } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
   void _showError(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: const Color(0xFFE11D48),
-        behavior: SnackBarBehavior.floating,
-      ),
+      SnackBar(content: Text(message), backgroundColor: context.tokens.danger),
     );
   }
 
@@ -89,162 +80,79 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const textColor = Color(0xFF1E1C1A);
+    final l = context.l10n;
+    final t = context.tokens;
+    final text = Theme.of(context).textTheme;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF6F4EF), // Açık krem arka plan
+      backgroundColor: t.paper,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Logo veya İkon
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.05),
-                        blurRadius: 10,
-                        spreadRadius: 2,
-                      ),
-                    ],
-                  ),
-                  child: const Icon(
-                    Icons.checkroom,
-                    color: textColor,
-                    size: 32,
-                  ),
-                ),
-                const SizedBox(height: 24),
-
-                // Başlık
-                Text(
-                  _isLogin ? context.l10n.loginTitle : context.l10n.signupTitle,
-                  style: const TextStyle(
-                    color: textColor,
-                    fontSize: 32,
-                    fontFamily: 'Georgia',
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: -0.5,
-                  ),
-                ),
+                const EditorialOverline('SeeItOn'),
+                const HairlineDivider(verticalPadding: 14),
+                EditorialHeading(_isLogin ? l.loginTitle : l.signupTitle),
                 const SizedBox(height: 8),
                 Text(
-                  _isLogin
-                      ? context.l10n.loginSubtitle
-                      : context.l10n.signupSubtitle,
-                  style: TextStyle(
-                    color: textColor.withValues(alpha: 0.6),
-                    fontSize: 14,
-                  ),
+                  _isLogin ? l.loginSubtitle : l.signupSubtitle,
+                  style: text.bodyMedium!.copyWith(color: t.muted),
                 ),
-                const SizedBox(height: 40),
+                const SizedBox(height: 36),
 
-                // E-Posta Alanı
                 _buildTextField(
                   controller: _emailController,
-                  hintText: context.l10n.loginEmailHint,
+                  hintText: l.loginEmailHint,
                   icon: Icons.email_outlined,
                   obscureText: false,
-                  textInputAction:
-                      TextInputAction.next, // Enter'a basınca şifreye geçer
+                  textInputAction: TextInputAction.next, // Enter'a basınca şifreye geçer
                 ),
-                const SizedBox(height: 16),
-
-                // Şifre Alanı
+                const SizedBox(height: 14),
                 _buildTextField(
                   controller: _passwordController,
-                  hintText: context.l10n.loginPasswordHint,
+                  hintText: l.loginPasswordHint,
                   icon: Icons.lock_outline,
                   obscureText: _obscurePassword,
                   suffix: IconButton(
-                    tooltip: _obscurePassword
-                        ? context.l10n.loginShowPassword
-                        : context.l10n.loginHidePassword,
+                    tooltip: _obscurePassword ? l.loginShowPassword : l.loginHidePassword,
                     icon: Icon(
-                      _obscurePassword
-                          ? Icons.visibility_outlined
-                          : Icons.visibility_off_outlined,
-                      color: textColor.withValues(alpha: 0.4),
+                      _obscurePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                      color: t.muted,
                       size: 20,
                     ),
                     onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
                   ),
-                  textInputAction:
-                      TextInputAction.done, // Enter/Bitti tuşunu gösterir
+                  textInputAction: TextInputAction.done,
                   onSubmitted: (_) {
-                    if (!_isLoading) {
-                      _authenticate(); // Enter'a basıldığında giriş fonksiyonunu tetikler
-                    }
+                    if (!_isLoading) _authenticate();
                   },
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: 28),
 
-                // Ana Buton (Giriş veya Kayıt)
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: _isLoading ? null : _authenticate,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF221F1E),
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 18),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      elevation: 0,
-                    ),
-                    child: _isLoading
-                        ? const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(
-                              color: Colors.white,
-                              strokeWidth: 2,
-                            ),
-                          )
-                        : Text(
-                            _isLogin ? context.l10n.loginButton : context.l10n.signupButton,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontFamily: 'Georgia',
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                  ),
+                PillButton(
+                  label: _isLogin ? l.loginButton : l.signupButton,
+                  expand: true,
+                  busy: _isLoading,
+                  onPressed: _authenticate,
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 16),
 
-                // Ekran Değiştirme Butonu (Giriş <-> Kayıt)
+                // Ekran değiştirme (Giriş <-> Kayıt)
                 Center(
                   child: TextButton(
-                    onPressed: () {
-                      setState(() {
-                        _isLogin = !_isLogin;
-                      });
-                    },
+                    onPressed: () => setState(() => _isLogin = !_isLogin),
                     child: Text.rich(
                       TextSpan(
-                        text: _isLogin
-                            ? context.l10n.loginNoAccount
-                            : context.l10n.loginHaveAccount,
-                        style: TextStyle(
-                          color: textColor.withValues(alpha: 0.6),
-                          fontSize: 13,
-                        ),
+                        text: _isLogin ? l.loginNoAccount : l.loginHaveAccount,
+                        style: text.bodyMedium!.copyWith(color: t.muted, fontSize: 13),
                         children: [
                           TextSpan(
-                            text: _isLogin ? context.l10n.signupButton : context.l10n.loginButton,
-                            style: const TextStyle(
-                              color: textColor,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            text: _isLogin ? l.signupButton : l.loginButton,
+                            style: TextStyle(color: t.ink, fontWeight: FontWeight.w600),
                           ),
                         ],
                       ),
@@ -259,22 +167,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: TextButton.icon(
                       onPressed: () => Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) => const HomeScreen(),
-                        ),
+                        MaterialPageRoute(builder: (context) => const HomeScreen()),
                       ),
-                      icon: Icon(
-                        Icons.developer_mode,
-                        size: 16,
-                        color: textColor.withValues(alpha: 0.5),
-                      ),
-                      label: Text(
-                        context.l10n.loginSkipDev,
-                        style: TextStyle(
-                          color: textColor.withValues(alpha: 0.5),
-                          fontSize: 12,
-                        ),
-                      ),
+                      icon: Icon(Icons.developer_mode, size: 16, color: t.muted),
+                      label: Text(l.loginSkipDev, style: text.bodySmall),
                     ),
                   ),
               ],
@@ -285,46 +181,38 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  // Özel Tasarımlı Input Alanı
+  // Yüzey zeminli, ince çerçeveli giriş alanı
   Widget _buildTextField({
     required TextEditingController controller,
     required String hintText,
     required IconData icon,
     required bool obscureText,
     TextInputAction? textInputAction,
-    Function(String)? onSubmitted,
+    ValueChanged<String>? onSubmitted,
     Widget? suffix,
   }) {
-    const textColor = Color(0xFF1E1C1A);
+    final t = context.tokens;
+    OutlineInputBorder border(Color c) => OutlineInputBorder(
+          borderRadius: BorderRadius.circular(SeeItOnTokens.radiusMd),
+          borderSide: BorderSide(color: c),
+        );
     return TextField(
       controller: controller,
       obscureText: obscureText,
       textInputAction: textInputAction,
       onSubmitted: onSubmitted,
-      style: const TextStyle(color: textColor),
+      style: TextStyle(color: t.ink),
+      cursorColor: t.ink,
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: TextStyle(color: textColor.withValues(alpha: 0.4)),
-        prefixIcon: Icon(
-          icon,
-          color: textColor.withValues(alpha: 0.4),
-          size: 20,
-        ),
+        hintStyle: TextStyle(color: t.muted),
+        prefixIcon: Icon(icon, color: t.muted, size: 20),
         suffixIcon: suffix,
         filled: true,
-        fillColor: Colors.white.withValues(alpha: 0.6),
+        fillColor: t.surface,
         contentPadding: const EdgeInsets.symmetric(vertical: 18),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: Colors.white, width: 2),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(
-            color: textColor.withValues(alpha: 0.1),
-            width: 2,
-          ),
-        ),
+        enabledBorder: border(t.line),
+        focusedBorder: border(t.ink.withValues(alpha: 0.4)),
       ),
     );
   }

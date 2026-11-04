@@ -531,4 +531,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsThemeDark => 'Dark';
+
+  @override
+  String get onboardingIssue => 'No. 01 — The Fitting Room';
+
+  @override
+  String get onboardingCoverLine2 => 'Local AI';
+
+  @override
+  String get onboardingCoverLine3 => 'Türkçe & English';
 }

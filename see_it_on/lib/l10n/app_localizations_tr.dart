@@ -532,4 +532,13 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get settingsThemeDark => 'Koyu';
+
+  @override
+  String get onboardingIssue => 'No. 01 — Sanal Kabin';
+
+  @override
+  String get onboardingCoverLine2 => 'Yerel yapay zeka';
+
+  @override
+  String get onboardingCoverLine3 => 'Türkçe & English';
 }
