@@ -397,9 +397,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get wardrobeTitle => 'MY WARDROBE';
 
   @override
-  String get wardrobeSyncing => 'Loading wardrobe...';
-
-  @override
   String wardrobeCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -424,17 +421,14 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get wardrobeEmptyTitle => 'Your Wardrobe is Empty';
+  String get wardrobeEmptyTitle => 'Your wardrobe is empty';
 
   @override
   String get wardrobeEmptyBody =>
-      'Step into the fitting room, try your first outfit and start building your collection.';
+      'Try on an outfit, then tap \"Add to Wardrobe\" on the result screen to see it here.';
 
   @override
-  String get wardrobeEmptyCta => 'Try Your First Outfit';
-
-  @override
-  String get wardrobeAiFit => 'AI Virtual Try-On';
+  String get wardrobeEmptyCta => 'Try an Outfit';
 
   @override
   String get authErrorInvalidCredentials => 'Incorrect email or password.';
@@ -477,4 +471,52 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get authErrorRateLimit =>
       'Too many attempts. Please wait a moment and try again.';
+
+  @override
+  String get wardrobeHeading => 'Your Looks';
+
+  @override
+  String get wardrobeFilterAll => 'All';
+
+  @override
+  String get wardrobeSignInTitle => 'Your wardrobe is waiting';
+
+  @override
+  String get wardrobeSignInBody =>
+      'Log in to save the looks you try on and see them here.';
+
+  @override
+  String get wardrobeLoadError =>
+      'Couldn\'t load your wardrobe. Check your internet connection.';
+
+  @override
+  String get wardrobeRetry => 'Try again';
+
+  @override
+  String get wardrobeShare => 'Share';
+
+  @override
+  String get wardrobeDelete => 'Delete';
+
+  @override
+  String get wardrobeDeleteTitle => 'Delete this look?';
+
+  @override
+  String get wardrobeDeleteBody =>
+      'This look will be permanently removed from your wardrobe.';
+
+  @override
+  String get wardrobeDeleteConfirm => 'Delete';
+
+  @override
+  String get wardrobeCancel => 'Cancel';
+
+  @override
+  String get wardrobeDeleted => 'Look deleted.';
+
+  @override
+  String get wardrobeDeleteFailed => 'Couldn\'t delete the look. Try again.';
+
+  @override
+  String get wardrobeShareFailed => 'Couldn\'t share the image.';
 }

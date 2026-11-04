@@ -194,7 +194,6 @@
   "resultGalleryFailed": "Görsel kaydedilemedi.",
   "resultShareText": "SeeItOn ile oluşturduğum yapay zeka destekli sanal kombinimi incele! ✨ #SeeItOn #SanalKabin",
   "wardrobeTitle": "GARDIROBUM",
-  "wardrobeSyncing": "Gardırop yükleniyor...",
   "wardrobeCount": "{count, plural, =0{Henüz kombin yok} other{{count} kayıtlı kombin}}",
   "@wardrobeCount": {
     "placeholders": {
@@ -211,10 +210,9 @@
       }
     }
   },
-  "wardrobeEmptyTitle": "Gardırobun Boş",
-  "wardrobeEmptyBody": "Kabine geç, ilk kombinini dene ve kendi koleksiyonunu oluşturmaya başla.",
-  "wardrobeEmptyCta": "İlk Kombinini Dene",
-  "wardrobeAiFit": "AI Sanal Deneme",
+  "wardrobeEmptyTitle": "Gardırobun boş",
+  "wardrobeEmptyBody": "Bir kombin dene, sonuç ekranında \"Gardıroba Ekle\"ye bas; burada görünsün.",
+  "wardrobeEmptyCta": "Kombin Dene",
   "authErrorInvalidCredentials": "E-posta veya şifre hatalı.",
   "authErrorEmailTaken": "Bu e-posta adresiyle zaten bir hesap var. Giriş yapmayı dene.",
   "authErrorWeakPassword": "Şifre en az 6 karakter olmalı.",
@@ -233,5 +231,20 @@
     }
   },
   "settingsSignOut": "Çıkış yap",
-  "authErrorRateLimit": "Çok fazla deneme yapıldı. Lütfen biraz bekleyip tekrar dene."
+  "authErrorRateLimit": "Çok fazla deneme yapıldı. Lütfen biraz bekleyip tekrar dene.",
+  "wardrobeHeading": "Kombinlerin",
+  "wardrobeFilterAll": "Tümü",
+  "wardrobeSignInTitle": "Gardırobun seni bekliyor",
+  "wardrobeSignInBody": "Denediğin kombinleri kaydetmek ve burada görmek için giriş yap.",
+  "wardrobeLoadError": "Gardırop yüklenemedi. İnternet bağlantını kontrol et.",
+  "wardrobeRetry": "Tekrar dene",
+  "wardrobeShare": "Paylaş",
+  "wardrobeDelete": "Sil",
+  "wardrobeDeleteTitle": "Kombin silinsin mi?",
+  "wardrobeDeleteBody": "Bu kombin gardırobundan kalıcı olarak silinecek.",
+  "wardrobeDeleteConfirm": "Sil",
+  "wardrobeCancel": "Vazgeç",
+  "wardrobeDeleted": "Kombin silindi.",
+  "wardrobeDeleteFailed": "Kombin silinemedi. Tekrar dene.",
+  "wardrobeShareFailed": "Görsel paylaşılamadı."
 }
