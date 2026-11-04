@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:typed_data';
+import '../core/l10n_ext.dart';
 import '../models/tryon_request.dart';
 import '../services/api_service.dart';
 import 'result_screen.dart';
@@ -87,7 +88,7 @@ class _LoadingScreenState extends State<LoadingScreen>
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'Giydirme işlemi başarısız: ${e.toString().replaceFirst('Exception: ', '')}',
+            context.l10n.loadingFailed(ApiService.friendlyError(context.l10n, e)),
           ),
           backgroundColor: Colors.red,
           duration: const Duration(seconds: 5),
@@ -147,8 +148,8 @@ class _LoadingScreenState extends State<LoadingScreen>
                             ),
                           ),
                           const SizedBox(width: 8),
-                          const Text(
-                            'CATVTON • YEREL GPU',
+                          Text(
+                            context.l10n.loadingEngine,
                             style: TextStyle(
                               color: Colors.grey,
                               fontSize: 10,
@@ -223,13 +224,13 @@ class _LoadingScreenState extends State<LoadingScreen>
                         bottom: 50,
                         left: 30,
                         child: _buildFloatingLabel(
-                          'İLERLEME: ${(progress * 100).toStringAsFixed(1)}%',
+                          context.l10n.loadingProgress((progress * 100).toStringAsFixed(1)),
                         ),
                       ),
-                      const Positioned(
+                      Positioned(
                         bottom: 16,
                         child: Text(
-                          'DİFÜZYON MODELİ ÇALIŞIYOR',
+                          context.l10n.loadingModelRunning,
                           style: TextStyle(
                             color: Colors.white38,
                             fontSize: 10,
@@ -355,8 +356,8 @@ class _LoadingScreenState extends State<LoadingScreen>
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    const Text(
-                      'Kıyafet giydiriliyor •',
+                    Text(
+                      context.l10n.loadingTitle,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 22,
@@ -399,8 +400,8 @@ class _LoadingScreenState extends State<LoadingScreen>
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      'Tahmini süre ~40 sn',
+                    Text(
+                      context.l10n.loadingEta,
                       style: TextStyle(
                         color: Colors.white54,
                         fontSize: 12,
@@ -417,8 +418,8 @@ class _LoadingScreenState extends State<LoadingScreen>
                         const SizedBox(width: 4),
                         Text(
                           progress > 0.8
-                              ? 'Son rötuşlar...'
-                              : 'İşleniyor...',
+                              ? context.l10n.loadingFinalTouches
+                              : context.l10n.loadingProcessing,
                           style: const TextStyle(
                             color: Colors.white54,
                             fontSize: 11,
@@ -440,31 +441,31 @@ class _LoadingScreenState extends State<LoadingScreen>
                     children: [
                       _buildTaskRow(
                         Icons.person_outline,
-                        "Vücut Maskesi",
-                        "DensePose + SCHP ile giydirilecek bölge bulunur",
-                        progress > 0.3 ? "TAMAM" : "İŞLENİYOR",
+                        context.l10n.loadingStepMask,
+                        context.l10n.loadingStepMaskDesc,
+                        progress > 0.3 ? context.l10n.statusDone : context.l10n.statusProcessing,
                         progress > 0.3,
                         progress <= 0.3,
                       ),
                       Divider(color: Colors.grey.shade900, height: 1),
                       _buildTaskRow(
                         Icons.layers_outlined,
-                        "Difüzyon (30 adım)",
-                        "CatVTON kıyafeti kişinin üzerine çizer",
+                        context.l10n.loadingStepDiffusion,
+                        context.l10n.loadingStepDiffusionDesc,
                         progress > 0.7
-                            ? "TAMAM"
-                            : (progress > 0.3 ? "İŞLENİYOR" : "SIRADA"),
+                            ? context.l10n.statusDone
+                            : (progress > 0.3 ? context.l10n.statusProcessing : context.l10n.statusQueued),
                         progress > 0.7,
                         progress > 0.3 && progress <= 0.7,
                       ),
                       Divider(color: Colors.grey.shade900, height: 1),
                       _buildTaskRow(
                         Icons.wb_sunny_outlined,
-                        "Birleştirme",
-                        "Yüz ve arka plan orijinal fotoğraftan korunur",
+                        context.l10n.loadingStepBlend,
+                        context.l10n.loadingStepBlendDesc,
                         progress == 1.0
-                            ? "TAMAM"
-                            : (progress > 0.7 ? "İŞLENİYOR" : "SIRADA"),
+                            ? context.l10n.statusDone
+                            : (progress > 0.7 ? context.l10n.statusProcessing : context.l10n.statusQueued),
                         progress == 1.0,
                         progress > 0.7,
                       ),
@@ -480,8 +481,8 @@ class _LoadingScreenState extends State<LoadingScreen>
                       color: Colors.white54,
                       size: 18,
                     ),
-                    label: const Text(
-                      'İptal',
+                    label: Text(
+                      context.l10n.loadingCancel,
                       style: TextStyle(
                         color: Colors.white54,
                         fontSize: 13,
@@ -500,14 +501,12 @@ class _LoadingScreenState extends State<LoadingScreen>
   }
 
   String get _categoryBadge {
-    switch (widget.category) {
-      case 'lower':
-        return 'LOWER BODY';
-      case 'overall':
-        return 'FULL OUTFIT';
-      default:
-        return 'UPPER BODY';
-    }
+    final l = context.l10n;
+    return switch (widget.category) {
+      'lower' => l.categoryBadgeLower,
+      'overall' => l.categoryBadgeOverall,
+      _ => l.categoryBadgeUpper,
+    };
   }
 
   Widget _buildSpinningDot(double size) {

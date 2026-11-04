@@ -487,6 +487,312 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Kot Şort'**
   String get garmentShorts;
+
+  /// No description provided for @categoryBadgeUpper.
+  ///
+  /// In tr, this message translates to:
+  /// **'ÜST GİYİM'**
+  String get categoryBadgeUpper;
+
+  /// No description provided for @categoryBadgeLower.
+  ///
+  /// In tr, this message translates to:
+  /// **'ALT GİYİM'**
+  String get categoryBadgeLower;
+
+  /// No description provided for @categoryBadgeOverall.
+  ///
+  /// In tr, this message translates to:
+  /// **'TAM KIYAFET'**
+  String get categoryBadgeOverall;
+
+  /// No description provided for @loadingEngine.
+  ///
+  /// In tr, this message translates to:
+  /// **'CATVTON • YEREL GPU'**
+  String get loadingEngine;
+
+  /// No description provided for @loadingProgress.
+  ///
+  /// In tr, this message translates to:
+  /// **'İLERLEME: {percent}%'**
+  String loadingProgress(String percent);
+
+  /// No description provided for @loadingModelRunning.
+  ///
+  /// In tr, this message translates to:
+  /// **'DİFÜZYON MODELİ ÇALIŞIYOR'**
+  String get loadingModelRunning;
+
+  /// No description provided for @loadingTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kıyafet giydiriliyor •'**
+  String get loadingTitle;
+
+  /// No description provided for @loadingEta.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tahmini süre ~40 sn'**
+  String get loadingEta;
+
+  /// No description provided for @loadingFinalTouches.
+  ///
+  /// In tr, this message translates to:
+  /// **'Son rötuşlar...'**
+  String get loadingFinalTouches;
+
+  /// No description provided for @loadingProcessing.
+  ///
+  /// In tr, this message translates to:
+  /// **'İşleniyor...'**
+  String get loadingProcessing;
+
+  /// No description provided for @loadingStepMask.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vücut Maskesi'**
+  String get loadingStepMask;
+
+  /// No description provided for @loadingStepMaskDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'DensePose + SCHP ile giydirilecek bölge bulunur'**
+  String get loadingStepMaskDesc;
+
+  /// No description provided for @loadingStepDiffusion.
+  ///
+  /// In tr, this message translates to:
+  /// **'Difüzyon (30 adım)'**
+  String get loadingStepDiffusion;
+
+  /// No description provided for @loadingStepDiffusionDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'CatVTON kıyafeti kişinin üzerine çizer'**
+  String get loadingStepDiffusionDesc;
+
+  /// No description provided for @loadingStepBlend.
+  ///
+  /// In tr, this message translates to:
+  /// **'Birleştirme'**
+  String get loadingStepBlend;
+
+  /// No description provided for @loadingStepBlendDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yüz ve arka plan orijinal fotoğraftan korunur'**
+  String get loadingStepBlendDesc;
+
+  /// No description provided for @statusDone.
+  ///
+  /// In tr, this message translates to:
+  /// **'TAMAM'**
+  String get statusDone;
+
+  /// No description provided for @statusProcessing.
+  ///
+  /// In tr, this message translates to:
+  /// **'İŞLENİYOR'**
+  String get statusProcessing;
+
+  /// No description provided for @statusQueued.
+  ///
+  /// In tr, this message translates to:
+  /// **'SIRADA'**
+  String get statusQueued;
+
+  /// No description provided for @loadingCancel.
+  ///
+  /// In tr, this message translates to:
+  /// **'İptal'**
+  String get loadingCancel;
+
+  /// No description provided for @loadingFailed.
+  ///
+  /// In tr, this message translates to:
+  /// **'Giydirme işlemi başarısız: {reason}'**
+  String loadingFailed(String reason);
+
+  /// No description provided for @errorTimeout.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sunucu çok uzun süre yanıt vermedi. Lütfen tekrar deneyin.'**
+  String get errorTimeout;
+
+  /// No description provided for @errorBackendOffline.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yapay zeka sunucusuna ulaşılamıyor. Backend açık mı?'**
+  String get errorBackendOffline;
+
+  /// No description provided for @errorServer.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sunucu hatası ({code})'**
+  String errorServer(String code);
+
+  /// No description provided for @resultTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'{category} Sonucu'**
+  String resultTitle(String category);
+
+  /// No description provided for @resultOverline.
+  ///
+  /// In tr, this message translates to:
+  /// **'STÜDYO KARŞILAŞTIRMA'**
+  String get resultOverline;
+
+  /// No description provided for @resultHeading.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kombin Sonucu'**
+  String get resultHeading;
+
+  /// No description provided for @resultSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sanal giydirme sonucunu inceleyin ve detayları karşılaştırın.'**
+  String get resultSubtitle;
+
+  /// No description provided for @resultTabSplit.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sürgü'**
+  String get resultTabSplit;
+
+  /// No description provided for @resultTabSide.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yan Yana'**
+  String get resultTabSide;
+
+  /// No description provided for @resultTabFade.
+  ///
+  /// In tr, this message translates to:
+  /// **'Geçiş'**
+  String get resultTabFade;
+
+  /// No description provided for @resultBefore.
+  ///
+  /// In tr, this message translates to:
+  /// **'• ÖNCE'**
+  String get resultBefore;
+
+  /// No description provided for @resultAfter.
+  ///
+  /// In tr, this message translates to:
+  /// **'✨ SONRA'**
+  String get resultAfter;
+
+  /// No description provided for @resultFullScreen.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tam Ekran'**
+  String get resultFullScreen;
+
+  /// No description provided for @resultSaveToGallery.
+  ///
+  /// In tr, this message translates to:
+  /// **'Galeriye kaydet'**
+  String get resultSaveToGallery;
+
+  /// No description provided for @resultDetails.
+  ///
+  /// In tr, this message translates to:
+  /// **'İşlem Detayları'**
+  String get resultDetails;
+
+  /// No description provided for @resultEngine.
+  ///
+  /// In tr, this message translates to:
+  /// **'CatVTON • Yerel GPU'**
+  String get resultEngine;
+
+  /// No description provided for @resultRenderTime.
+  ///
+  /// In tr, this message translates to:
+  /// **'İşlem Süresi'**
+  String get resultRenderTime;
+
+  /// No description provided for @resultSeconds.
+  ///
+  /// In tr, this message translates to:
+  /// **'{seconds} sn'**
+  String resultSeconds(String seconds);
+
+  /// No description provided for @resultRenderTimeDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yerel ekran kartında ölçülen süre'**
+  String get resultRenderTimeDesc;
+
+  /// No description provided for @resultCategory.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kategori'**
+  String get resultCategory;
+
+  /// No description provided for @resultCategoryDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Modelin giydirdiği bölge'**
+  String get resultCategoryDesc;
+
+  /// No description provided for @resultSaving.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kaydediliyor...'**
+  String get resultSaving;
+
+  /// No description provided for @resultAddToWardrobe.
+  ///
+  /// In tr, this message translates to:
+  /// **'Onayla ve Gardıroba Ekle'**
+  String get resultAddToWardrobe;
+
+  /// No description provided for @resultNeedLogin.
+  ///
+  /// In tr, this message translates to:
+  /// **'Lütfen önce giriş yapın.'**
+  String get resultNeedLogin;
+
+  /// No description provided for @resultWardrobeSaved.
+  ///
+  /// In tr, this message translates to:
+  /// **'✨ Kombin gardırobuna başarıyla eklendi!'**
+  String get resultWardrobeSaved;
+
+  /// No description provided for @resultWardrobeError.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kaydedilirken hata oluştu: {reason}'**
+  String resultWardrobeError(String reason);
+
+  /// No description provided for @resultGallerySaved.
+  ///
+  /// In tr, this message translates to:
+  /// **'Görsel galeriye kaydedildi.'**
+  String get resultGallerySaved;
+
+  /// No description provided for @resultGalleryWeb.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tarayıcıda galeri yok; Paylaş butonunu ya da tam ekranda sağ tık → kaydet kullanın.'**
+  String get resultGalleryWeb;
+
+  /// No description provided for @resultGalleryFailed.
+  ///
+  /// In tr, this message translates to:
+  /// **'Görsel kaydedilemedi.'**
+  String get resultGalleryFailed;
+
+  /// No description provided for @resultShareText.
+  ///
+  /// In tr, this message translates to:
+  /// **'SeeItOn ile oluşturduğum yapay zeka destekli sanal kombinimi incele! ✨ #SeeItOn #SanalKabin'**
+  String get resultShareText;
 }
 
 class _AppLocalizationsDelegate

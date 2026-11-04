@@ -222,4 +222,177 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get garmentShorts => 'Kot Şort';
+
+  @override
+  String get categoryBadgeUpper => 'ÜST GİYİM';
+
+  @override
+  String get categoryBadgeLower => 'ALT GİYİM';
+
+  @override
+  String get categoryBadgeOverall => 'TAM KIYAFET';
+
+  @override
+  String get loadingEngine => 'CATVTON • YEREL GPU';
+
+  @override
+  String loadingProgress(String percent) {
+    return 'İLERLEME: $percent%';
+  }
+
+  @override
+  String get loadingModelRunning => 'DİFÜZYON MODELİ ÇALIŞIYOR';
+
+  @override
+  String get loadingTitle => 'Kıyafet giydiriliyor •';
+
+  @override
+  String get loadingEta => 'Tahmini süre ~40 sn';
+
+  @override
+  String get loadingFinalTouches => 'Son rötuşlar...';
+
+  @override
+  String get loadingProcessing => 'İşleniyor...';
+
+  @override
+  String get loadingStepMask => 'Vücut Maskesi';
+
+  @override
+  String get loadingStepMaskDesc =>
+      'DensePose + SCHP ile giydirilecek bölge bulunur';
+
+  @override
+  String get loadingStepDiffusion => 'Difüzyon (30 adım)';
+
+  @override
+  String get loadingStepDiffusionDesc =>
+      'CatVTON kıyafeti kişinin üzerine çizer';
+
+  @override
+  String get loadingStepBlend => 'Birleştirme';
+
+  @override
+  String get loadingStepBlendDesc =>
+      'Yüz ve arka plan orijinal fotoğraftan korunur';
+
+  @override
+  String get statusDone => 'TAMAM';
+
+  @override
+  String get statusProcessing => 'İŞLENİYOR';
+
+  @override
+  String get statusQueued => 'SIRADA';
+
+  @override
+  String get loadingCancel => 'İptal';
+
+  @override
+  String loadingFailed(String reason) {
+    return 'Giydirme işlemi başarısız: $reason';
+  }
+
+  @override
+  String get errorTimeout =>
+      'Sunucu çok uzun süre yanıt vermedi. Lütfen tekrar deneyin.';
+
+  @override
+  String get errorBackendOffline =>
+      'Yapay zeka sunucusuna ulaşılamıyor. Backend açık mı?';
+
+  @override
+  String errorServer(String code) {
+    return 'Sunucu hatası ($code)';
+  }
+
+  @override
+  String resultTitle(String category) {
+    return '$category Sonucu';
+  }
+
+  @override
+  String get resultOverline => 'STÜDYO KARŞILAŞTIRMA';
+
+  @override
+  String get resultHeading => 'Kombin Sonucu';
+
+  @override
+  String get resultSubtitle =>
+      'Sanal giydirme sonucunu inceleyin ve detayları karşılaştırın.';
+
+  @override
+  String get resultTabSplit => 'Sürgü';
+
+  @override
+  String get resultTabSide => 'Yan Yana';
+
+  @override
+  String get resultTabFade => 'Geçiş';
+
+  @override
+  String get resultBefore => '• ÖNCE';
+
+  @override
+  String get resultAfter => '✨ SONRA';
+
+  @override
+  String get resultFullScreen => 'Tam Ekran';
+
+  @override
+  String get resultSaveToGallery => 'Galeriye kaydet';
+
+  @override
+  String get resultDetails => 'İşlem Detayları';
+
+  @override
+  String get resultEngine => 'CatVTON • Yerel GPU';
+
+  @override
+  String get resultRenderTime => 'İşlem Süresi';
+
+  @override
+  String resultSeconds(String seconds) {
+    return '$seconds sn';
+  }
+
+  @override
+  String get resultRenderTimeDesc => 'Yerel ekran kartında ölçülen süre';
+
+  @override
+  String get resultCategory => 'Kategori';
+
+  @override
+  String get resultCategoryDesc => 'Modelin giydirdiği bölge';
+
+  @override
+  String get resultSaving => 'Kaydediliyor...';
+
+  @override
+  String get resultAddToWardrobe => 'Onayla ve Gardıroba Ekle';
+
+  @override
+  String get resultNeedLogin => 'Lütfen önce giriş yapın.';
+
+  @override
+  String get resultWardrobeSaved => '✨ Kombin gardırobuna başarıyla eklendi!';
+
+  @override
+  String resultWardrobeError(String reason) {
+    return 'Kaydedilirken hata oluştu: $reason';
+  }
+
+  @override
+  String get resultGallerySaved => 'Görsel galeriye kaydedildi.';
+
+  @override
+  String get resultGalleryWeb =>
+      'Tarayıcıda galeri yok; Paylaş butonunu ya da tam ekranda sağ tık → kaydet kullanın.';
+
+  @override
+  String get resultGalleryFailed => 'Görsel kaydedilemedi.';
+
+  @override
+  String get resultShareText =>
+      'SeeItOn ile oluşturduğum yapay zeka destekli sanal kombinimi incele! ✨ #SeeItOn #SanalKabin';
 }
