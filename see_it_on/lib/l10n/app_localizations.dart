@@ -1033,6 +1033,12 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Türkçe & English'**
   String get onboardingCoverLine3;
+
+  /// No description provided for @resultCaption.
+  ///
+  /// In tr, this message translates to:
+  /// **'{category} — {seconds} sn, yerel GPU'**
+  String resultCaption(String category, String seconds);
 }
 
 class _AppLocalizationsDelegate

@@ -1,5 +1,8 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
 import 'dart:typed_data';
+
+import 'package:flutter/material.dart';
+import '../core/design/widgets.dart';
 import '../core/l10n_ext.dart';
 import '../models/tryon_request.dart';
 import '../services/api_service.dart';
@@ -10,58 +13,60 @@ class LoadingScreen extends StatefulWidget {
   final Uint8List garmentImageBytes;
   final String category; // 'upper', 'lower', 'overall'
 
+  /// Verilmezse uygulamanın ApiService'i kullanılır; testlerde backend'e gitmeyen sahte servis verilir.
+  final ApiService? api;
+
   const LoadingScreen({
     super.key,
     required this.personImageBytes,
     required this.garmentImageBytes,
     this.category = 'upper',
+    this.api,
   });
 
   @override
   State<LoadingScreen> createState() => _LoadingScreenState();
 }
 
-class _LoadingScreenState extends State<LoadingScreen>
-    with SingleTickerProviderStateMixin {
+class _LoadingScreenState extends State<LoadingScreen> {
   double progress = 0.0;
-  late AnimationController _spinController;
-  bool _isProcessing = true;
+  Timer? _progressTimer;
 
   @override
   void initState() {
     super.initState();
-    _spinController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 4),
-    )..repeat();
     _processVirtualTryOn();
   }
 
   @override
   void dispose() {
-    _spinController.dispose();
+    _progressTimer?.cancel();
     super.dispose();
   }
 
   Future<void> _processVirtualTryOn() async {
-    try {
-      // Sahte ilerlemeyi başlat
-      _startFakeProgress();
+    // Tahmini ilerleme: yerel GPU'da işlem ~40 sn sürdüğü için %90'a ~40 sn'de ulaşır,
+    // backend yanıt verince %100'e tamamlanır
+    _progressTimer = Timer.periodic(const Duration(milliseconds: 450), (timer) {
+      if (!mounted || progress >= 0.89) {
+        timer.cancel();
+        return;
+      }
+      setState(() => progress += 0.01);
+    });
 
+    try {
       // Sunucu adresi (web / emülatör / telefon) ve kategori ApiService üzerinden yönetilir
-      final result = await ApiService().processVirtualTryOn(
+      final result = await (widget.api ?? ApiService()).processVirtualTryOn(
         TryOnRequest(
           personImageBytes: widget.personImageBytes,
           garmentImageBytes: widget.garmentImageBytes,
           category: widget.category,
         ),
       );
-
-      _isProcessing = false; // İşlem tamamlandı, sahte progress barı durdur
-
+      _progressTimer?.cancel();
       if (!mounted) return;
 
-      // İlerlemeyi direkt %100 yap
       setState(() => progress = 1.0);
       await Future.delayed(const Duration(milliseconds: 400));
 
@@ -71,8 +76,7 @@ class _LoadingScreenState extends State<LoadingScreen>
           MaterialPageRoute(
             builder: (_) => ResultScreen(
               // Backend'in kırptığı fotoğraf: sonuçla aynı kadraj, karşılaştırma hizalı olur
-              originalImageBytes:
-                  result.originalPersonBytes ?? widget.personImageBytes,
+              originalImageBytes: result.originalPersonBytes ?? widget.personImageBytes,
               generatedImageBytes: result.resultImageBytes!,
               category: result.category,
               renderTimeSec: result.renderTimeSec,
@@ -81,423 +85,19 @@ class _LoadingScreenState extends State<LoadingScreen>
         );
       }
     } catch (e) {
-      _isProcessing = false;
+      _progressTimer?.cancel();
       debugPrint('[LoadingScreen] Hata: $e');
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            context.l10n.loadingFailed(ApiService.friendlyError(context.l10n, e)),
-          ),
-          backgroundColor: Colors.red,
+          content: Text(context.l10n.loadingFailed(ApiService.friendlyError(context.l10n, e))),
+          backgroundColor: context.tokens.danger,
           duration: const Duration(seconds: 5),
         ),
       );
       Navigator.pop(context);
     }
-  }
-
-  // Tahmini ilerleme: yerel GPU'da işlem ~40 sn sürdüğü için %90'a ~40 sn'de ulaşır,
-  // backend yanıt verince %100'e tamamlanır
-  void _startFakeProgress() async {
-    int i = 0;
-    while (_isProcessing && i < 90) {
-      await Future.delayed(const Duration(milliseconds: 450));
-      if (mounted && _isProcessing) {
-        setState(() => progress = i / 100);
-        i += 1;
-      }
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF0F0F0F),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 20.0,
-              vertical: 10.0,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 6,
-                      ),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF1E1E1E),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 6,
-                            height: 6,
-                            decoration: const BoxDecoration(
-                              color: Colors.grey,
-                              shape: BoxShape.circle,
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            context.l10n.loadingEngine,
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(6),
-                      decoration: const BoxDecoration(
-                        color: Color(0xFF1E1E1E),
-                        shape: BoxShape.circle,
-                      ),
-                      child: GestureDetector(
-                        onTap: () => Navigator.pop(context),
-                        child: const Icon(
-                          Icons.close,
-                          color: Colors.grey,
-                          size: 16,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                Container(
-                  height: 280,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF141414),
-                    borderRadius: BorderRadius.circular(24),
-                    border: Border.all(color: Colors.grey.shade900),
-                  ),
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(24),
-                        child: ColorFiltered(
-                          colorFilter: ColorFilter.mode(
-                            Colors.black.withValues(alpha: 0.7),
-                            BlendMode.darken,
-                          ),
-                          child: Image.memory(
-                            widget.personImageBytes,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      Positioned(top: 16, left: 16, child: _buildCornerDot()),
-                      Positioned(top: 16, right: 16, child: _buildCornerDot()),
-                      Positioned(
-                        bottom: 16,
-                        left: 16,
-                        child: _buildCornerDot(),
-                      ),
-                      Positioned(
-                        bottom: 16,
-                        right: 16,
-                        child: _buildCornerDot(),
-                      ),
-                      Positioned(
-                        top: 40,
-                        right: 30,
-                        child: _buildFloatingLabel(_categoryBadge),
-                      ),
-                      Positioned(
-                        bottom: 50,
-                        left: 30,
-                        child: _buildFloatingLabel(
-                          context.l10n.loadingProgress((progress * 100).toStringAsFixed(1)),
-                        ),
-                      ),
-                      Positioned(
-                        bottom: 16,
-                        child: Text(
-                          context.l10n.loadingModelRunning,
-                          style: TextStyle(
-                            color: Colors.white38,
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1.5,
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 160,
-                        height: 160,
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            RotationTransition(
-                              turns: _spinController,
-                              child: Container(
-                                width: 140,
-                                height: 140,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: Colors.white.withValues(alpha: 0.1),
-                                    width: 1,
-                                  ),
-                                ),
-                                child: Stack(
-                                  children: [
-                                    Positioned(
-                                      top: 0,
-                                      left: 65,
-                                      child: _buildSpinningDot(8),
-                                    ),
-                                    Positioned(
-                                      bottom: 20,
-                                      right: 10,
-                                      child: _buildSpinningDot(4),
-                                    ),
-                                    Positioned(
-                                      bottom: 40,
-                                      left: 5,
-                                      child: _buildSpinningDot(6),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            RotationTransition(
-                              turns: Tween(
-                                begin: 1.0,
-                                end: 0.0,
-                              ).animate(_spinController),
-                              child: Container(
-                                width: 100,
-                                height: 100,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: Colors.white.withValues(alpha: 0.05),
-                                    width: 1,
-                                  ),
-                                ),
-                                child: const Stack(
-                                  children: [
-                                    Positioned(
-                                      top: 15,
-                                      right: 10,
-                                      child: SizedBox(),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Container(
-                              width: 80,
-                              height: 80,
-                              decoration: BoxDecoration(
-                                color: Colors.black.withValues(alpha: 0.6),
-                                shape: BoxShape.circle,
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Icon(
-                                    Icons.checkroom,
-                                    color: Colors.white70,
-                                    size: 28,
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        width: 4,
-                                        height: 4,
-                                        decoration: const BoxDecoration(
-                                          color: Colors.white54,
-                                          shape: BoxShape.circle,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 4),
-                                      const Text(
-                                        'AI',
-                                        style: TextStyle(
-                                          color: Colors.white54,
-                                          fontSize: 9,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 24),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      context.l10n.loadingTitle,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.baseline,
-                      textBaseline: TextBaseline.alphabetic,
-                      children: [
-                        Text(
-                          '${(progress * 100).toInt()}',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const Text(
-                          '%',
-                          style: TextStyle(
-                            color: Colors.white54,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                LinearProgressIndicator(
-                  value: progress,
-                  backgroundColor: Colors.grey.shade900,
-                  color: Colors.white,
-                  minHeight: 3,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      context.l10n.loadingEta,
-                      style: TextStyle(
-                        color: Colors.white54,
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.auto_awesome,
-                          color: Colors.white54,
-                          size: 12,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          progress > 0.8
-                              ? context.l10n.loadingFinalTouches
-                              : context.l10n.loadingProcessing,
-                          style: const TextStyle(
-                            color: Colors.white54,
-                            fontSize: 11,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 24),
-                Container(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF141414),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: Colors.grey.shade900),
-                  ),
-                  child: Column(
-                    children: [
-                      _buildTaskRow(
-                        Icons.person_outline,
-                        context.l10n.loadingStepMask,
-                        context.l10n.loadingStepMaskDesc,
-                        progress > 0.3 ? context.l10n.statusDone : context.l10n.statusProcessing,
-                        progress > 0.3,
-                        progress <= 0.3,
-                      ),
-                      Divider(color: Colors.grey.shade900, height: 1),
-                      _buildTaskRow(
-                        Icons.layers_outlined,
-                        context.l10n.loadingStepDiffusion,
-                        context.l10n.loadingStepDiffusionDesc,
-                        progress > 0.7
-                            ? context.l10n.statusDone
-                            : (progress > 0.3 ? context.l10n.statusProcessing : context.l10n.statusQueued),
-                        progress > 0.7,
-                        progress > 0.3 && progress <= 0.7,
-                      ),
-                      Divider(color: Colors.grey.shade900, height: 1),
-                      _buildTaskRow(
-                        Icons.wb_sunny_outlined,
-                        context.l10n.loadingStepBlend,
-                        context.l10n.loadingStepBlendDesc,
-                        progress == 1.0
-                            ? context.l10n.statusDone
-                            : (progress > 0.7 ? context.l10n.statusProcessing : context.l10n.statusQueued),
-                        progress == 1.0,
-                        progress > 0.7,
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 24),
-                Center(
-                  child: TextButton.icon(
-                    onPressed: () => Navigator.pop(context),
-                    icon: const Icon(
-                      Icons.stop_circle_outlined,
-                      color: Colors.white54,
-                      size: 18,
-                    ),
-                    label: Text(
-                      context.l10n.loadingCancel,
-                      style: TextStyle(
-                        color: Colors.white54,
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
   }
 
   String get _categoryBadge {
@@ -509,142 +109,201 @@ class _LoadingScreenState extends State<LoadingScreen>
     };
   }
 
-  Widget _buildSpinningDot(double size) {
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        shape: BoxShape.circle,
-        boxShadow: [BoxShadow(color: Colors.white, blurRadius: size)],
-      ),
-    );
-  }
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    final t = context.tokens;
+    final text = Theme.of(context).textTheme;
+    final percent = (progress * 100).toInt();
 
-  Widget _buildCornerDot() {
-    return Container(width: 6, height: 6, color: Colors.white24);
-  }
+    final steps = [
+      (l.loadingStepMask, l.loadingStepMaskDesc, progress > 0.3, progress <= 0.3),
+      (l.loadingStepDiffusion, l.loadingStepDiffusionDesc, progress > 0.7, progress > 0.3 && progress <= 0.7),
+      (l.loadingStepBlend, l.loadingStepBlendDesc, progress == 1.0, progress > 0.7 && progress < 1.0),
+    ];
 
-  Widget _buildFloatingLabel(String text) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: Colors.black.withValues(alpha: 0.6),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white12),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 4,
-            height: 4,
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-            ),
-          ),
-          const SizedBox(width: 6),
-          Text(
-            text,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 9,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTaskRow(
-    IconData icon,
-    String title,
-    String subtitle,
-    String status,
-    bool isDone,
-    bool isProcessing,
-  ) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(4),
-            decoration: BoxDecoration(
-              color: isDone
-                  ? Colors.white
-                  : (isProcessing ? Colors.grey.shade800 : Colors.transparent),
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: isDone ? Colors.white : Colors.grey.shade800,
+    return Scaffold(
+      backgroundColor: t.paper,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(child: EditorialOverline(l.loadingEngine)),
+                  IconButton(
+                    tooltip: l.loadingCancel,
+                    icon: Icon(Icons.close, color: t.ink, size: 20),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
               ),
-            ),
-            child: Icon(
-              isDone ? Icons.check : Icons.circle,
-              color: isDone
-                  ? Colors.black
-                  : (isProcessing ? Colors.white : Colors.grey.shade800),
-              size: 14,
-            ),
+              const SizedBox(height: 8),
+
+              // Kişi fotoğrafı: yumuşak örtü altında, ortada ince ilerleme halkası
+              ClipRRect(
+                borderRadius: BorderRadius.circular(SeeItOnTokens.radiusLg),
+                child: SizedBox(
+                  height: 300,
+                  width: double.infinity,
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      Image.memory(widget.personImageBytes, fit: BoxFit.cover),
+                      ColoredBox(color: t.paper.withValues(alpha: 0.45)),
+                      Center(
+                        child: SizedBox(
+                          width: 72,
+                          height: 72,
+                          child: CircularProgressIndicator(strokeWidth: 1.5, color: t.accent),
+                        ),
+                      ),
+                      Positioned(
+                        top: 14,
+                        left: 14,
+                        child: _PhotoLabel(_categoryBadge),
+                      ),
+                      Positioned(
+                        bottom: 14,
+                        left: 0,
+                        right: 0,
+                        child: Center(child: _PhotoLabel(l.loadingModelRunning)),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Expanded(child: EditorialHeading(l.loadingTitle, size: 26)),
+                  const SizedBox(width: 12),
+                  Text('$percent%', style: text.displaySmall!.copyWith(fontSize: 34)),
+                ],
+              ),
+              const SizedBox(height: 12),
+              LinearProgressIndicator(
+                value: progress,
+                backgroundColor: t.line,
+                color: t.accent,
+                minHeight: 2,
+              ),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  Expanded(child: Caption(l.loadingEta)),
+                  Caption(progress > 0.8 ? l.loadingFinalTouches : l.loadingProcessing, italic: true),
+                ],
+              ),
+              const SizedBox(height: 24),
+
+              // Adımlar: derginin içindekiler sayfası gibi numaralı liste
+              for (var i = 0; i < steps.length; i++) ...[
+                const HairlineDivider(),
+                _StepRow(
+                  number: i + 1,
+                  title: steps[i].$1,
+                  subtitle: steps[i].$2,
+                  isDone: steps[i].$3,
+                  isActive: steps[i].$4,
+                ),
+              ],
+              const HairlineDivider(),
+              const SizedBox(height: 24),
+
+              Center(
+                child: PillButton(
+                  label: l.loadingCancel,
+                  icon: Icons.stop_circle_outlined,
+                  primary: false,
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ),
+            ],
           ),
-          const SizedBox(width: 16),
+        ),
+      ),
+    );
+  }
+}
+
+/// Fotoğraf üstü etiket: her iki temada fotoğrafın üstünde okunması için sabit koyu zemin.
+class _PhotoLabel extends StatelessWidget {
+  const _PhotoLabel(this.text);
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: Colors.black.withValues(alpha: 0.55),
+        borderRadius: BorderRadius.circular(SeeItOnTokens.radiusPill),
+      ),
+      child: Text(
+        text,
+        style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.white, letterSpacing: 1.2),
+      ),
+    );
+  }
+}
+
+class _StepRow extends StatelessWidget {
+  const _StepRow({
+    required this.number,
+    required this.title,
+    required this.subtitle,
+    required this.isDone,
+    required this.isActive,
+  });
+
+  final int number;
+  final String title;
+  final String subtitle;
+  final bool isDone;
+  final bool isActive;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    final t = context.tokens;
+    final text = Theme.of(context).textTheme;
+    final status = isDone ? l.statusDone : (isActive ? l.statusProcessing : l.statusQueued);
+    final statusColor = isDone ? t.ink : (isActive ? t.accent : t.muted);
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 14),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 34,
+            child: Text('0$number', style: text.labelSmall!.copyWith(color: t.accent)),
+          ),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   title,
-                  style: TextStyle(
-                    color: isDone || isProcessing
-                        ? Colors.white
-                        : Colors.white38,
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
+                  style: text.headlineSmall!.copyWith(
+                    fontSize: 17,
+                    color: isDone || isActive ? t.ink : t.muted,
                   ),
                 ),
                 const SizedBox(height: 2),
-                Text(
-                  subtitle,
-                  style: TextStyle(color: Colors.white38, fontSize: 10),
-                ),
+                Text(subtitle, style: text.bodySmall),
               ],
             ),
           ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              color: isDone ? Colors.white12 : Colors.transparent,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Row(
-              children: [
-                if (isProcessing) ...[
-                  Container(
-                    width: 4,
-                    height: 4,
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                  const SizedBox(width: 4),
-                ],
-                Text(
-                  status,
-                  style: TextStyle(
-                    color: isDone || isProcessing
-                        ? Colors.white
-                        : Colors.white38,
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1,
-                  ),
-                ),
-              ],
-            ),
-          ),
+          const SizedBox(width: 8),
+          if (isDone)
+            Icon(Icons.check, size: 16, color: statusColor)
+          else
+            Text(status, style: text.labelSmall!.copyWith(color: statusColor)),
         ],
       ),
     );

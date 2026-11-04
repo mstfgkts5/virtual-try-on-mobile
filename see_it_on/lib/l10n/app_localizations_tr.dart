@@ -541,4 +541,9 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get onboardingCoverLine3 => 'Türkçe & English';
+
+  @override
+  String resultCaption(String category, String seconds) {
+    return '$category — $seconds sn, yerel GPU';
+  }
 }
