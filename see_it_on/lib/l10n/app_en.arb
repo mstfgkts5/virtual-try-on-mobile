@@ -129,5 +129,7 @@
   "authErrorWeakPassword": "Password must be at least 6 characters.",
   "authErrorInvalidEmail": "Enter a valid email address.",
   "authErrorNetwork": "No internet connection, or the server can't be reached.",
-  "authErrorPasswordTooShort": "Password must be at least 6 characters."
+  "authErrorPasswordTooShort": "Password must be at least 6 characters.",
+  "loginShowPassword": "Show password",
+  "loginHidePassword": "Hide password"
 }

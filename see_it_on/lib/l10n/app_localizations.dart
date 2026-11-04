@@ -877,6 +877,18 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Şifre en az 6 karakter olmalı.'**
   String get authErrorPasswordTooShort;
+
+  /// No description provided for @loginShowPassword.
+  ///
+  /// In tr, this message translates to:
+  /// **'Şifreyi göster'**
+  String get loginShowPassword;
+
+  /// No description provided for @loginHidePassword.
+  ///
+  /// In tr, this message translates to:
+  /// **'Şifreyi gizle'**
+  String get loginHidePassword;
 }
 
 class _AppLocalizationsDelegate
