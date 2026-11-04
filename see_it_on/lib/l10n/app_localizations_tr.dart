@@ -395,4 +395,46 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get resultShareText =>
       'SeeItOn ile oluşturduğum yapay zeka destekli sanal kombinimi incele! ✨ #SeeItOn #SanalKabin';
+
+  @override
+  String get wardrobeTitle => 'GARDIROBUM';
+
+  @override
+  String get wardrobeSyncing => 'Gardırop yükleniyor...';
+
+  @override
+  String wardrobeCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count kayıtlı kombin',
+      zero: 'Henüz kombin yok',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String wardrobeDaysAgo(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days gün önce',
+      one: 'Dün',
+      zero: 'Bugün',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get wardrobeEmptyTitle => 'Gardırobun Boş';
+
+  @override
+  String get wardrobeEmptyBody =>
+      'Kabine geç, ilk kombinini dene ve kendi koleksiyonunu oluşturmaya başla.';
+
+  @override
+  String get wardrobeEmptyCta => 'İlk Kombinini Dene';
+
+  @override
+  String get wardrobeAiFit => 'AI Sanal Deneme';
 }

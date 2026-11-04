@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import '../core/l10n_ext.dart';
 
 /// ============================================================================
 /// SEEITON: LUXURY EDITORIAL WARDROBE / ATELIER SCREEN
@@ -52,49 +53,49 @@ class _WardrobeScreenState extends State<WardrobeScreen>
     return [
       {
         'id': '1',
-        'title': 'Tweed Tailored Blazer',
-        'category': 'Outerwear',
-        'date': 'Yesterday',
+        'garment': 'blazer',
+        'category': 'upper',
+        'days': 1,
         'image_url':
             'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=800&q=80',
       },
       {
         'id': '2',
-        'title': 'Charcoal Wool Trench',
-        'category': 'Outerwear',
-        'date': '2 days ago',
+        'garment': 'trousers-m',
+        'category': 'lower',
+        'days': 2,
         'image_url':
             'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80',
       },
       {
         'id': '3',
-        'title': 'Ivory Silk Evening Blouse',
-        'category': 'Tops',
-        'date': '4 days ago',
+        'garment': 'jeans-w',
+        'category': 'lower',
+        'days': 4,
         'image_url':
             'https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=800&q=80',
       },
       {
         'id': '4',
-        'title': 'Sculptural Linen Silhouette',
-        'category': 'Dresses',
-        'date': 'Last week',
+        'garment': 'skirt-w',
+        'category': 'lower',
+        'days': 7,
         'image_url':
             'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=800&q=80',
       },
       {
         'id': '5',
-        'title': 'Cashmere Midnight Coat',
-        'category': 'Outerwear',
-        'date': '2 weeks ago',
+        'garment': 'chino-m',
+        'category': 'lower',
+        'days': 14,
         'image_url':
             'https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=800&q=80',
       },
       {
         'id': '6',
-        'title': 'Pleated Minimalist Trousers',
-        'category': 'Bottoms',
-        'date': '3 weeks ago',
+        'garment': 'shorts-w',
+        'category': 'lower',
+        'days': 21,
         'image_url':
             'https://images.unsplash.com/photo-1485230895905-ec40ba36b9bc?auto=format&fit=crop&w=800&q=80',
       },
@@ -207,8 +208,8 @@ class _WardrobeScreenState extends State<WardrobeScreen>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text(
-                      'MY ATELIER',
+                    Text(
+                      context.l10n.wardrobeTitle,
                       style: TextStyle(
                         fontFamily: 'Georgia',
                         fontSize: 22,
@@ -220,8 +221,8 @@ class _WardrobeScreenState extends State<WardrobeScreen>
                     const SizedBox(height: 2),
                     Text(
                       isLoading
-                          ? 'Synchronizing archives...'
-                          : '$itemCount Curated ${itemCount == 1 ? 'Silhouette' : 'Silhouettes'}',
+                          ? context.l10n.wardrobeSyncing
+                          : context.l10n.wardrobeCount(itemCount),
                       style: TextStyle(
                         fontSize: 11,
                         letterSpacing: 0.6,
@@ -392,8 +393,8 @@ class _WardrobeScreenState extends State<WardrobeScreen>
             const SizedBox(height: 32),
 
             // Typography
-            const Text(
-              'Your Atelier is Empty',
+            Text(
+              context.l10n.wardrobeEmptyTitle,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontFamily: 'Georgia',
@@ -405,7 +406,7 @@ class _WardrobeScreenState extends State<WardrobeScreen>
             ),
             const SizedBox(height: 12),
             Text(
-              'Step into the studio to drape your first luxury silhouette and begin building your private collection.',
+              context.l10n.wardrobeEmptyBody,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 13.5,
@@ -442,11 +443,11 @@ class _WardrobeScreenState extends State<WardrobeScreen>
                   ),
                   elevation: 0,
                 ),
-                child: const Row(
+                child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      'Try Your First Outfit',
+                      context.l10n.wardrobeEmptyCta,
                       style: TextStyle(
                         fontSize: 14,
                         letterSpacing: 0.6,
@@ -480,8 +481,8 @@ class _WardrobeScreenState extends State<WardrobeScreen>
         (context, index) {
           final item = items[index];
           final imageUrl = item['image_url'] ?? '';
-          final title = item['title'] ?? 'Draped Look';
-          final category = item['category'] ?? 'Atelier';
+          final title = garmentName(context.l10n, item['garment'] ?? '');
+          final category = categoryName(context.l10n, item['category'] ?? 'upper');
 
           return _buildLookbookCard(
             imageUrl: imageUrl,
@@ -628,7 +629,7 @@ class _WardrobeScreenState extends State<WardrobeScreen>
                           ),
                           const SizedBox(height: 2),
                           Text(
-                            'AI Silhouette Fit',
+                            context.l10n.wardrobeAiFit,
                             style: TextStyle(
                               fontSize: 9.5,
                               color: Colors.white.withValues(alpha: 0.55),

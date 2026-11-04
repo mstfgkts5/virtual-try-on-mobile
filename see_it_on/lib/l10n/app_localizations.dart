@@ -793,6 +793,54 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'SeeItOn ile oluşturduğum yapay zeka destekli sanal kombinimi incele! ✨ #SeeItOn #SanalKabin'**
   String get resultShareText;
+
+  /// No description provided for @wardrobeTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'GARDIROBUM'**
+  String get wardrobeTitle;
+
+  /// No description provided for @wardrobeSyncing.
+  ///
+  /// In tr, this message translates to:
+  /// **'Gardırop yükleniyor...'**
+  String get wardrobeSyncing;
+
+  /// No description provided for @wardrobeCount.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count, plural, =0{Henüz kombin yok} other{{count} kayıtlı kombin}}'**
+  String wardrobeCount(int count);
+
+  /// No description provided for @wardrobeDaysAgo.
+  ///
+  /// In tr, this message translates to:
+  /// **'{days, plural, =0{Bugün} =1{Dün} other{{days} gün önce}}'**
+  String wardrobeDaysAgo(int days);
+
+  /// No description provided for @wardrobeEmptyTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Gardırobun Boş'**
+  String get wardrobeEmptyTitle;
+
+  /// No description provided for @wardrobeEmptyBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kabine geç, ilk kombinini dene ve kendi koleksiyonunu oluşturmaya başla.'**
+  String get wardrobeEmptyBody;
+
+  /// No description provided for @wardrobeEmptyCta.
+  ///
+  /// In tr, this message translates to:
+  /// **'İlk Kombinini Dene'**
+  String get wardrobeEmptyCta;
+
+  /// No description provided for @wardrobeAiFit.
+  ///
+  /// In tr, this message translates to:
+  /// **'AI Sanal Deneme'**
+  String get wardrobeAiFit;
 }
 
 class _AppLocalizationsDelegate
