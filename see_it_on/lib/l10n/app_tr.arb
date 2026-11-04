@@ -222,5 +222,15 @@
   "authErrorNetwork": "İnternet bağlantısı yok ya da sunucuya ulaşılamıyor.",
   "authErrorPasswordTooShort": "Şifre en az 6 karakter olmalı.",
   "loginShowPassword": "Şifreyi göster",
-  "loginHidePassword": "Şifreyi gizle"
+  "loginHidePassword": "Şifreyi gizle",
+  "settingsAccount": "HESAP",
+  "settingsSignedInAs": "{email} olarak giriş yapıldı",
+  "@settingsSignedInAs": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsSignOut": "Çıkış yap"
 }

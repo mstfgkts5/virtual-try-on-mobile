@@ -463,4 +463,15 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get loginHidePassword => 'Şifreyi gizle';
+
+  @override
+  String get settingsAccount => 'HESAP';
+
+  @override
+  String settingsSignedInAs(String email) {
+    return '$email olarak giriş yapıldı';
+  }
+
+  @override
+  String get settingsSignOut => 'Çıkış yap';
 }

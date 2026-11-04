@@ -462,4 +462,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get loginHidePassword => 'Hide password';
+
+  @override
+  String get settingsAccount => 'ACCOUNT';
+
+  @override
+  String settingsSignedInAs(String email) {
+    return 'Signed in as $email';
+  }
+
+  @override
+  String get settingsSignOut => 'Sign out';
 }

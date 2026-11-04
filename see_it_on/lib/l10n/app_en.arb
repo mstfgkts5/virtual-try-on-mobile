@@ -131,5 +131,8 @@
   "authErrorNetwork": "No internet connection, or the server can't be reached.",
   "authErrorPasswordTooShort": "Password must be at least 6 characters.",
   "loginShowPassword": "Show password",
-  "loginHidePassword": "Hide password"
+  "loginHidePassword": "Hide password",
+  "settingsAccount": "ACCOUNT",
+  "settingsSignedInAs": "Signed in as {email}",
+  "settingsSignOut": "Sign out"
 }

@@ -889,6 +889,24 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Şifreyi gizle'**
   String get loginHidePassword;
+
+  /// No description provided for @settingsAccount.
+  ///
+  /// In tr, this message translates to:
+  /// **'HESAP'**
+  String get settingsAccount;
+
+  /// No description provided for @settingsSignedInAs.
+  ///
+  /// In tr, this message translates to:
+  /// **'{email} olarak giriş yapıldı'**
+  String settingsSignedInAs(String email);
+
+  /// No description provided for @settingsSignOut.
+  ///
+  /// In tr, this message translates to:
+  /// **'Çıkış yap'**
+  String get settingsSignOut;
 }
 
 class _AppLocalizationsDelegate
