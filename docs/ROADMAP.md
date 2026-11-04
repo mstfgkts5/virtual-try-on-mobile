@@ -14,7 +14,10 @@ Teslim: çalışan uygulama + rapor + sunum.
 - [x] Uygulamaya kategori seçimi (Üst / Alt / Tam kıyafet)
 - [x] 8 test mankeni üretildi (Türk görünümü, kadın 160 cm / erkek 185 cm, S-M-L-XL) ve uygulama asset'lerine eklendi
 - [x] Geliştirme için "girişi atla" butonu (sadece debug derlemede)
-- [ ] Örnek alt giyim katalogu (pantolon, etek, şort)
+- [x] Örnek alt giyim katalogu (pantolon, etek, şort): RealVisXL ile 5 ürün fotoğrafı üretildi, uygulamada "Örnek" seçici
+- [x] Alt giyim testi: chino / kumaş pantolon / kot başarılı (~40 sn). **Bilinen sınır:** hedef kıyafet mevcut kıyafetten kısaysa (şort, midi etek) sonuç uzuyor, çünkü CatVTON maskeyi mevcut kıyafetten çıkarıyor → raporda belgelenecek, uygulamada ipucu gösteriliyor
+- [ ] (İsteğe bağlı) Kısa alt giyim için maskeyi kıyafet uzunluğuna göre kısaltma
+- [ ] Alt giyimde renk doygunluğu biraz düşüyor (kot) → incele
 - [ ] Zaman aşımı, bağlantı ve model hataları için düzgün hata ekranları
 - [ ] Sahte değerleri kaldır (fit score, simüle ilerleme çubuğu, kullanılmayan fit/pose ayarları)
 - [x] Önce/sonra karşılaştırmasını düzelt: backend 3:4 kırpılmış kişi fotoğrafını da döndürsün, karşılaştırma onu kullansın
