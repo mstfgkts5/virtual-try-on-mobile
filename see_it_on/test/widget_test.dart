@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:typed_data';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:see_it_on/core/l10n_ext.dart';
 import 'package:see_it_on/models/tryon_request.dart';
@@ -60,5 +61,34 @@ void main() {
   testWidgets('Giriş ekranı EN', (tester) async {
     await tester.pumpWidget(localized(const LoginScreen(), lang: 'en'));
     expect(find.text('Welcome Back'), findsOneWidget);
+  });
+
+  // Doğrulama Supabase'e gitmeden önce yapılır; bu yüzden testte Supabase başlatılmasına gerek yok
+  Future<void> submitLogin(WidgetTester tester, String email, String password) async {
+    await tester.pumpWidget(localized(const LoginScreen()));
+    final fields = find.byType(TextField);
+    await tester.enterText(fields.at(0), email);
+    await tester.enterText(fields.at(1), password);
+    await tester.tap(find.text(l10nFor('tr').loginButton));
+    await tester.pump();
+  }
+
+  testWidgets('geçersiz e-posta uyarısı', (tester) async {
+    await submitLogin(tester, 'abc', '123456');
+    expect(find.text(l10nFor('tr').authErrorInvalidEmail), findsOneWidget);
+  });
+
+  testWidgets('kısa şifre uyarısı', (tester) async {
+    await submitLogin(tester, 'a@b.co', '123');
+    expect(find.text(l10nFor('tr').authErrorPasswordTooShort), findsOneWidget);
+  });
+
+  testWidgets('şifre göster/gizle', (tester) async {
+    await tester.pumpWidget(localized(const LoginScreen()));
+    TextField password() => tester.widget<TextField>(find.byType(TextField).at(1));
+    expect(password().obscureText, isTrue);
+    await tester.tap(find.byIcon(Icons.visibility_outlined));
+    await tester.pump();
+    expect(password().obscureText, isFalse);
   });
 }

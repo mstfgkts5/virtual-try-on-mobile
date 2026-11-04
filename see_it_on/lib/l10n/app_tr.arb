@@ -220,5 +220,7 @@
   "authErrorWeakPassword": "Şifre en az 6 karakter olmalı.",
   "authErrorInvalidEmail": "Geçerli bir e-posta adresi gir.",
   "authErrorNetwork": "İnternet bağlantısı yok ya da sunucuya ulaşılamıyor.",
-  "authErrorPasswordTooShort": "Şifre en az 6 karakter olmalı."
+  "authErrorPasswordTooShort": "Şifre en az 6 karakter olmalı.",
+  "loginShowPassword": "Şifreyi göster",
+  "loginHidePassword": "Şifreyi gizle"
 }

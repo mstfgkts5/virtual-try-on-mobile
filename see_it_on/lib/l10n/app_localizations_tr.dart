@@ -457,4 +457,10 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get authErrorPasswordTooShort => 'Şifre en az 6 karakter olmalı.';
+
+  @override
+  String get loginShowPassword => 'Şifreyi göster';
+
+  @override
+  String get loginHidePassword => 'Şifreyi gizle';
 }
