@@ -43,4 +43,32 @@ void main() {
     await tester.pumpAndSettle();
     expect(signOutCalls, 1);
   });
+
+  testWidgets('çıkış hata verse de kök ekrana döner', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    localeController = await LocaleController.load(deviceLocale: const Locale('tr'));
+    await tester.pumpWidget(SeeItOnApp(
+      home: Builder(
+        builder: (context) => TextButton(
+          onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => SettingsScreen(
+                userEmail: 'a@b.co',
+                onSignOut: () => Future.error(Exception('offline')),
+              ),
+            ),
+          ),
+          child: const Text('ROOT'),
+        ),
+      ),
+    ));
+    await tester.tap(find.text('ROOT'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Çıkış yap'));
+    await tester.pumpAndSettle();
+    expect(find.text('Çıkış yap'), findsNothing);
+    expect(find.text('ROOT'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
 }

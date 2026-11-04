@@ -134,5 +134,6 @@
   "loginHidePassword": "Hide password",
   "settingsAccount": "ACCOUNT",
   "settingsSignedInAs": "Signed in as {email}",
-  "settingsSignOut": "Sign out"
+  "settingsSignOut": "Sign out",
+  "authErrorRateLimit": "Too many attempts. Please wait a moment and try again."
 }

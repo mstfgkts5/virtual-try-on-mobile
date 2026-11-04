@@ -474,4 +474,8 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get settingsSignOut => 'Çıkış yap';
+
+  @override
+  String get authErrorRateLimit =>
+      'Çok fazla deneme yapıldı. Lütfen biraz bekleyip tekrar dene.';
 }

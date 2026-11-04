@@ -24,10 +24,17 @@ class SettingsScreen extends StatelessWidget {
   }
 
   Future<void> _signOut(BuildContext context) async {
-    await (onSignOut ?? Supabase.instance.client.auth.signOut)();
-    // Kök ekranı AuthGate tanıtım ekranına çevirir; üstteki rotalar kapatılır,
-    // böylece geri tuşuyla ana ekrana dönülemez
-    if (context.mounted) Navigator.of(context).popUntil((route) => route.isFirst);
+    try {
+      await (onSignOut ?? Supabase.instance.client.auth.signOut)();
+    } catch (e) {
+      // gotrue yerel oturumu sunucu çağrısından önce siler; çevrimdışıyken sunucu
+      // çağrısı hata verse de kullanıcı fiilen çıkış yapmıştır
+      debugPrint('[SettingsScreen] Çıkış sırasında sunucu hatası: $e');
+    } finally {
+      // Kök ekranı AuthGate tanıtım ekranına çevirir; üstteki rotalar kapatılır,
+      // böylece geri tuşuyla ana ekrana dönülemez
+      if (context.mounted) Navigator.of(context).popUntil((route) => route.isFirst);
+    }
   }
 
   @override

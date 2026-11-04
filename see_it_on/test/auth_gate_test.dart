@@ -7,7 +7,7 @@ import 'package:see_it_on/screens/auth_gate.dart';
 Widget _gate(StreamController<bool> c, {required bool signedIn}) => MaterialApp(
       home: AuthGate(
         authStates: c.stream,
-        initialSignedIn: signedIn,
+        isSignedIn: () => signedIn,
         signedInBuilder: (_) => const Text('HOME'),
         signedOutBuilder: (_) => const Text('WELCOME'),
       ),
@@ -45,6 +45,16 @@ void main() {
     await tester.pump();
     expect(find.text('WELCOME'), findsOneWidget);
     expect(find.text('HOME'), findsNothing);
+    await c.close();
+  });
+
+  testWidgets('akış hata verirse mevcut oturuma göre karar verir', (tester) async {
+    final c = StreamController<bool>();
+    await tester.pumpWidget(_gate(c, signedIn: true));
+    c.addError(Exception('token refresh 429'));
+    await tester.pump();
+    expect(find.text('HOME'), findsOneWidget);
+    expect(find.text('WELCOME'), findsNothing);
     await c.close();
   });
 }

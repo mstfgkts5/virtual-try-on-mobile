@@ -473,4 +473,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsSignOut => 'Sign out';
+
+  @override
+  String get authErrorRateLimit =>
+      'Too many attempts. Please wait a moment and try again.';
 }

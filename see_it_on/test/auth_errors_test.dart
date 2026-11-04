@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:see_it_on/services/auth_errors.dart';
@@ -44,5 +46,16 @@ void main() {
     expect(isValidEmail('a@b'), isFalse);
     expect(isValidEmail(''), isFalse);
     expect(minPasswordLength, 6);
+  });
+
+  test('çok fazla deneme', () {
+    expect(authErrorMessage(tr, const AuthException('email rate limit exceeded', statusCode: '429')),
+        tr.authErrorRateLimit);
+    expect(authErrorMessage(en, const AuthException('For security purposes, you can only request this after 40 seconds.')),
+        en.authErrorRateLimit);
+  });
+
+  test('zaman aşımı bağlantı hatası sayılır', () {
+    expect(authErrorMessage(tr, TimeoutException('auth')), tr.authErrorNetwork);
   });
 }
