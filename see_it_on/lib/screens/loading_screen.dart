@@ -442,7 +442,7 @@ class _LoadingScreenState extends State<LoadingScreen>
                         Icons.person_outline,
                         "Vücut Maskesi",
                         "DensePose + SCHP ile giydirilecek bölge bulunur",
-                        progress > 0.3 ? "DONE" : "PROCESSING",
+                        progress > 0.3 ? "TAMAM" : "İŞLENİYOR",
                         progress > 0.3,
                         progress <= 0.3,
                       ),
@@ -452,8 +452,8 @@ class _LoadingScreenState extends State<LoadingScreen>
                         "Difüzyon (30 adım)",
                         "CatVTON kıyafeti kişinin üzerine çizer",
                         progress > 0.7
-                            ? "DONE"
-                            : (progress > 0.3 ? "PROCESSING" : "QUEUED"),
+                            ? "TAMAM"
+                            : (progress > 0.3 ? "İŞLENİYOR" : "SIRADA"),
                         progress > 0.7,
                         progress > 0.3 && progress <= 0.7,
                       ),
@@ -463,8 +463,8 @@ class _LoadingScreenState extends State<LoadingScreen>
                         "Birleştirme",
                         "Yüz ve arka plan orijinal fotoğraftan korunur",
                         progress == 1.0
-                            ? "DONE"
-                            : (progress > 0.7 ? "PROCESSING" : "QUEUED"),
+                            ? "TAMAM"
+                            : (progress > 0.7 ? "İŞLENİYOR" : "SIRADA"),
                         progress == 1.0,
                         progress > 0.7,
                       ),
