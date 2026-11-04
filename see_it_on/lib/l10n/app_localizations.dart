@@ -800,12 +800,6 @@ abstract class AppLocalizations {
   /// **'GARDIROBUM'**
   String get wardrobeTitle;
 
-  /// No description provided for @wardrobeSyncing.
-  ///
-  /// In tr, this message translates to:
-  /// **'Gardırop yükleniyor...'**
-  String get wardrobeSyncing;
-
   /// No description provided for @wardrobeCount.
   ///
   /// In tr, this message translates to:
@@ -821,26 +815,20 @@ abstract class AppLocalizations {
   /// No description provided for @wardrobeEmptyTitle.
   ///
   /// In tr, this message translates to:
-  /// **'Gardırobun Boş'**
+  /// **'Gardırobun boş'**
   String get wardrobeEmptyTitle;
 
   /// No description provided for @wardrobeEmptyBody.
   ///
   /// In tr, this message translates to:
-  /// **'Kabine geç, ilk kombinini dene ve kendi koleksiyonunu oluşturmaya başla.'**
+  /// **'Bir kombin dene, sonuç ekranında \"Gardıroba Ekle\"ye bas; burada görünsün.'**
   String get wardrobeEmptyBody;
 
   /// No description provided for @wardrobeEmptyCta.
   ///
   /// In tr, this message translates to:
-  /// **'İlk Kombinini Dene'**
+  /// **'Kombin Dene'**
   String get wardrobeEmptyCta;
-
-  /// No description provided for @wardrobeAiFit.
-  ///
-  /// In tr, this message translates to:
-  /// **'AI Sanal Deneme'**
-  String get wardrobeAiFit;
 
   /// No description provided for @authErrorInvalidCredentials.
   ///
@@ -877,6 +865,132 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Şifre en az 6 karakter olmalı.'**
   String get authErrorPasswordTooShort;
+
+  /// No description provided for @loginShowPassword.
+  ///
+  /// In tr, this message translates to:
+  /// **'Şifreyi göster'**
+  String get loginShowPassword;
+
+  /// No description provided for @loginHidePassword.
+  ///
+  /// In tr, this message translates to:
+  /// **'Şifreyi gizle'**
+  String get loginHidePassword;
+
+  /// No description provided for @settingsAccount.
+  ///
+  /// In tr, this message translates to:
+  /// **'HESAP'**
+  String get settingsAccount;
+
+  /// No description provided for @settingsSignedInAs.
+  ///
+  /// In tr, this message translates to:
+  /// **'{email} olarak giriş yapıldı'**
+  String settingsSignedInAs(String email);
+
+  /// No description provided for @settingsSignOut.
+  ///
+  /// In tr, this message translates to:
+  /// **'Çıkış yap'**
+  String get settingsSignOut;
+
+  /// No description provided for @authErrorRateLimit.
+  ///
+  /// In tr, this message translates to:
+  /// **'Çok fazla deneme yapıldı. Lütfen biraz bekleyip tekrar dene.'**
+  String get authErrorRateLimit;
+
+  /// No description provided for @wardrobeHeading.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kombinlerin'**
+  String get wardrobeHeading;
+
+  /// No description provided for @wardrobeFilterAll.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tümü'**
+  String get wardrobeFilterAll;
+
+  /// No description provided for @wardrobeSignInTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Gardırobun seni bekliyor'**
+  String get wardrobeSignInTitle;
+
+  /// No description provided for @wardrobeSignInBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Denediğin kombinleri kaydetmek ve burada görmek için giriş yap.'**
+  String get wardrobeSignInBody;
+
+  /// No description provided for @wardrobeLoadError.
+  ///
+  /// In tr, this message translates to:
+  /// **'Gardırop yüklenemedi. İnternet bağlantını kontrol et.'**
+  String get wardrobeLoadError;
+
+  /// No description provided for @wardrobeRetry.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tekrar dene'**
+  String get wardrobeRetry;
+
+  /// No description provided for @wardrobeShare.
+  ///
+  /// In tr, this message translates to:
+  /// **'Paylaş'**
+  String get wardrobeShare;
+
+  /// No description provided for @wardrobeDelete.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sil'**
+  String get wardrobeDelete;
+
+  /// No description provided for @wardrobeDeleteTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kombin silinsin mi?'**
+  String get wardrobeDeleteTitle;
+
+  /// No description provided for @wardrobeDeleteBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu kombin gardırobundan kalıcı olarak silinecek.'**
+  String get wardrobeDeleteBody;
+
+  /// No description provided for @wardrobeDeleteConfirm.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sil'**
+  String get wardrobeDeleteConfirm;
+
+  /// No description provided for @wardrobeCancel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vazgeç'**
+  String get wardrobeCancel;
+
+  /// No description provided for @wardrobeDeleted.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kombin silindi.'**
+  String get wardrobeDeleted;
+
+  /// No description provided for @wardrobeDeleteFailed.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kombin silinemedi. Tekrar dene.'**
+  String get wardrobeDeleteFailed;
+
+  /// No description provided for @wardrobeShareFailed.
+  ///
+  /// In tr, this message translates to:
+  /// **'Görsel paylaşılamadı.'**
+  String get wardrobeShareFailed;
 }
 
 class _AppLocalizationsDelegate

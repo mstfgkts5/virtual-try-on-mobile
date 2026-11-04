@@ -400,9 +400,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get wardrobeTitle => 'GARDIROBUM';
 
   @override
-  String get wardrobeSyncing => 'Gardırop yükleniyor...';
-
-  @override
   String wardrobeCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -426,17 +423,14 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get wardrobeEmptyTitle => 'Gardırobun Boş';
+  String get wardrobeEmptyTitle => 'Gardırobun boş';
 
   @override
   String get wardrobeEmptyBody =>
-      'Kabine geç, ilk kombinini dene ve kendi koleksiyonunu oluşturmaya başla.';
+      'Bir kombin dene, sonuç ekranında \"Gardıroba Ekle\"ye bas; burada görünsün.';
 
   @override
-  String get wardrobeEmptyCta => 'İlk Kombinini Dene';
-
-  @override
-  String get wardrobeAiFit => 'AI Sanal Deneme';
+  String get wardrobeEmptyCta => 'Kombin Dene';
 
   @override
   String get authErrorInvalidCredentials => 'E-posta veya şifre hatalı.';
@@ -457,4 +451,73 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get authErrorPasswordTooShort => 'Şifre en az 6 karakter olmalı.';
+
+  @override
+  String get loginShowPassword => 'Şifreyi göster';
+
+  @override
+  String get loginHidePassword => 'Şifreyi gizle';
+
+  @override
+  String get settingsAccount => 'HESAP';
+
+  @override
+  String settingsSignedInAs(String email) {
+    return '$email olarak giriş yapıldı';
+  }
+
+  @override
+  String get settingsSignOut => 'Çıkış yap';
+
+  @override
+  String get authErrorRateLimit =>
+      'Çok fazla deneme yapıldı. Lütfen biraz bekleyip tekrar dene.';
+
+  @override
+  String get wardrobeHeading => 'Kombinlerin';
+
+  @override
+  String get wardrobeFilterAll => 'Tümü';
+
+  @override
+  String get wardrobeSignInTitle => 'Gardırobun seni bekliyor';
+
+  @override
+  String get wardrobeSignInBody =>
+      'Denediğin kombinleri kaydetmek ve burada görmek için giriş yap.';
+
+  @override
+  String get wardrobeLoadError =>
+      'Gardırop yüklenemedi. İnternet bağlantını kontrol et.';
+
+  @override
+  String get wardrobeRetry => 'Tekrar dene';
+
+  @override
+  String get wardrobeShare => 'Paylaş';
+
+  @override
+  String get wardrobeDelete => 'Sil';
+
+  @override
+  String get wardrobeDeleteTitle => 'Kombin silinsin mi?';
+
+  @override
+  String get wardrobeDeleteBody =>
+      'Bu kombin gardırobundan kalıcı olarak silinecek.';
+
+  @override
+  String get wardrobeDeleteConfirm => 'Sil';
+
+  @override
+  String get wardrobeCancel => 'Vazgeç';
+
+  @override
+  String get wardrobeDeleted => 'Kombin silindi.';
+
+  @override
+  String get wardrobeDeleteFailed => 'Kombin silinemedi. Tekrar dene.';
+
+  @override
+  String get wardrobeShareFailed => 'Görsel paylaşılamadı.';
 }

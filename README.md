@@ -29,6 +29,9 @@ RTX 5060 Laptop GPU (8 GB) üzerinde: görsel başına ~40 sn (30 difüzyon adı
 | `docs/` | Yol haritası ve proje belgeleri |
 | `research/` | Fizibilite ve rakip analizi |
 
+## Supabase Kurulumu (bir kez)
+Gardırop için Supabase SQL Editor'da [`supabase/setup_wardrobe.sql`](supabase/setup_wardrobe.sql) çalıştırılır; ayrıntılar [`supabase/README.md`](supabase/README.md).
+
 ## Hızlı Başlangıç
 ```bash
 # 1) Backend (model ilk açılışta GPU'ya yüklenir)

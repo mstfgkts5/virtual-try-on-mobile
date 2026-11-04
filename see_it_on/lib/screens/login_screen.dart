@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../core/l10n_ext.dart';
+import '../services/auth_errors.dart';
 import 'home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -17,14 +18,25 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool _isLoading = false;
   bool _isLogin = true; // true ise Giriş Yap, false ise Kayıt Ol ekranı
+  bool _obscurePassword = true;
 
   // Supabase yetkilendirme fonksiyonu
   Future<void> _authenticate() async {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
 
+    final l = context.l10n;
     if (email.isEmpty || password.isEmpty) {
-      _showError(context.l10n.loginMissingFields);
+      _showError(l.loginMissingFields);
+      return;
+    }
+    // Supabase'e gitmeden önce basit kontroller: kullanıcı ağ isteği beklemeden uyarı alır
+    if (!isValidEmail(email)) {
+      _showError(l.authErrorInvalidEmail);
+      return;
+    }
+    if (password.length < minPasswordLength) {
+      _showError(l.authErrorPasswordTooShort);
       return;
     }
 
@@ -34,32 +46,21 @@ class _LoginScreenState extends State<LoginScreen> {
 
     try {
       if (_isLogin) {
-        // Giriş Yapma İşlemi
-        await Supabase.instance.client.auth.signInWithPassword(
-          email: email,
-          password: password,
-        );
+        await Supabase.instance.client.auth
+            .signInWithPassword(email: email, password: password)
+            .timeout(authRequestTimeout);
       } else {
-        // Yeni Kayıt Olma İşlemi
-        await Supabase.instance.client.auth.signUp(
-          email: email,
-          password: password,
-        );
+        // E-posta doğrulaması kapalı olduğu için kayıt olan kullanıcı hemen oturum açmış olur
+        await Supabase.instance.client.auth
+            .signUp(email: email, password: password)
+            .timeout(authRequestTimeout);
       }
 
-      // Başarılı olursa ana ekrana yönlendir
-      if (mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const HomeScreen()),
-        );
-      }
-    } on AuthException catch (e) {
-      _showError(
-        e.message,
-      ); // Supabase'den gelen hata mesajı (Örn: Yanlış şifre)
+      // Ana ekrana geçişi AuthGate yapar (oturum değişikliğini dinliyor);
+      // burada yalnızca tanıtım/giriş rotaları kapatılır
+      if (mounted) Navigator.of(context).popUntil((route) => route.isFirst);
     } catch (e) {
-      if (mounted) _showError(context.l10n.errorUnexpected);
+      if (mounted) _showError(authErrorMessage(context.l10n, e));
     } finally {
       if (mounted) {
         setState(() {
@@ -161,7 +162,20 @@ class _LoginScreenState extends State<LoginScreen> {
                   controller: _passwordController,
                   hintText: context.l10n.loginPasswordHint,
                   icon: Icons.lock_outline,
-                  obscureText: true,
+                  obscureText: _obscurePassword,
+                  suffix: IconButton(
+                    tooltip: _obscurePassword
+                        ? context.l10n.loginShowPassword
+                        : context.l10n.loginHidePassword,
+                    icon: Icon(
+                      _obscurePassword
+                          ? Icons.visibility_outlined
+                          : Icons.visibility_off_outlined,
+                      color: textColor.withValues(alpha: 0.4),
+                      size: 20,
+                    ),
+                    onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                  ),
                   textInputAction:
                       TextInputAction.done, // Enter/Bitti tuşunu gösterir
                   onSubmitted: (_) {
@@ -279,6 +293,7 @@ class _LoginScreenState extends State<LoginScreen> {
     required bool obscureText,
     TextInputAction? textInputAction,
     Function(String)? onSubmitted,
+    Widget? suffix,
   }) {
     const textColor = Color(0xFF1E1C1A);
     return TextField(
@@ -295,6 +310,7 @@ class _LoginScreenState extends State<LoginScreen> {
           color: textColor.withValues(alpha: 0.4),
           size: 20,
         ),
+        suffixIcon: suffix,
         filled: true,
         fillColor: Colors.white.withValues(alpha: 0.6),
         contentPadding: const EdgeInsets.symmetric(vertical: 18),

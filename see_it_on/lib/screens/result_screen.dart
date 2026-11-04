@@ -1,8 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import '../core/l10n_ext.dart';
+import '../services/auth_errors.dart';
 import '../services/storage_service.dart';
+import '../services/wardrobe_repository.dart';
 
 class ResultScreen extends StatefulWidget {
   final Uint8List
@@ -11,12 +12,16 @@ class ResultScreen extends StatefulWidget {
   final String category; // 'upper', 'lower', 'overall'
   final double renderTimeSec;
 
+  /// Verilmezse Supabase kullanılır; testlerde sahte depo verilir.
+  final WardrobeRepository? wardrobe;
+
   const ResultScreen({
     super.key,
     required this.originalImageBytes,
     required this.generatedImageBytes,
     this.category = 'upper',
     this.renderTimeSec = 0,
+    this.wardrobe,
   });
 
   @override
@@ -29,36 +34,17 @@ class _ResultScreenState extends State<ResultScreen> {
   double _fadeValue = 0.5; // Fade mode şeffaflığı için
   String _activeTab = 'split'; // 'split' / 'side' / 'fade'
 
-  // 1. Supabase'e Kaydetme Fonksiyonu
+  // Gardıroba kaydetme: görsel kullanıcının klasörüne yüklenir, kategoriyle birlikte satır eklenir
   Future<void> _saveToWardrobe() async {
     setState(() {
       _isSaving = true;
     });
 
     try {
-      final supabase = Supabase.instance.client;
-      final user = supabase.auth.currentUser;
-
-      if (user == null) {
-        throw Exception(context.l10n.resultNeedLogin);
-      }
-
-      final fileName =
-          '${user.id}_${DateTime.now().millisecondsSinceEpoch}.png';
-
-      await supabase.storage
-          .from('wardrobe_images')
-          .uploadBinary(fileName, widget.generatedImageBytes);
-
-      final imageUrl = supabase.storage
-          .from('wardrobe_images')
-          .getPublicUrl(fileName);
-
-      await supabase.from('wardrobe').insert({
-        'user_id': user.id,
-        'image_url': imageUrl,
-      });
-
+      await (widget.wardrobe ?? SupabaseWardrobeRepository()).add(
+        widget.generatedImageBytes,
+        widget.category,
+      );
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -68,10 +54,16 @@ class _ResultScreenState extends State<ResultScreen> {
         );
       }
     } catch (e) {
+      debugPrint('[ResultScreen] Gardıroba kaydetme hatası: $e');
       if (mounted) {
+        final l = context.l10n;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(context.l10n.resultWardrobeError(e.toString().replaceFirst('Exception: ', ''))),
+            content: Text(
+              e is NotSignedInException
+                  ? l.resultNeedLogin
+                  : l.resultWardrobeError(authErrorMessage(l, e)),
+            ),
             backgroundColor: Colors.red,
           ),
         );
@@ -90,11 +82,13 @@ class _ResultScreenState extends State<ResultScreen> {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(ok
-            ? context.l10n.resultGallerySaved
-            : kIsWeb
-                ? context.l10n.resultGalleryWeb
-                : context.l10n.resultGalleryFailed),
+        content: Text(
+          ok
+              ? context.l10n.resultGallerySaved
+              : kIsWeb
+              ? context.l10n.resultGalleryWeb
+              : context.l10n.resultGalleryFailed,
+        ),
         backgroundColor: ok ? Colors.green : Colors.red,
       ),
     );
@@ -224,7 +218,10 @@ class _ResultScreenState extends State<ResultScreen> {
                 Positioned(
                   top: 16,
                   left: 16,
-                  child: _LabelBadge(text: context.l10n.resultBefore, color: Colors.black54),
+                  child: _LabelBadge(
+                    text: context.l10n.resultBefore,
+                    color: Colors.black54,
+                  ),
                 ),
                 ClipRect(
                   clipper: _SplitImageClipper(_sliderValue),
@@ -459,9 +456,21 @@ class _ResultScreenState extends State<ResultScreen> {
                 ),
                 child: Row(
                   children: [
-                    _buildTabButton('split', context.l10n.resultTabSplit, Icons.splitscreen_outlined),
-                    _buildTabButton('side', context.l10n.resultTabSide, Icons.grid_view_outlined),
-                    _buildTabButton('fade', context.l10n.resultTabFade, Icons.blur_on_outlined),
+                    _buildTabButton(
+                      'split',
+                      context.l10n.resultTabSplit,
+                      Icons.splitscreen_outlined,
+                    ),
+                    _buildTabButton(
+                      'side',
+                      context.l10n.resultTabSide,
+                      Icons.grid_view_outlined,
+                    ),
+                    _buildTabButton(
+                      'fade',
+                      context.l10n.resultTabFade,
+                      Icons.blur_on_outlined,
+                    ),
                   ],
                 ),
               ),
@@ -489,12 +498,18 @@ class _ResultScreenState extends State<ResultScreen> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const Spacer(),
-                      Text(
-                        context.l10n.resultEngine,
-                        style: TextStyle(
-                          color: Colors.grey.shade600,
-                          fontSize: 12,
+                      const SizedBox(width: 12),
+                      // Dar ekranda / büyük yazı ölçeğinde taşmasın: sağa yaslı, gerekirse kısaltılır
+                      Expanded(
+                        child: Text(
+                          context.l10n.resultEngine,
+                          textAlign: TextAlign.end,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: Colors.grey.shade600,
+                            fontSize: 12,
+                          ),
                         ),
                       ),
                     ],
@@ -506,7 +521,9 @@ class _ResultScreenState extends State<ResultScreen> {
                     children: [
                       _buildInfoCard(
                         context.l10n.resultRenderTime,
-                        context.l10n.resultSeconds(widget.renderTimeSec.toStringAsFixed(1)),
+                        context.l10n.resultSeconds(
+                          widget.renderTimeSec.toStringAsFixed(1),
+                        ),
                         context.l10n.resultRenderTimeDesc,
                       ),
                       const SizedBox(width: 12),
@@ -537,7 +554,10 @@ class _ResultScreenState extends State<ResultScreen> {
                         Icons.share_outlined,
                         color: Colors.white,
                       ),
-                      onPressed: () => StorageService().shareOutfit(widget.generatedImageBytes, message: context.l10n.resultShareText),
+                      onPressed: () => StorageService().shareOutfit(
+                        widget.generatedImageBytes,
+                        message: context.l10n.resultShareText,
+                      ),
                     ),
                   ),
                   const SizedBox(width: 12),
