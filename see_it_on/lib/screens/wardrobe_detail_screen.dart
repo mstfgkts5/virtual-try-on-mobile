@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import '../core/design/widgets.dart';
 import '../core/l10n_ext.dart';
 import '../models/wardrobe_item.dart';
 import '../services/storage_service.dart';
 import '../services/wardrobe_repository.dart';
 import 'wardrobe_screen.dart';
-
-const _ink = Color(0xFF1E1C1A);
 
 /// Tek bir kayıtlı kombin: büyük görsel, paylaş ve sil.
 /// Silinirse `Navigator.pop(context, true)` ile döner; gardırop listeyi yeniler.
@@ -30,26 +29,23 @@ class _WardrobeDetailScreenState extends State<WardrobeDetailScreen> {
 
   Future<void> _delete() async {
     final l = context.l10n;
+    final t = context.tokens;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: const Color(0xFFF6F4EF),
-        title: Text(
-          l.wardrobeDeleteTitle,
-          style: const TextStyle(fontFamily: 'Georgia', color: _ink),
-        ),
+        title: Text(l.wardrobeDeleteTitle),
         content: Text(l.wardrobeDeleteBody),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: Text(l.wardrobeCancel),
+            child: Text(l.wardrobeCancel, style: TextStyle(color: t.ink)),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            style: TextButton.styleFrom(
-              foregroundColor: const Color(0xFFE11D48),
+            child: Text(
+              l.wardrobeDeleteConfirm,
+              style: TextStyle(color: t.danger, fontWeight: FontWeight.w600),
             ),
-            child: Text(l.wardrobeDeleteConfirm),
           ),
         ],
       ),
@@ -71,7 +67,7 @@ class _WardrobeDetailScreenState extends State<WardrobeDetailScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(context.l10n.wardrobeDeleteFailed),
-          backgroundColor: const Color(0xFFE11D48),
+          backgroundColor: context.tokens.danger,
         ),
       );
     }
@@ -104,12 +100,11 @@ class _WardrobeDetailScreenState extends State<WardrobeDetailScreen> {
   Widget build(BuildContext context) {
     final l = context.l10n;
     final item = widget.item;
+    final t = context.tokens;
+    final text = Theme.of(context).textTheme;
     return Scaffold(
-      backgroundColor: const Color(0xFFF6F4EF),
+      backgroundColor: t.paper,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        foregroundColor: _ink,
         actions: [
           IconButton(
             tooltip: l.wardrobeShare,
@@ -134,7 +129,7 @@ class _WardrobeDetailScreenState extends State<WardrobeDetailScreen> {
                   child: AspectRatio(
                     aspectRatio: 3 / 4,
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(28),
+                      borderRadius: BorderRadius.circular(SeeItOnTokens.radiusLg),
                       child: InteractiveViewer(
                         maxScale: 4,
                         child: Hero(
@@ -156,32 +151,24 @@ class _WardrobeDetailScreenState extends State<WardrobeDetailScreen> {
                 children: [
                   CategoryBadge(category: item.category),
                   const SizedBox(width: 10),
-                  Text(
-                    categoryName(l, item.category),
-                    style: const TextStyle(
-                      color: _ink,
-                      fontSize: 16,
-                      fontFamily: 'Georgia',
-                      fontWeight: FontWeight.w600,
+                  // Dar ekranda uzun kategori adı kısaltılır, tarih sağda kalır
+                  Expanded(
+                    child: Text(
+                      categoryName(l, item.category),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: text.headlineSmall!.copyWith(fontSize: 18),
                     ),
                   ),
-                  const Spacer(),
-                  if (item.createdAt != null)
-                    Text(
-                      l.wardrobeDaysAgo(daysAgo(item.createdAt!)),
-                      style: TextStyle(
-                        color: _ink.withValues(alpha: 0.5),
-                        fontSize: 12,
-                      ),
-                    ),
+                  if (item.createdAt != null) ...[
+                    const SizedBox(width: 8),
+                    Caption(l.wardrobeDaysAgo(daysAgo(item.createdAt!)), italic: true),
+                  ],
                 ],
               ),
             ),
             if (_busy)
-              const LinearProgressIndicator(
-                minHeight: 2,
-                color: Color(0xFF221F1E),
-              ),
+              LinearProgressIndicator(minHeight: 2, color: t.accent, backgroundColor: t.line),
           ],
         ),
       ),

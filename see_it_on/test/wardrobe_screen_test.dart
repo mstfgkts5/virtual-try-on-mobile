@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:see_it_on/core/design/tokens.dart';
 import 'package:see_it_on/models/wardrobe_item.dart';
+import 'package:see_it_on/screens/wardrobe_detail_screen.dart';
 import 'package:see_it_on/screens/wardrobe_screen.dart';
 
 import 'fakes.dart';
@@ -99,6 +101,35 @@ void main() {
   testWidgets('EN başlık', (tester) async {
     await _open(tester, FakeWardrobeRepository(items: [_item('1', 'upper', 0)]), lang: 'en');
     expect(find.text('MY WARDROBE'), findsOneWidget);
+  });
+
+  testWidgets('kayıtlı liste EN/koyu 360 taşmasız, zemin belirteçten', (tester) async {
+    final repo = FakeWardrobeRepository(items: [_item('1', 'lower', 0), _item('2', 'upper', 1), _item('3', 'overall', 9)]);
+    await expectNoOverflow(tester, WardrobeScreen(repository: repo), lang: 'en', b: Brightness.dark);
+    expect(_cards(), findsNWidgets(3));
+    final scaffold = tester.widget<Scaffold>(find.byType(Scaffold).first);
+    expect(scaffold.backgroundColor, SeeItOnTokens.dark.paper);
+  });
+
+  testWidgets('detay koyu temada belirteç zemini, silme düğmesi danger', (tester) async {
+    tester.view.physicalSize = const Size(360, 800);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    final repo = FakeWardrobeRepository(items: [_item('1', 'lower', 0)]);
+    await tester.pumpWidget(localized(
+      WardrobeDetailScreen(item: _item('1', 'lower', 0), repository: repo),
+      lang: 'en',
+      brightness: Brightness.dark,
+    ));
+    await tester.pump();
+    expect(tester.takeException(), isNull);
+    expect(tester.widget<Scaffold>(find.byType(Scaffold)).backgroundColor, SeeItOnTokens.dark.paper);
+
+    await tester.tap(find.byTooltip(l10nFor('en').wardrobeDelete));
+    await tester.pumpAndSettle();
+    final confirm = tester.widget<Text>(find.text(l10nFor('en').wardrobeDeleteConfirm));
+    expect(confirm.style?.color ?? DefaultTextStyle.of(tester.element(find.text(l10nFor('en').wardrobeDeleteConfirm))).style.color,
+        SeeItOnTokens.dark.danger);
   });
 
   testWidgets('yenilenirken liste ekranda kalır', (tester) async {
