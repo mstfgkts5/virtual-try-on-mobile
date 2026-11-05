@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -21,12 +22,23 @@ class FakeCameraService implements CameraService {
   ]);
   int captures = 0;
   int inits = 0;
+  int switches = 0;
   bool disposed = false;
+
+  /// true iken her init bir Completer'da bekler (eşzamanlı başlatma senaryoları için)
+  bool holdInits = false;
+  final pendingInits = <Completer<void>>[];
+  Completer<void>? switchGate;
 
   @override
   Future<void> init({bool front = true}) async {
     inits++;
     disposed = false;
+    if (holdInits) {
+      final c = Completer<void>();
+      pendingInits.add(c);
+      await c.future;
+    }
     if (initError != null) throw initError!;
   }
 
@@ -35,12 +47,17 @@ class FakeCameraService implements CameraService {
 
   @override
   Future<Uint8List> capture() async {
+    // Gerçek servis gibi: bırakılmış kamerayla çekim yapılamaz
+    if (disposed) throw const NoCameraException();
     captures++;
     return bytes;
   }
 
   @override
-  Future<void> switchCamera() async {}
+  Future<void> switchCamera() async {
+    switches++;
+    await switchGate?.future;
+  }
 
   @override
   Future<void> dispose() async => disposed = true;
@@ -71,8 +88,94 @@ Future<void> _open(WidgetTester tester, FakeCameraService fake, List<Object?> re
   await tester.pumpAndSettle();
 }
 
+/// Uygulamanın arka plana geçip dönmesini taklit eder.
+Future<void> _background(WidgetTester tester) async {
+  for (final s in [AppLifecycleState.inactive, AppLifecycleState.hidden, AppLifecycleState.paused]) {
+    tester.binding.handleAppLifecycleStateChanged(s);
+  }
+  await tester.pump();
+  for (final s in [AppLifecycleState.hidden, AppLifecycleState.inactive, AppLifecycleState.resumed]) {
+    tester.binding.handleAppLifecycleStateChanged(s);
+  }
+  await tester.pump();
+}
+
 void main() {
   final l = l10nFor('tr');
+
+  test('kamera hata kodları doğru sınıflanır', () {
+    expect(classifyCameraError('CameraAccessDenied'), isA<CameraAccessDeniedException>());
+    expect(classifyCameraError('CameraAccessDeniedWithoutPrompt'), isA<CameraAccessDeniedException>());
+    expect(classifyCameraError('CameraAccessRestricted'), isA<CameraAccessDeniedException>());
+    expect(classifyCameraError('cameraPermission'), isA<CameraAccessDeniedException>());
+    // İzin penceresi hâlâ açık: "izin reddedildi" değildir
+    expect(classifyCameraError('CameraPermissionsRequestOngoing'), isNull);
+    expect(classifyCameraError('cameraNotFound'), isA<NoCameraException>());
+  });
+
+  testWidgets('arka plandan dönünce tekrar çek kamerayı yeniden açar', (tester) async {
+    final fake = FakeCameraService();
+    await _open(tester, fake, []);
+    await tester.tap(find.byKey(const ValueKey('camera-shutter')));
+    await tester.pumpAndSettle();
+    expect(find.text(l.cameraUse), findsOneWidget);
+
+    await _background(tester);
+    await tester.pumpAndSettle();
+    // Arka planda bırakılan kamera dönüşte yeniden açıldı; çekilen fotoğraf ekranda kaldı
+    expect(fake.inits, 2);
+    expect(fake.disposed, isFalse);
+    expect(find.text(l.cameraUse), findsOneWidget);
+    await tester.tap(find.text(l.cameraRetake));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const ValueKey('camera-shutter')));
+    await tester.pumpAndSettle();
+    expect(fake.captures, 2);
+    expect(find.text(l.cameraUse), findsOneWidget);
+  });
+
+  testWidgets('önizlemedeyken arka plandan dönülürse kamera yeniden açılır', (tester) async {
+    final fake = FakeCameraService();
+    await _open(tester, fake, []);
+    await _background(tester);
+    await tester.pumpAndSettle();
+    expect(fake.inits, 2);
+    await tester.tap(find.byKey(const ValueKey('camera-shutter')));
+    await tester.pumpAndSettle();
+    expect(fake.captures, 1);
+  });
+
+  testWidgets('kamera değiştirilirken ikinci dokunuş yok sayılır', (tester) async {
+    final fake = FakeCameraService()..switchGate = Completer<void>();
+    await _open(tester, fake, []);
+    await tester.tap(find.byTooltip(l.cameraSwitch));
+    await tester.pump();
+    expect(find.byTooltip(l.cameraSwitch), findsNothing);
+    fake.switchGate!.complete();
+    await tester.pumpAndSettle();
+    expect(fake.switches, 1);
+    expect(find.byTooltip(l.cameraSwitch), findsOneWidget);
+  });
+
+  testWidgets('eski başlatmanın geç gelen hatası yok sayılır', (tester) async {
+    tester.view.physicalSize = const Size(360, 800);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    final fake = FakeCameraService()..holdInits = true;
+    await tester.pumpWidget(localized(CameraCaptureScreen(service: fake, countdown: Duration.zero)));
+    await tester.pump();
+    await _background(tester); // ilk başlatma sürerken arka plan → ikinci başlatma
+    expect(fake.pendingInits.length, 2);
+
+    fake.pendingInits[1].complete();
+    await tester.pump();
+    fake.pendingInits[0].completeError(const NoCameraException());
+    await tester.pump();
+    await tester.pump();
+    expect(find.text(l.cameraUnavailable), findsNothing);
+    expect(find.byKey(const ValueKey('fake-preview')), findsOneWidget);
+  });
 
   testWidgets('izin reddi mesajı', (tester) async {
     await _open(tester, FakeCameraService(initError: const CameraAccessDeniedException()), []);

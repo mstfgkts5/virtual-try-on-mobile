@@ -38,7 +38,9 @@ Teslim: çalışan uygulama + rapor + sunum.
 - [x] Tekrarlanan ve kullanılmayan kodu temizle (`splash_screen.dart` kopyası, 8 widget, eski görseller)
 
 ## 4. Hafta (24–30 Kasım) – Test ve dokümantasyon
-- [ ] Gerçek telefonda uçtan uca test
+- [x] Gerçek telefonda uçtan uca test (iPhone 15 Pro, Safari, kişisel erişim noktası üzerinden): giriş, manken + örnek kıyafet, kendi fotoğrafı, sonuç, gardırop, koyu tema, EN — hepsi çalıştı (~48 sn / deneme)
+- [x] Bol/açık dış giyimde vücudun ince görünmesi incelendi: maskeyi siluete kırpmak denendi, iyileşme yok → bilinen sınır olarak belgelendi ([KNOWN_LIMITATIONS.md](KNOWN_LIMITATIONS.md))
+- [ ] Yerel iOS/Android derlemesiyle (kamera dahil) test — iOS için Mac gerekir
 - [ ] Performans ölçümleri (kategori ve açı başına süre, VRAM)
 - [ ] Mimari ve sıra diyagramlarını güncelle (CatVTON, çoklu açı akışı)
 - [ ] Rapor taslağı
