@@ -66,5 +66,9 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>SeeItOn, kıyafeti üzerinde denemek için tam boy fotoğrafını çeker.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>SeeItOn, deneme için galeriden fotoğraf seçmene ve sonucu kaydetmene izin verir.</string>
 </dict>
 </plist>

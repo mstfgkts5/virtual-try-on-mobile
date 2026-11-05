@@ -264,5 +264,14 @@
         "type": "String"
       }
     }
-  }
+  },
+  "cameraHint": "Tam boy görün, kollar hafif açık",
+  "cameraUse": "Kullan",
+  "cameraRetake": "Tekrar çek",
+  "cameraSwitch": "Kamerayı değiştir",
+  "cameraDenied": "Kamera izni verilmedi.",
+  "cameraUnavailable": "Bu cihazda kamera bulunamadı.",
+  "cameraUseGallery": "Galeriden seç",
+  "cameraCapture": "Fotoğraf çek",
+  "cameraClose": "Kapat"
 }
