@@ -28,8 +28,8 @@ async def lifespan(_: FastAPI):
         print("[SeeItOn] CatVTON modeli GPU'ya yükleniyor...")
         engine = await asyncio.to_thread(
             CatVTONEngine,
-            int(os.getenv("TRYON_WIDTH", "768")),
-            int(os.getenv("TRYON_HEIGHT", "1024")),
+            int(os.getenv("TRYON_WIDTH", "576")),
+            int(os.getenv("TRYON_HEIGHT", "768")),
         )
         print(f"[SeeItOn] Model hazır: {engine.gpu_info()}")
 
@@ -90,7 +90,7 @@ async def process_tryon(
     person_image: UploadFile = File(...),
     garment_image: UploadFile = File(...),
     category: str = Form("upper"),
-    steps: int = Form(30),
+    steps: int = Form(15),
     seed: int = Form(42),
 ):
     if engine is None:

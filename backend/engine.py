@@ -93,7 +93,7 @@ class CatVTONEngine:
         person: Image.Image,
         garment: Image.Image,
         category: str,
-        steps: int = 30,
+        steps: int = 15,
         guidance_scale: float = 2.5,
         seed: int = 42,
     ) -> TryOnOutput:

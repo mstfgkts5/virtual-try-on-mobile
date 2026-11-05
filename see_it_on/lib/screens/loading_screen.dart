@@ -45,9 +45,9 @@ class _LoadingScreenState extends State<LoadingScreen> {
   }
 
   Future<void> _processVirtualTryOn() async {
-    // Tahmini ilerleme: yerel GPU'da işlem ~40 sn sürdüğü için %90'a ~40 sn'de ulaşır,
+    // Tahmini ilerleme: yerel GPU'da işlem ~17 sn (15 adım · 576x768) sürdüğü için %90'a ~20 sn'de ulaşır,
     // backend yanıt verince %100'e tamamlanır
-    _progressTimer = Timer.periodic(const Duration(milliseconds: 450), (timer) {
+    _progressTimer = Timer.periodic(const Duration(milliseconds: 220), (timer) {
       if (!mounted || progress >= 0.89) {
         timer.cancel();
         return;

@@ -515,7 +515,7 @@ abstract class AppLocalizations {
   /// No description provided for @loadingEta.
   ///
   /// In tr, this message translates to:
-  /// **'Tahmini süre ~40 sn'**
+  /// **'Tahmini süre ~20 sn'**
   String get loadingEta;
 
   /// No description provided for @loadingFinalTouches.

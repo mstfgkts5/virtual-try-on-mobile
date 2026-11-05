@@ -69,7 +69,7 @@
   "loadingProgress": "PROGRESS: {percent}%",
   "loadingModelRunning": "DIFFUSION MODEL RUNNING",
   "loadingTitle": "Dressing you up •",
-  "loadingEta": "Estimated time ~40 s",
+  "loadingEta": "Estimated time ~20 s",
   "loadingFinalTouches": "Final touches...",
   "loadingProcessing": "Processing...",
   "loadingStepMask": "Body mask",

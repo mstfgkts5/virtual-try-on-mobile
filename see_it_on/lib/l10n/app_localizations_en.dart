@@ -235,7 +235,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loadingTitle => 'Dressing you up •';
 
   @override
-  String get loadingEta => 'Estimated time ~40 s';
+  String get loadingEta => 'Estimated time ~20 s';
 
   @override
   String get loadingFinalTouches => 'Final touches...';

@@ -18,7 +18,7 @@ void main() {
       garmentImageBytes: Uint8List(0),
       category: 'LOWER',
     );
-    expect(request.toFieldsMap(), {'category': 'lower', 'steps': '30'});
+    expect(request.toFieldsMap(), {'category': 'lower', 'steps': '15'});
   });
 
   test('Sonuç başlığı iki dilde', () {

@@ -238,7 +238,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get loadingTitle => 'Kıyafet giydiriliyor •';
 
   @override
-  String get loadingEta => 'Tahmini süre ~40 sn';
+  String get loadingEta => 'Tahmini süre ~20 sn';
 
   @override
   String get loadingFinalTouches => 'Son rötuşlar...';
