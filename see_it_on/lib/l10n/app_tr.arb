@@ -7,9 +7,6 @@
   "settingsLanguageHint": "Uygulamanın dili. Seçimin bu cihazda hatırlanır.",
   "settingsLanguageTr": "Türkçe",
   "settingsLanguageEn": "English",
-  "onboardingCardTitle": "Üst • Alt • Tam Kıyafet",
-  "onboardingCardSubtitle": "Tek fotoğrafla saniyeler içinde dene",
-  "onboardingBadge": "YEREL AI",
   "onboardingTitle": "Her Kıyafeti\nAnında Dene",
   "onboardingSubtitle": "Fotoğrafını yükle, bir kıyafet seç ve saniyeler içinde üzerinde gerçekçi görünümünü izle.",
   "onboardingStart": "Hemen Başla",
@@ -252,8 +249,6 @@
   "settingsThemeLight": "Açık",
   "settingsThemeDark": "Koyu",
   "onboardingIssue": "No. 01 — Sanal Kabin",
-  "onboardingCoverLine2": "Yerel yapay zeka",
-  "onboardingCoverLine3": "Türkçe & English",
   "resultCaption": "{category} — {seconds} sn, yerel GPU",
   "@resultCaption": {
     "placeholders": {

@@ -140,24 +140,6 @@ abstract class AppLocalizations {
   /// **'English'**
   String get settingsLanguageEn;
 
-  /// No description provided for @onboardingCardTitle.
-  ///
-  /// In tr, this message translates to:
-  /// **'Üst • Alt • Tam Kıyafet'**
-  String get onboardingCardTitle;
-
-  /// No description provided for @onboardingCardSubtitle.
-  ///
-  /// In tr, this message translates to:
-  /// **'Tek fotoğrafla saniyeler içinde dene'**
-  String get onboardingCardSubtitle;
-
-  /// No description provided for @onboardingBadge.
-  ///
-  /// In tr, this message translates to:
-  /// **'YEREL AI'**
-  String get onboardingBadge;
-
   /// No description provided for @onboardingTitle.
   ///
   /// In tr, this message translates to:
@@ -1021,18 +1003,6 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'No. 01 — Sanal Kabin'**
   String get onboardingIssue;
-
-  /// No description provided for @onboardingCoverLine2.
-  ///
-  /// In tr, this message translates to:
-  /// **'Yerel yapay zeka'**
-  String get onboardingCoverLine2;
-
-  /// No description provided for @onboardingCoverLine3.
-  ///
-  /// In tr, this message translates to:
-  /// **'Türkçe & English'**
-  String get onboardingCoverLine3;
 
   /// No description provided for @resultCaption.
   ///
