@@ -31,15 +31,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get settingsLanguageEn => 'English';
 
   @override
-  String get onboardingCardTitle => 'Üst • Alt • Tam Kıyafet';
-
-  @override
-  String get onboardingCardSubtitle => 'Tek fotoğrafla saniyeler içinde dene';
-
-  @override
-  String get onboardingBadge => 'YEREL AI';
-
-  @override
   String get onboardingTitle => 'Her Kıyafeti\nAnında Dene';
 
   @override
@@ -535,12 +526,6 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get onboardingIssue => 'No. 01 — Sanal Kabin';
-
-  @override
-  String get onboardingCoverLine2 => 'Yerel yapay zeka';
-
-  @override
-  String get onboardingCoverLine3 => 'Türkçe & English';
 
   @override
   String resultCaption(String category, String seconds) {

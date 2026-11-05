@@ -31,16 +31,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsLanguageEn => 'English';
 
   @override
-  String get onboardingCardTitle => 'Tops • Bottoms • Full Outfits';
-
-  @override
-  String get onboardingCardSubtitle =>
-      'Try it on in seconds from a single photo';
-
-  @override
-  String get onboardingBadge => 'LOCAL AI';
-
-  @override
   String get onboardingTitle => 'Try On Any Outfit\nInstantly';
 
   @override
@@ -534,12 +524,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboardingIssue => 'No. 01 — The Fitting Room';
-
-  @override
-  String get onboardingCoverLine2 => 'Local AI';
-
-  @override
-  String get onboardingCoverLine3 => 'Türkçe & English';
 
   @override
   String resultCaption(String category, String seconds) {

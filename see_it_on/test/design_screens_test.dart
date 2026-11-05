@@ -9,7 +9,10 @@ void main() {
   testWidgets('kapakta künye görünür', (tester) async {
     await tester.pumpWidget(localized(const OnboardingScreen()));
     expect(find.text(l10nFor('tr').onboardingIssue), findsOneWidget);
-    expect(find.text(l10nFor('tr').onboardingCoverLine2), findsOneWidget);
+    // Kapak satırları (Üst • Alt • Tam Kıyafet / Yerel yapay zeka / Türkçe & English) kaldırıldı
+    expect(find.text('Yerel yapay zeka'), findsNothing);
+    expect(find.text('Türkçe & English'), findsNothing);
+    expect(find.text('Üst • Alt • Tam Kıyafet'), findsNothing);
   });
 
   for (final (lang, b) in [('tr', Brightness.light), ('en', Brightness.dark)]) {

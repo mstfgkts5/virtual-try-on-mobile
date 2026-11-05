@@ -4,7 +4,7 @@ import '../core/design/widgets.dart';
 import '../core/l10n_ext.dart';
 import 'login_screen.dart';
 
-/// Dergi kapağı gibi tanıtım: maskelet, künye, kapak fotoğrafı ve kapak satırları.
+/// Dergi kapağı gibi tanıtım: maskelet, künye, kapak fotoğrafı ve başlık.
 class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({super.key});
 
@@ -16,7 +16,6 @@ class OnboardingScreen extends StatelessWidget {
     final t = context.tokens;
     final text = Theme.of(context).textTheme;
     final height = MediaQuery.sizeOf(context).height;
-    final coverLines = [l.onboardingCardTitle, l.onboardingCoverLine2, l.onboardingCoverLine3];
 
     return Scaffold(
       backgroundColor: t.paper,
@@ -49,29 +48,6 @@ class OnboardingScreen extends StatelessWidget {
               Text(l.onboardingSubtitle, style: text.bodyMedium!.copyWith(color: t.muted, height: 1.5)),
               const SizedBox(height: 20),
 
-              // Kapak satırları
-              for (var i = 0; i < coverLines.length; i++) ...[
-                const HairlineDivider(),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  child: Row(
-                    children: [
-                      SizedBox(
-                        width: 36,
-                        child: Text('0${i + 1}', style: text.labelSmall!.copyWith(color: t.accent)),
-                      ),
-                      Expanded(
-                        child: Text(
-                          coverLines[i],
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: text.titleMedium!.copyWith(fontFamily: 'PlayfairDisplay', fontStyle: FontStyle.italic),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
               const HairlineDivider(),
               const SizedBox(height: 28),
 
