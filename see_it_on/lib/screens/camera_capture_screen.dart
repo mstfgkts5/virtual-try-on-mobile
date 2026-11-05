@@ -136,6 +136,10 @@ class _CameraCaptureScreenState extends State<CameraCaptureScreen> with WidgetsB
   Timer? _timer;
   Uint8List? _shot;
   bool _released = false;
+  bool _switching = false;
+
+  /// Her başlatma ve bırakmada artar; geç gelen eski başlatma sonuçları yok sayılır.
+  int _startToken = 0;
 
   @override
   void initState() {
@@ -153,34 +157,43 @@ class _CameraCaptureScreenState extends State<CameraCaptureScreen> with WidgetsB
   }
 
   void _release() {
+    _startToken++;
     if (_released) return;
     _released = true;
     _camera.dispose();
   }
 
   // Uygulama arka plana geçince kamera bırakılır, dönünce yeniden açılır
+  // (çekilen fotoğrafın önizlemesindeyken de: "Tekrar çek" canlı kamerayla devam eder)
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (!mounted) return;
     if (state == AppLifecycleState.paused) {
       _timer?.cancel();
       _release();
       if (_phase == _Phase.countdown) setState(() => _phase = _Phase.ready);
-    } else if (state == AppLifecycleState.resumed && _released && _phase != _Phase.review) {
+    } else if (state == AppLifecycleState.resumed && _released) {
       _start();
     }
   }
 
   Future<void> _start() async {
+    final token = ++_startToken;
     _released = false;
+    _Phase next;
     try {
       await _camera.init();
-      if (mounted) setState(() => _phase = _Phase.ready);
+      next = _Phase.ready;
     } on CameraAccessDeniedException {
-      if (mounted) setState(() => _phase = _Phase.denied);
+      next = _Phase.denied;
     } catch (e) {
       debugPrint('[CameraCapture] Kamera açılamadı: $e');
-      if (mounted) setState(() => _phase = _Phase.unavailable);
+      next = _Phase.unavailable;
     }
+    if (!mounted || token != _startToken) return;
+    // Önizlemedeki fotoğraf, kamera arka planda yeniden açıldı diye kaybolmaz
+    if (next == _Phase.ready && _phase == _Phase.review) return;
+    setState(() => _phase = next);
   }
 
   void _onShutter() {
@@ -219,10 +232,13 @@ class _CameraCaptureScreenState extends State<CameraCaptureScreen> with WidgetsB
     }
   }
 
-  void _retake() => setState(() {
-        _shot = null;
-        _phase = _Phase.ready;
-      });
+  void _retake() {
+    setState(() {
+      _shot = null;
+      _phase = _released ? _Phase.starting : _Phase.ready;
+    });
+    if (_released) _start();
+  }
 
   void _use() {
     _release();
@@ -235,11 +251,14 @@ class _CameraCaptureScreenState extends State<CameraCaptureScreen> with WidgetsB
   }
 
   Future<void> _switch() async {
+    if (_switching) return;
+    setState(() => _switching = true);
     try {
       await _camera.switchCamera();
-      if (mounted) setState(() {});
     } catch (e) {
       debugPrint('[CameraCapture] Kamera değiştirilemedi: $e');
+    } finally {
+      if (mounted) setState(() => _switching = false);
     }
   }
 
@@ -267,7 +286,7 @@ class _CameraCaptureScreenState extends State<CameraCaptureScreen> with WidgetsB
         ),
         title: const Text('SeeItOn'),
         actions: [
-          if (_phase == _Phase.ready && _camera.hasMultipleCameras)
+          if (_phase == _Phase.ready && !_switching && _camera.hasMultipleCameras)
             IconButton(tooltip: l.cameraSwitch, icon: const Icon(Icons.cameraswitch_outlined), onPressed: _switch),
         ],
       ),
@@ -361,7 +380,7 @@ class _CameraCaptureScreenState extends State<CameraCaptureScreen> with WidgetsB
                           onPressed: _gallery,
                         ),
                       ),
-                      _Shutter(onTap: _phase == _Phase.ready ? _onShutter : null, label: l.cameraCapture),
+                      _Shutter(onTap: _phase == _Phase.ready && !_switching ? _onShutter : null, label: l.cameraCapture),
                     ],
                   ),
                 ),

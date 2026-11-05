@@ -1,7 +1,6 @@
-import 'dart:typed_data';
-
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 /// Kullanıcı kamera iznini vermedi (veya sistem kısıtladı).
 class CameraAccessDeniedException implements Exception {
@@ -11,6 +10,22 @@ class CameraAccessDeniedException implements Exception {
 /// Cihazda kullanılabilir kamera yok.
 class NoCameraException implements Exception {
   const NoCameraException();
+}
+
+/// Kamera eklentisinin hata kodunu uygulamanın hatalarına çevirir; tanınmayan kodlar için `null`.
+/// Kodlar: Android/iOS `CameraAccessDenied*`, `CameraAccessRestricted`; web `cameraPermission`, `cameraNotFound`.
+/// `CameraPermissionsRequestOngoing` bilerek eşleşmez: izin penceresi hâlâ açıktır, reddedilmemiştir.
+Exception? classifyCameraError(String code) {
+  const denied = {
+    'CameraAccessDenied',
+    'CameraAccessDeniedWithoutPrompt',
+    'CameraAccessRestricted',
+    'cameraPermission',
+  };
+  const missing = {'cameraNotFound', 'noCamerasAvailable'};
+  if (denied.contains(code)) return const CameraAccessDeniedException();
+  if (missing.contains(code)) return const NoCameraException();
+  return null;
 }
 
 /// Uygulama içi kamera. Ekran bu arayüze bağlıdır; testlerde sahte servis verilir.
@@ -32,47 +47,67 @@ class PluginCameraService implements CameraService {
   List<CameraDescription> _cameras = const [];
   bool _front = true;
 
+  /// Her init ve dispose artırır; bekleme sırasında geçersiz kalmış bir init,
+  /// açtığı kamerayı kendisi kapatır (ör. izin penceresi açıkken ekran kapatıldı).
+  int _generation = 0;
+
   @override
   bool get hasMultipleCameras => _cameras.length > 1;
 
   @override
   Future<void> init({bool front = true}) async {
+    final generation = ++_generation;
     _front = front;
+    // Önceki kamera, yenisi açılmadan önce bırakılır (Android aynı anda iki kamerayı açamayabilir)
+    final old = _controller;
+    _controller = null;
     try {
+      await old?.dispose();
       if (_cameras.isEmpty) _cameras = await availableCameras();
+      if (generation != _generation) return;
       if (_cameras.isEmpty) throw const NoCameraException();
       final wanted = front ? CameraLensDirection.front : CameraLensDirection.back;
       final camera = _cameras.firstWhere((c) => c.lensDirection == wanted, orElse: () => _cameras.first);
-      await _controller?.dispose();
       final controller = CameraController(camera, ResolutionPreset.high, enableAudio: false);
+      try {
+        await controller.initialize();
+      } catch (_) {
+        await controller.dispose();
+        rethrow;
+      }
+      if (generation != _generation) {
+        await controller.dispose();
+        return;
+      }
       _controller = controller;
-      await controller.initialize();
     } on CameraException catch (e) {
-      throw _translate(e);
+      throw classifyCameraError(e.code) ?? e;
     }
-  }
-
-  static Exception _translate(CameraException e) {
-    final code = e.code.toLowerCase();
-    if (code.contains('denied') || code.contains('permission') || code.contains('restricted')) {
-      return const CameraAccessDeniedException();
-    }
-    if (code.contains('notfound') || code.contains('nocamera') || code.contains('notreadable')) {
-      return const NoCameraException();
-    }
-    return e;
   }
 
   @override
   Widget preview() {
     final c = _controller;
     if (c == null || !c.value.isInitialized) return const SizedBox.shrink();
-    // Önizleme kutuyu kaplar (kenarlar kırpılır); dikey ekranda yükseklik/genişlik = aspectRatio
-    return ClipRect(
-      child: FittedBox(
-        fit: BoxFit.cover,
-        child: SizedBox(width: 1, height: c.value.aspectRatio, child: CameraPreview(c)),
-      ),
+    // CameraPreview yatay yönde (masaüstü web kamerası, yan çevrilmiş telefon) yatay oranla,
+    // dikeyde ters oranla çizilir; kutu aynı yönde kurulur ki önizleme 3:4 alanı kaplasın
+    return ValueListenableBuilder<CameraValue>(
+      valueListenable: c,
+      builder: (context, value, _) {
+        final orientation = value.previewPauseOrientation ?? value.lockedCaptureOrientation ?? value.deviceOrientation;
+        final landscape = orientation == DeviceOrientation.landscapeLeft || orientation == DeviceOrientation.landscapeRight;
+        final ratio = value.aspectRatio;
+        return ClipRect(
+          child: FittedBox(
+            fit: BoxFit.cover,
+            child: SizedBox(
+              width: landscape ? ratio : 1,
+              height: landscape ? 1 : ratio,
+              child: CameraPreview(c),
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -89,6 +124,7 @@ class PluginCameraService implements CameraService {
 
   @override
   Future<void> dispose() async {
+    _generation++;
     final c = _controller;
     _controller = null;
     await c?.dispose();
