@@ -19,3 +19,16 @@ Rapordaki "Sınırlılıklar" bölümü için. Her madde gözlem, sebep ve uygul
 - **Gözlem:** iPhone Safari'de uygulama yerel Wi-Fi üzerinden (http) açıldığında tarayıcı kamerayı açmıyor; ekran "Galeriden seç"e yönlendiriyor.
 - **Sebep:** Tarayıcılar kamerayı yalnızca güvenli bağlamda (HTTPS veya localhost) verir.
 - **Uygulamada:** Galeri ve manken yolları çalışır; yerel (Android/iOS) derlemede kamera eklentisi doğrudan çalışır.
+
+## 4. 360° dönüş: kareler ayrı üretilir
+- **Gözlem:** Dönüşteki her kare CatVTON ile ayrı giydirildiği için kumaşın kırışıkları ve deseni kareden kareye biraz değişebilir; ince desenler (kareli, ekose) düz renge yaklaşabilir.
+- **Sebep:** Model kareler arası tutarlılık bilmez; gerçek 3D/video modeli 8 GB VRAM'e sığmıyor.
+- **Uygulamada:** Kareler hızlı video olarak değil, parmakla döndürülen ve aralarında yumuşak geçiş olan bir görüntüleyicide gösterilir; titreme bu şekilde göze daha az batar. 8 kare ~6 dk sürer; sunum için hazır set (5 kare) uygulamayla gelir.
+
+## 5. 360° dönüş: sekme kapanınca GPU'nun boşalma süresi
+- **Gözlem:** Kullanıcı Safari sekmesini kapatır veya Wi-Fi koparsa iş, son durum sorgusundan 30 sn sonra iptal edilir; ancak o anda işlenen kare yarıda kesilemediği için GPU en kötü durumda ~80 sn sonra boşalır.
+- **Uygulamada:** Ekrandan normal çıkışta iş hemen iptal edilir (sıradaki kareler yapılmaz).
+- **Olası iyileştirme:** CatVTON'un adım döngüsüne iptal denetimi eklemek.
+
+## 6. 360° dönüş: iPhone video biçimi
+- **Gözlem:** iPhone varsayılan olarak HEVC `.MOV` kaydeder. Backend PyAV (kendi ffmpeg'i) ile bunu okur ve dikey döndürmeyi uygular; video yine açılamazsa kullanıcıya "Ayarlar → Kamera → Formatlar → En Uyumlu" ipucu gösterilir.

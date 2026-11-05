@@ -22,6 +22,8 @@ from model.cloth_masker import AutoMasker  # noqa: E402  # type: ignore
 from model.pipeline import CatVTONPipeline  # noqa: E402  # type: ignore
 from utils import resize_and_crop, resize_and_padding  # noqa: E402  # type: ignore
 
+from spin_frames import BACK_FACE_RATIO, face_ratio  # noqa: E402
+
 BASE_MODEL = "booksforcharlie/stable-diffusion-inpainting"
 CATVTON_MODEL = "zhengchong/CatVTON"
 
@@ -127,6 +129,17 @@ class CatVTONEngine:
         return TryOnOutput(
             image=result, person=person, mask=mask, category=mask_type, render_time_sec=round(elapsed, 2)
         )
+
+    def face_ratio_of(self, person: Image.Image) -> float:
+        """Kişi fotoğrafında yüz piksellerinin oranı (SCHP-LIP); arka kare tanıma için."""
+        person = resize_and_crop(ImageOps.exif_transpose(person).convert("RGB"), (self.width, self.height))
+        with self._lock:
+            lip = self.automasker.process_schp_lip(person)
+        return face_ratio(np.array(lip))
+
+    def is_back_view(self, person: Image.Image) -> bool:
+        """Yüz görünmüyorsa kişi arkası dönük sayılır; 360° dönüşte arka kıyafet görseli seçilir."""
+        return self.face_ratio_of(person) < BACK_FACE_RATIO
 
     @staticmethod
     def _repaint(person: Image.Image, mask: Image.Image, result: Image.Image) -> Image.Image:

@@ -558,4 +558,52 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get cameraClose => 'Kapat';
+
+  @override
+  String get spinTitle => '360° Dönüş';
+
+  @override
+  String spinProgress(int done, int total) {
+    return '$done / $total kare hazır';
+  }
+
+  @override
+  String spinEta(int minutes) {
+    return 'Yaklaşık $minutes dk kaldı';
+  }
+
+  @override
+  String get spinPlay => 'Döndür';
+
+  @override
+  String get spinStop => 'Durdur';
+
+  @override
+  String get spinDragHint => 'Döndürmek için sağa sola kaydır';
+
+  @override
+  String spinFailed(String reason) {
+    return 'Dönüş oluşturulamadı: $reason';
+  }
+
+  @override
+  String get spinCancelled => 'İşlem iptal edildi.';
+
+  @override
+  String get spinStarting => 'Video gönderiliyor…';
+
+  @override
+  String get homeSpinVideo => 'Dönüş videosu';
+
+  @override
+  String get homeSpinSelected => '360° dönüş videosu';
+
+  @override
+  String get homeGarmentBack => 'Arka görsel (isteğe bağlı)';
+
+  @override
+  String get homeSpinPreset => 'Hazır 360° set';
+
+  @override
+  String get homeSpinHint => 'Ayakların sabit, yavaşça tam tur dön (10–20 sn)';
 }

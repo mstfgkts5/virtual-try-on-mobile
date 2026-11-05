@@ -1063,6 +1063,90 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Kapat'**
   String get cameraClose;
+
+  /// No description provided for @spinTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'360° Dönüş'**
+  String get spinTitle;
+
+  /// No description provided for @spinProgress.
+  ///
+  /// In tr, this message translates to:
+  /// **'{done} / {total} kare hazır'**
+  String spinProgress(int done, int total);
+
+  /// No description provided for @spinEta.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yaklaşık {minutes} dk kaldı'**
+  String spinEta(int minutes);
+
+  /// No description provided for @spinPlay.
+  ///
+  /// In tr, this message translates to:
+  /// **'Döndür'**
+  String get spinPlay;
+
+  /// No description provided for @spinStop.
+  ///
+  /// In tr, this message translates to:
+  /// **'Durdur'**
+  String get spinStop;
+
+  /// No description provided for @spinDragHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Döndürmek için sağa sola kaydır'**
+  String get spinDragHint;
+
+  /// No description provided for @spinFailed.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dönüş oluşturulamadı: {reason}'**
+  String spinFailed(String reason);
+
+  /// No description provided for @spinCancelled.
+  ///
+  /// In tr, this message translates to:
+  /// **'İşlem iptal edildi.'**
+  String get spinCancelled;
+
+  /// No description provided for @spinStarting.
+  ///
+  /// In tr, this message translates to:
+  /// **'Video gönderiliyor…'**
+  String get spinStarting;
+
+  /// No description provided for @homeSpinVideo.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dönüş videosu'**
+  String get homeSpinVideo;
+
+  /// No description provided for @homeSpinSelected.
+  ///
+  /// In tr, this message translates to:
+  /// **'360° dönüş videosu'**
+  String get homeSpinSelected;
+
+  /// No description provided for @homeGarmentBack.
+  ///
+  /// In tr, this message translates to:
+  /// **'Arka görsel (isteğe bağlı)'**
+  String get homeGarmentBack;
+
+  /// No description provided for @homeSpinPreset.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hazır 360° set'**
+  String get homeSpinPreset;
+
+  /// No description provided for @homeSpinHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ayakların sabit, yavaşça tam tur dön (10–20 sn)'**
+  String get homeSpinHint;
 }
 
 class _AppLocalizationsDelegate

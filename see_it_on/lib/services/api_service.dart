@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import '../core/l10n_ext.dart';
 import '../core/constants.dart';
+import '../models/spin.dart';
 import '../models/tryon_request.dart';
 import '../models/tryon_result.dart';
 
@@ -106,6 +107,43 @@ class ApiService {
       garmentBytes: request.garmentImageBytes,
       renderTimeSec: (json['render_time'] as num?)?.toDouble() ?? 0.0,
     );
+  }
+
+  /// 360° dönüş işini başlatır; iş numarasını döner. Video yüklemesi büyük olabilir.
+  Future<String> startSpin(SpinRequest request) async {
+    final multipart = http.MultipartRequest('POST', Uri.parse('$_baseUrl/api/v1/spin'))
+      ..files.add(http.MultipartFile.fromBytes('video', request.videoBytes, filename: request.videoName))
+      ..files.add(http.MultipartFile.fromBytes('garment_front', request.garmentFront, filename: 'front.jpg'))
+      ..fields['category'] = request.category.toLowerCase()
+      ..fields['frames'] = '${request.frames}';
+    if (request.garmentBack != null) {
+      multipart.files.add(http.MultipartFile.fromBytes('garment_back', request.garmentBack!, filename: 'back.jpg'));
+    }
+    final streamed = await multipart.send().timeout(
+      const Duration(seconds: 120),
+      onTimeout: () => throw TimeoutException('spin'),
+    );
+    final response = await http.Response.fromStream(streamed);
+    if (response.statusCode != 200) throw Exception(_errorMessage(response));
+    return (jsonDecode(response.body) as Map<String, dynamic>)['job_id'] as String;
+  }
+
+  /// Dönüş işinin durumu; `since` sonrası hazır kareler gelir. Her çağrı işi canlı tutar.
+  Future<SpinStatus> spinStatus(String jobId, {int since = 0}) async {
+    final response = await http
+        .get(Uri.parse('$_baseUrl/api/v1/spin/$jobId?since=$since'))
+        .timeout(const Duration(seconds: 15), onTimeout: () => throw TimeoutException('spin'));
+    if (response.statusCode != 200) throw Exception(_errorMessage(response));
+    return SpinStatus.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
+  }
+
+  /// İşi iptal eder; ekrandan çıkarken çağrılır, hata olsa da sessizce geçer.
+  Future<void> cancelSpin(String jobId) async {
+    try {
+      await http.delete(Uri.parse('$_baseUrl/api/v1/spin/$jobId')).timeout(const Duration(seconds: 5));
+    } catch (e) {
+      debugPrint('[ApiService] Dönüş iptali gönderilemedi: $e');
+    }
   }
 
   /// FastAPI hata yanıtındaki `detail` alanını okunur bir mesaja çevirir
