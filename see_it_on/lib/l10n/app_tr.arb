@@ -268,5 +268,38 @@
   "cameraUnavailable": "Bu cihazda kamera bulunamadı.",
   "cameraUseGallery": "Galeriden seç",
   "cameraCapture": "Fotoğraf çek",
-  "cameraClose": "Kapat"
+  "cameraClose": "Kapat",
+  "spinTitle": "360° Dönüş",
+  "spinProgress": "{done} / {total} kare hazır",
+  "@spinProgress": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "spinEta": "Yaklaşık {minutes} dk kaldı",
+  "@spinEta": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "spinPlay": "Döndür",
+  "spinStop": "Durdur",
+  "spinDragHint": "Döndürmek için sağa sola kaydır",
+  "spinFailed": "Dönüş oluşturulamadı: {reason}",
+  "@spinFailed": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "spinCancelled": "İşlem iptal edildi.",
+  "spinStarting": "Video gönderiliyor…"
 }

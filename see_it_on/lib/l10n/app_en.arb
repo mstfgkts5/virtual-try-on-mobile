@@ -160,5 +160,14 @@
   "cameraUnavailable": "No camera found on this device.",
   "cameraUseGallery": "Choose from gallery",
   "cameraCapture": "Take photo",
-  "cameraClose": "Close"
+  "cameraClose": "Close",
+  "spinTitle": "360° Spin",
+  "spinProgress": "{done} of {total} frames ready",
+  "spinEta": "About {minutes} min left",
+  "spinPlay": "Spin",
+  "spinStop": "Stop",
+  "spinDragHint": "Drag left or right to rotate",
+  "spinFailed": "Could not create the spin: {reason}",
+  "spinCancelled": "The job was cancelled.",
+  "spinStarting": "Uploading the video…"
 }

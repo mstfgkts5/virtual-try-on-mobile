@@ -556,4 +556,37 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cameraClose => 'Close';
+
+  @override
+  String get spinTitle => '360° Spin';
+
+  @override
+  String spinProgress(int done, int total) {
+    return '$done of $total frames ready';
+  }
+
+  @override
+  String spinEta(int minutes) {
+    return 'About $minutes min left';
+  }
+
+  @override
+  String get spinPlay => 'Spin';
+
+  @override
+  String get spinStop => 'Stop';
+
+  @override
+  String get spinDragHint => 'Drag left or right to rotate';
+
+  @override
+  String spinFailed(String reason) {
+    return 'Could not create the spin: $reason';
+  }
+
+  @override
+  String get spinCancelled => 'The job was cancelled.';
+
+  @override
+  String get spinStarting => 'Uploading the video…';
 }
