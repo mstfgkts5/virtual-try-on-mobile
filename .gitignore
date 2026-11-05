@@ -36,3 +36,6 @@ test_images/
 
 # Plan yürütme çalışma alanı
 .superpowers/
+
+# Deney çıktıları (yerel)
+tests/output/
