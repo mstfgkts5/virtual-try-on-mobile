@@ -169,5 +169,10 @@
   "spinDragHint": "Drag left or right to rotate",
   "spinFailed": "Could not create the spin: {reason}",
   "spinCancelled": "The job was cancelled.",
-  "spinStarting": "Uploading the video…"
+  "spinStarting": "Uploading the video…",
+  "homeSpinVideo": "Turn video",
+  "homeSpinSelected": "360° spin video",
+  "homeGarmentBack": "Back image (optional)",
+  "homeSpinPreset": "Ready-made 360° set",
+  "homeSpinHint": "Keep your feet in place and turn slowly (10–20 s)"
 }

@@ -3,13 +3,20 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import '../core/design/widgets.dart';
 import '../core/l10n_ext.dart';
+import '../models/spin.dart';
+import '../models/spin_preset.dart';
+import '../services/media_picker.dart';
 import 'camera_capture_screen.dart';
 import 'loading_screen.dart';
 import 'settings_screen.dart';
+import 'spin_screen.dart';
 import 'wardrobe_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  /// [picker] verilmezse cihazın galeri/kamera seçicisi kullanılır; testlerde sahte seçici verilir.
+  const HomeScreen({super.key, this.picker});
+
+  final MediaPicker? picker;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -18,7 +25,14 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   Uint8List? _personImageBytes;
   Uint8List? _garmentImageBytes;
-  final ImagePicker _picker = ImagePicker();
+  late final MediaPicker _picker = widget.picker ?? ImagePickerMediaPicker();
+
+  // 360° dönüş: kişi fotoğrafı yerine dönüş videosu; ikisi birden seçili olmaz
+  Uint8List? _videoBytes;
+  String _videoName = 'turn.mp4';
+  Uint8List? _garmentBackBytes;
+  SpinPreset? _preset;
+  bool _presetLoaded = false;
 
   // Denenecek kıyafet bölgesi: backend'e 'upper' / 'lower' / 'overall' olarak gider.
   // Metinler (ad, ipucu) çeviri dosyalarında: categoryName / categoryHint.
@@ -38,6 +52,17 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _rackController = PageController(viewportFraction: 0.35, initialPage: _currentRackIndex);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_presetLoaded) {
+      _presetLoaded = true;
+      SpinPreset.load(DefaultAssetBundle.of(context)).then((p) {
+        if (mounted) setState(() => _preset = p);
+      });
+    }
   }
 
   @override
@@ -73,6 +98,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _showPickerSheet({
     required String title,
     String? hint,
+    Widget Function(BuildContext sheetContext)? header,
     required double maxHeightFactor,
     required double maxCrossAxisExtent,
     required double childAspectRatio,
@@ -96,6 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
               EditorialHeading(title, size: 22),
               if (hint != null) ...[const SizedBox(height: 4), Caption(hint)],
               const HairlineDivider(verticalPadding: 14),
+              if (header != null) ...[header(ctx), const SizedBox(height: 14)],
               // Kart genişliği sabit tutulur; geniş ekranda (web/tablet) kartlar büyüyüp taşmaz
               GridView(
                 gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
@@ -165,6 +192,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _showPickerSheet(
       title: l.homeMannequinPickerTitle,
       hint: l.homeMannequinPickerHint,
+      header: _preset == null ? null : _buildPresetCard,
       maxHeightFactor: 0.85,
       maxCrossAxisExtent: 110,
       childAspectRatio: 0.52,
@@ -187,6 +215,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final data = await rootBundle.load(assetPath);
     setState(() {
       if (isPerson) {
+        _videoBytes = null;
         _personImageBytes = data.buffer.asUint8List();
       } else {
         _garmentImageBytes = data.buffer.asUint8List();
@@ -195,11 +224,12 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _pickImage(bool isPerson, ImageSource source) async {
-    final XFile? pickedFile = await _picker.pickImage(source: source);
+    final XFile? pickedFile = await _picker.pickImage(source);
     if (pickedFile != null) {
       final bytes = await pickedFile.readAsBytes();
       setState(() {
         if (isPerson) {
+          _videoBytes = null;
           _personImageBytes = bytes;
         } else {
           _garmentImageBytes = bytes;
@@ -213,14 +243,146 @@ class _HomeScreenState extends State<HomeScreen> {
     final result = await pushEditorial<Object>(context, const CameraCaptureScreen());
     if (!mounted) return;
     if (result is Uint8List) {
-      setState(() => _personImageBytes = result);
+      setState(() {
+        _videoBytes = null;
+        _personImageBytes = result;
+      });
     } else if (result == CameraResult.gallery) {
       await _pickImage(true, ImageSource.gallery);
     }
   }
 
+  Future<void> _pickVideo() async {
+    final file = await _picker.pickVideo(ImageSource.gallery);
+    if (file == null) return;
+    final bytes = await file.readAsBytes();
+    if (!mounted) return;
+    setState(() {
+      _personImageBytes = null;
+      _videoBytes = bytes;
+      _videoName = file.name.isEmpty ? 'turn.mp4' : file.name;
+    });
+  }
+
+  Future<void> _pickGarmentBack() async {
+    final file = await _picker.pickImage(ImageSource.gallery);
+    if (file == null) return;
+    final bytes = await file.readAsBytes();
+    if (mounted) setState(() => _garmentBackBytes = bytes);
+  }
+
+  void _openPreset(BuildContext sheetContext) {
+    final preset = _preset!;
+    Navigator.pop(sheetContext);
+    final bundle = DefaultAssetBundle.of(context);
+    pushEditorial(
+      context,
+      SpinScreen.preset(
+        frames: [for (final path in preset.framePaths) AssetImage(path, bundle: bundle)],
+        title: preset.title(Localizations.localeOf(context).languageCode),
+      ),
+    );
+  }
+
+  Widget _buildPresetCard(BuildContext sheetContext) {
+    final t = context.tokens;
+    final preset = _preset!;
+    return Material(
+      color: t.surface,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(SeeItOnTokens.radiusMd),
+        side: BorderSide(color: t.line),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: () => _openPreset(sheetContext),
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Row(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(SeeItOnTokens.radiusSm),
+                child: Image(
+                  image: AssetImage(preset.framePaths.first, bundle: DefaultAssetBundle.of(context)),
+                  width: 54,
+                  height: 72,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(context.l10n.homeSpinPreset, style: Theme.of(context).textTheme.titleMedium),
+                    const SizedBox(height: 2),
+                    Caption(preset.title(Localizations.localeOf(context).languageCode), italic: true),
+                  ],
+                ),
+              ),
+              Icon(Icons.threesixty, color: t.accent),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // 2. adım: dönüşte arka kareler için kıyafetin arka görseli (isteğe bağlı)
+  Widget _buildGarmentBackRow() {
+    final t = context.tokens;
+    return Padding(
+      padding: const EdgeInsets.only(top: 12),
+      child: InkWell(
+        onTap: _pickGarmentBack,
+        borderRadius: BorderRadius.circular(SeeItOnTokens.radiusSm),
+        child: Row(
+          children: [
+            Container(
+              width: 44,
+              height: 56,
+              decoration: BoxDecoration(
+                color: t.paper,
+                borderRadius: BorderRadius.circular(SeeItOnTokens.radiusSm),
+                border: Border.all(color: t.line),
+                image: _garmentBackBytes == null
+                    ? null
+                    : DecorationImage(image: MemoryImage(_garmentBackBytes!), fit: BoxFit.cover),
+              ),
+              child: _garmentBackBytes == null ? Icon(Icons.flip, color: t.muted, size: 18) : null,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                context.l10n.homeGarmentBack,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.labelLarge!.copyWith(fontSize: 13),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   void _onTryOnPressed(BuildContext context) {
-    if (_personImageBytes == null || _garmentImageBytes == null) {
+    if (_videoBytes != null && _garmentImageBytes != null) {
+      pushEditorial(
+        context,
+        SpinScreen.live(
+          request: SpinRequest(
+            videoBytes: _videoBytes!,
+            videoName: _videoName,
+            garmentFront: _garmentImageBytes!,
+            garmentBack: _garmentBackBytes,
+            category: _category,
+          ),
+        ),
+      );
+      return;
+    }
+    if ((_personImageBytes == null && _videoBytes == null) || _garmentImageBytes == null) {
       final t = context.tokens;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -232,7 +394,7 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
-                  _personImageBytes == null ? context.l10n.homeNeedPerson : context.l10n.homeNeedGarment,
+                  _personImageBytes == null && _videoBytes == null ? context.l10n.homeNeedPerson : context.l10n.homeNeedGarment,
                   style: TextStyle(color: t.paper, fontWeight: FontWeight.w600),
                 ),
               ),
@@ -314,13 +476,14 @@ class _HomeScreenState extends State<HomeScreen> {
                         title: l.homeStepPerson,
                         isPerson: true,
                         imageBytes: _personImageBytes,
-                        icon: Icons.add_a_photo_outlined,
-                        mainText: l.homeUploadPhoto,
-                        subText: l.homeUploadPhotoHint,
+                        icon: _videoBytes != null ? Icons.threesixty : Icons.add_a_photo_outlined,
+                        mainText: _videoBytes != null ? l.homeSpinSelected : l.homeUploadPhoto,
+                        subText: _videoBytes != null ? l.homeSpinHint : l.homeUploadPhotoHint,
                         buttons: [
                           _buildCardButton(Icons.photo_library_outlined, l.homeGallery, () => _pickImage(true, ImageSource.gallery)),
                           _buildCardButton(Icons.camera_alt_outlined, l.homeCamera, _openCamera),
                           _buildCardButton(Icons.accessibility_new, l.homeMannequin, _showMannequinPicker),
+                          _buildCardButton(Icons.threesixty, l.homeSpinVideo, _pickVideo),
                         ],
                       ),
                       const SizedBox(height: 16),
@@ -337,6 +500,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           if (_garmentsForCategory.isNotEmpty)
                             _buildCardButton(Icons.style_outlined, l.homeSample, _showGarmentPicker),
                         ],
+                        footer: _videoBytes == null ? null : _buildGarmentBackRow(),
                       ),
                     ],
                   ),
@@ -516,6 +680,7 @@ class _HomeScreenState extends State<HomeScreen> {
     required String mainText,
     required String subText,
     required List<Widget> buttons,
+    Widget? footer,
   }) {
     final t = context.tokens;
     final text = Theme.of(context).textTheme;
@@ -566,6 +731,7 @@ class _HomeScreenState extends State<HomeScreen> {
             width: double.infinity,
             child: Wrap(spacing: 8, runSpacing: 8, alignment: WrapAlignment.center, children: buttons),
           ),
+          ?footer,
         ],
       ),
     );

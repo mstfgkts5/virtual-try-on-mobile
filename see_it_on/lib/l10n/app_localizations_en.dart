@@ -589,4 +589,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get spinStarting => 'Uploading the video…';
+
+  @override
+  String get homeSpinVideo => 'Turn video';
+
+  @override
+  String get homeSpinSelected => '360° spin video';
+
+  @override
+  String get homeGarmentBack => 'Back image (optional)';
+
+  @override
+  String get homeSpinPreset => 'Ready-made 360° set';
+
+  @override
+  String get homeSpinHint =>
+      'Keep your feet in place and turn slowly (10–20 s)';
 }

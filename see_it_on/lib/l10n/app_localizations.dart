@@ -1117,6 +1117,36 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Video gönderiliyor…'**
   String get spinStarting;
+
+  /// No description provided for @homeSpinVideo.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dönüş videosu'**
+  String get homeSpinVideo;
+
+  /// No description provided for @homeSpinSelected.
+  ///
+  /// In tr, this message translates to:
+  /// **'360° dönüş videosu'**
+  String get homeSpinSelected;
+
+  /// No description provided for @homeGarmentBack.
+  ///
+  /// In tr, this message translates to:
+  /// **'Arka görsel (isteğe bağlı)'**
+  String get homeGarmentBack;
+
+  /// No description provided for @homeSpinPreset.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hazır 360° set'**
+  String get homeSpinPreset;
+
+  /// No description provided for @homeSpinHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ayakların sabit, yavaşça tam tur dön (10–20 sn)'**
+  String get homeSpinHint;
 }
 
 class _AppLocalizationsDelegate

@@ -301,5 +301,10 @@
     }
   },
   "spinCancelled": "İşlem iptal edildi.",
-  "spinStarting": "Video gönderiliyor…"
+  "spinStarting": "Video gönderiliyor…",
+  "homeSpinVideo": "Dönüş videosu",
+  "homeSpinSelected": "360° dönüş videosu",
+  "homeGarmentBack": "Arka görsel (isteğe bağlı)",
+  "homeSpinPreset": "Hazır 360° set",
+  "homeSpinHint": "Ayakların sabit, yavaşça tam tur dön (10–20 sn)"
 }

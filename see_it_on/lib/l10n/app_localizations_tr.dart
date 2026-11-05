@@ -591,4 +591,19 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get spinStarting => 'Video gönderiliyor…';
+
+  @override
+  String get homeSpinVideo => 'Dönüş videosu';
+
+  @override
+  String get homeSpinSelected => '360° dönüş videosu';
+
+  @override
+  String get homeGarmentBack => 'Arka görsel (isteğe bağlı)';
+
+  @override
+  String get homeSpinPreset => 'Hazır 360° set';
+
+  @override
+  String get homeSpinHint => 'Ayakların sabit, yavaşça tam tur dön (10–20 sn)';
 }
