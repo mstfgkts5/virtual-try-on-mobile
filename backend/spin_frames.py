@@ -83,3 +83,20 @@ def _too_similar(frames: list[Image.Image]) -> bool:
     small = [np.asarray(f.resize((16, 16))).astype(int) for f in frames]
     distinct = {s.tobytes() for s in small}
     return len(distinct) < max(2, len(frames) // 2)
+
+
+# SCHP-LIP etiketlerinde yüz; ai/CatVTON/model/cloth_masker.py LIP_MAPPING ile aynı
+LIP_FACE = 13
+# Yüz pikseli / kişi pikseli bu oranın altındaysa kişi arkası dönük sayılır.
+# Ölçüm (2026-11-05): tam arka 0.000; ön, 3/4 ön ve profil 0.040–0.052 (mankenler + gerçek foto).
+# 0.015, yüzün küçük bir kısmı görünen 3/4 arka kareleri de arka sayar.
+BACK_FACE_RATIO = 0.015
+
+
+def face_ratio(lip: np.ndarray) -> float:
+    """SCHP-LIP etiket haritasında yüz piksellerinin kişi piksellerine oranı; kişi yoksa 0."""
+    lip = np.asarray(lip)
+    person = np.count_nonzero(lip)
+    if person == 0:
+        return 0.0
+    return float(np.count_nonzero(lip == LIP_FACE)) / person
