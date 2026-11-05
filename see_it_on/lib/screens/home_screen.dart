@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import '../core/design/widgets.dart';
 import '../core/l10n_ext.dart';
+import 'camera_capture_screen.dart';
 import 'loading_screen.dart';
 import 'settings_screen.dart';
 import 'wardrobe_screen.dart';
@@ -207,6 +208,17 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  // Uygulama içi kamera: silüet rehberli tam boy çekim; galeriye geçilirse galeri seçici açılır
+  Future<void> _openCamera() async {
+    final result = await pushEditorial<Object>(context, const CameraCaptureScreen());
+    if (!mounted) return;
+    if (result is Uint8List) {
+      setState(() => _personImageBytes = result);
+    } else if (result == CameraResult.gallery) {
+      await _pickImage(true, ImageSource.gallery);
+    }
+  }
+
   void _onTryOnPressed(BuildContext context) {
     if (_personImageBytes == null || _garmentImageBytes == null) {
       final t = context.tokens;
@@ -307,7 +319,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         subText: l.homeUploadPhotoHint,
                         buttons: [
                           _buildCardButton(Icons.photo_library_outlined, l.homeGallery, () => _pickImage(true, ImageSource.gallery)),
-                          _buildCardButton(Icons.camera_alt_outlined, l.homeCamera, () => _pickImage(true, ImageSource.camera)),
+                          _buildCardButton(Icons.camera_alt_outlined, l.homeCamera, _openCamera),
                           _buildCardButton(Icons.accessibility_new, l.homeMannequin, _showMannequinPicker),
                         ],
                       ),

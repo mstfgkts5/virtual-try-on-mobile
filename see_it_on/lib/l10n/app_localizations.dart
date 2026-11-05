@@ -1039,6 +1039,60 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'{category} — {seconds} sn, yerel GPU'**
   String resultCaption(String category, String seconds);
+
+  /// No description provided for @cameraHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tam boy görün, kollar hafif açık'**
+  String get cameraHint;
+
+  /// No description provided for @cameraUse.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kullan'**
+  String get cameraUse;
+
+  /// No description provided for @cameraRetake.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tekrar çek'**
+  String get cameraRetake;
+
+  /// No description provided for @cameraSwitch.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kamerayı değiştir'**
+  String get cameraSwitch;
+
+  /// No description provided for @cameraDenied.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kamera izni verilmedi.'**
+  String get cameraDenied;
+
+  /// No description provided for @cameraUnavailable.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu cihazda kamera bulunamadı.'**
+  String get cameraUnavailable;
+
+  /// No description provided for @cameraUseGallery.
+  ///
+  /// In tr, this message translates to:
+  /// **'Galeriden seç'**
+  String get cameraUseGallery;
+
+  /// No description provided for @cameraCapture.
+  ///
+  /// In tr, this message translates to:
+  /// **'Fotoğraf çek'**
+  String get cameraCapture;
+
+  /// No description provided for @cameraClose.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kapat'**
+  String get cameraClose;
 }
 
 class _AppLocalizationsDelegate

@@ -546,4 +546,31 @@ class AppLocalizationsTr extends AppLocalizations {
   String resultCaption(String category, String seconds) {
     return '$category — $seconds sn, yerel GPU';
   }
+
+  @override
+  String get cameraHint => 'Tam boy görün, kollar hafif açık';
+
+  @override
+  String get cameraUse => 'Kullan';
+
+  @override
+  String get cameraRetake => 'Tekrar çek';
+
+  @override
+  String get cameraSwitch => 'Kamerayı değiştir';
+
+  @override
+  String get cameraDenied => 'Kamera izni verilmedi.';
+
+  @override
+  String get cameraUnavailable => 'Bu cihazda kamera bulunamadı.';
+
+  @override
+  String get cameraUseGallery => 'Galeriden seç';
+
+  @override
+  String get cameraCapture => 'Fotoğraf çek';
+
+  @override
+  String get cameraClose => 'Kapat';
 }

@@ -545,4 +545,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String resultCaption(String category, String seconds) {
     return '$category — $seconds s, local GPU';
   }
+
+  @override
+  String get cameraHint => 'Show your full body, arms slightly apart';
+
+  @override
+  String get cameraUse => 'Use photo';
+
+  @override
+  String get cameraRetake => 'Retake';
+
+  @override
+  String get cameraSwitch => 'Switch camera';
+
+  @override
+  String get cameraDenied => 'Camera permission was denied.';
+
+  @override
+  String get cameraUnavailable => 'No camera found on this device.';
+
+  @override
+  String get cameraUseGallery => 'Choose from gallery';
+
+  @override
+  String get cameraCapture => 'Take photo';
+
+  @override
+  String get cameraClose => 'Close';
 }
