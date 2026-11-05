@@ -148,5 +148,22 @@
   "wardrobeCancel": "Cancel",
   "wardrobeDeleted": "Look deleted.",
   "wardrobeDeleteFailed": "Couldn't delete the look. Try again.",
-  "wardrobeShareFailed": "Couldn't share the image."
+  "wardrobeShareFailed": "Couldn't share the image.",
+  "settingsAppearance": "APPEARANCE",
+  "settingsThemeSystem": "System",
+  "settingsThemeLight": "Light",
+  "settingsThemeDark": "Dark",
+  "onboardingIssue": "No. 01 — The Fitting Room",
+  "onboardingCoverLine2": "Local AI",
+  "onboardingCoverLine3": "Türkçe & English",
+  "resultCaption": "{category} — {seconds} s, local GPU",
+  "cameraHint": "Show your full body, arms slightly apart",
+  "cameraUse": "Use photo",
+  "cameraRetake": "Retake",
+  "cameraSwitch": "Switch camera",
+  "cameraDenied": "Camera permission was denied.",
+  "cameraUnavailable": "No camera found on this device.",
+  "cameraUseGallery": "Choose from gallery",
+  "cameraCapture": "Take photo",
+  "cameraClose": "Close"
 }

@@ -520,4 +520,57 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get wardrobeShareFailed => 'Görsel paylaşılamadı.';
+
+  @override
+  String get settingsAppearance => 'GÖRÜNÜM';
+
+  @override
+  String get settingsThemeSystem => 'Sistem';
+
+  @override
+  String get settingsThemeLight => 'Açık';
+
+  @override
+  String get settingsThemeDark => 'Koyu';
+
+  @override
+  String get onboardingIssue => 'No. 01 — Sanal Kabin';
+
+  @override
+  String get onboardingCoverLine2 => 'Yerel yapay zeka';
+
+  @override
+  String get onboardingCoverLine3 => 'Türkçe & English';
+
+  @override
+  String resultCaption(String category, String seconds) {
+    return '$category — $seconds sn, yerel GPU';
+  }
+
+  @override
+  String get cameraHint => 'Tam boy görün, kollar hafif açık';
+
+  @override
+  String get cameraUse => 'Kullan';
+
+  @override
+  String get cameraRetake => 'Tekrar çek';
+
+  @override
+  String get cameraSwitch => 'Kamerayı değiştir';
+
+  @override
+  String get cameraDenied => 'Kamera izni verilmedi.';
+
+  @override
+  String get cameraUnavailable => 'Bu cihazda kamera bulunamadı.';
+
+  @override
+  String get cameraUseGallery => 'Galeriden seç';
+
+  @override
+  String get cameraCapture => 'Fotoğraf çek';
+
+  @override
+  String get cameraClose => 'Kapat';
 }

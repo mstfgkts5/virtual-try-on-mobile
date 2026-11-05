@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:see_it_on/core/locale_controller.dart';
+import 'package:see_it_on/core/theme_mode_controller.dart';
 import 'package:see_it_on/main.dart';
 import 'package:see_it_on/screens/settings_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,6 +19,24 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Settings'), findsOneWidget);
     expect(find.text('Ayarlar'), findsNothing);
+  });
+
+  testWidgets('Koyu seçilince tema modu dark ve kalıcı', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    localeController = await LocaleController.load(deviceLocale: const Locale('tr'));
+    themeModeController = await ThemeModeController.load();
+    addTearDown(() => themeModeController = ThemeModeController.inMemory());
+
+    await tester.pumpWidget(const SeeItOnApp(home: SettingsScreen()));
+    await tester.pumpAndSettle();
+    expect(find.text('GÖRÜNÜM'), findsOneWidget);
+
+    await tester.tap(find.text('Koyu'));
+    await tester.pumpAndSettle();
+    expect(themeModeController.value, ThemeMode.dark);
+    expect((await SharedPreferences.getInstance()).getString('app_theme_mode'), 'dark');
+    final ctx = tester.element(find.byType(SettingsScreen));
+    expect(Theme.of(ctx).brightness, Brightness.dark);
   });
 
   testWidgets('oturum yoksa hesap bölümü gizli', (tester) async {

@@ -519,4 +519,57 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get wardrobeShareFailed => 'Couldn\'t share the image.';
+
+  @override
+  String get settingsAppearance => 'APPEARANCE';
+
+  @override
+  String get settingsThemeSystem => 'System';
+
+  @override
+  String get settingsThemeLight => 'Light';
+
+  @override
+  String get settingsThemeDark => 'Dark';
+
+  @override
+  String get onboardingIssue => 'No. 01 — The Fitting Room';
+
+  @override
+  String get onboardingCoverLine2 => 'Local AI';
+
+  @override
+  String get onboardingCoverLine3 => 'Türkçe & English';
+
+  @override
+  String resultCaption(String category, String seconds) {
+    return '$category — $seconds s, local GPU';
+  }
+
+  @override
+  String get cameraHint => 'Show your full body, arms slightly apart';
+
+  @override
+  String get cameraUse => 'Use photo';
+
+  @override
+  String get cameraRetake => 'Retake';
+
+  @override
+  String get cameraSwitch => 'Switch camera';
+
+  @override
+  String get cameraDenied => 'Camera permission was denied.';
+
+  @override
+  String get cameraUnavailable => 'No camera found on this device.';
+
+  @override
+  String get cameraUseGallery => 'Choose from gallery';
+
+  @override
+  String get cameraCapture => 'Take photo';
+
+  @override
+  String get cameraClose => 'Close';
 }

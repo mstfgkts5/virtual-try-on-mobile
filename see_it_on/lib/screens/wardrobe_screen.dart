@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../core/design/widgets.dart';
 import '../core/l10n_ext.dart';
 import '../models/wardrobe_item.dart';
 import '../services/wardrobe_repository.dart';
 import 'login_screen.dart';
 import 'wardrobe_detail_screen.dart';
-
-// Ana ekranla aynı görsel dil
-const _bg = Color(0xFFF6F4EF);
-const _ink = Color(0xFF1E1C1A);
-const _dark = Color(0xFF221F1E);
 
 /// Kullanıcının kaydettiği sanal deneme sonuçları.
 /// [repository] verilmezse Supabase kullanılır; testlerde sahte depo verilir.
@@ -43,11 +39,9 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
   }
 
   Future<void> _openDetail(WardrobeItem item) async {
-    final deleted = await Navigator.push<bool>(
+    final deleted = await pushEditorial<bool>(
       context,
-      MaterialPageRoute(
-        builder: (_) => WardrobeDetailScreen(item: item, repository: _repo),
-      ),
+      WardrobeDetailScreen(item: item, repository: _repo),
     );
     if (deleted == true) _reload();
   }
@@ -56,12 +50,8 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
   Widget build(BuildContext context) {
     final signedIn = _repo.currentUserEmail != null;
     return Scaffold(
-      backgroundColor: _bg,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        foregroundColor: _ink,
-      ),
+      backgroundColor: context.tokens.paper,
+      appBar: AppBar(),
       body: SafeArea(
         top: false,
         child: !signedIn
@@ -70,10 +60,7 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
                 title: context.l10n.wardrobeSignInTitle,
                 body: context.l10n.wardrobeSignInBody,
                 action: context.l10n.loginButton,
-                onAction: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const LoginScreen()),
-                ),
+                onAction: () => pushEditorial(context, const LoginScreen()),
               )
             : FutureBuilder<List<WardrobeItem>>(
                 future: _future,
@@ -116,7 +103,8 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
     int count(String c) => items.where((i) => i.category == c).length;
 
     return RefreshIndicator(
-      color: _dark,
+      color: context.tokens.ink,
+      backgroundColor: context.tokens.paper,
       onRefresh: _reload,
       child: CustomScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
@@ -127,34 +115,12 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    l.wardrobeTitle,
-                    style: TextStyle(
-                      color: _ink.withValues(alpha: 0.6),
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1,
-                    ),
-                  ),
+                  EditorialOverline(l.wardrobeTitle),
                   const SizedBox(height: 4),
-                  Text(
-                    l.wardrobeHeading,
-                    style: const TextStyle(
-                      color: _ink,
-                      fontSize: 32,
-                      fontFamily: 'Georgia',
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
+                  EditorialHeading(l.wardrobeHeading),
                   const SizedBox(height: 4),
-                  Text(
-                    l.wardrobeCount(items.length),
-                    style: TextStyle(
-                      color: _ink.withValues(alpha: 0.6),
-                      fontSize: 13,
-                    ),
-                  ),
-                  const SizedBox(height: 18),
+                  Caption(l.wardrobeCount(items.length), italic: true),
+                  const HairlineDivider(verticalPadding: 16),
                   // En fazla 4 düğme: yatay kaydırma yerine Wrap; dar ekranda sağdaki düğme kenarda kesilip
                   // fark edilmeden kalmasın diye alt satıra geçer
                   Wrap(
@@ -221,33 +187,24 @@ class _FilterChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fg = active ? Colors.white : _ink;
+    final t = context.tokens;
+    final fg = active ? t.paper : t.ink;
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
-          color: active ? _dark : Colors.white.withValues(alpha: 0.6),
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: active ? _dark : Colors.white, width: 2),
+          color: active ? t.ink : t.surface,
+          borderRadius: BorderRadius.circular(SeeItOnTokens.radiusPill),
+          border: Border.all(color: active ? t.ink : t.line),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              label,
-              style: TextStyle(
-                color: fg,
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
+            Text(label, style: Theme.of(context).textTheme.labelLarge!.copyWith(color: fg, fontSize: 13)),
             const SizedBox(width: 6),
-            Text(
-              '$count',
-              style: TextStyle(color: fg.withValues(alpha: 0.6), fontSize: 12),
-            ),
+            Text('$count', style: TextStyle(color: fg.withValues(alpha: 0.6), fontSize: 12)),
           ],
         ),
       ),
@@ -270,15 +227,9 @@ class _LookCard extends StatelessWidget {
       child: Container(
         clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.06),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
-            ),
-          ],
+          color: context.tokens.surface,
+          borderRadius: BorderRadius.circular(SeeItOnTokens.radiusMd),
+          border: Border.all(color: context.tokens.line),
         ),
         child: Stack(
           fit: StackFit.expand,
@@ -326,7 +277,7 @@ class _LookCard extends StatelessWidget {
   }
 }
 
-/// Kart ve detayda ortak: yüklenirken krem zemin, hata olursa ikon (internet yoksa kırık görsel görünmez).
+/// Kart ve detayda ortak: yüklenirken çizgi renginde zemin, hata olursa ikon (internet yoksa kırık görsel görünmez).
 class WardrobeImage extends StatelessWidget {
   const WardrobeImage({super.key, required this.url, this.fit = BoxFit.cover});
 
@@ -335,17 +286,14 @@ class WardrobeImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.tokens;
     return Image.network(
       url,
       fit: fit,
-      loadingBuilder: (context, child, progress) =>
-          progress == null ? child : Container(color: const Color(0xFFF0EBE1)),
-      errorBuilder: (context, error, stack) => Container(
-        color: const Color(0xFFF0EBE1),
-        child: Icon(
-          Icons.image_not_supported_outlined,
-          color: _ink.withValues(alpha: 0.3),
-        ),
+      loadingBuilder: (context, child, progress) => progress == null ? child : ColoredBox(color: t.line),
+      errorBuilder: (context, error, stack) => ColoredBox(
+        color: t.line,
+        child: Center(child: Icon(Icons.image_not_supported_outlined, color: t.muted)),
       ),
     );
   }
@@ -364,20 +312,16 @@ class CategoryBadge extends StatelessWidget {
       'overall' => l.categoryBadgeOverall,
       _ => l.categoryBadgeUpper,
     };
+    final t = context.tokens;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.9),
-        borderRadius: BorderRadius.circular(12),
+        color: t.paper.withValues(alpha: 0.9),
+        borderRadius: BorderRadius.circular(SeeItOnTokens.radiusPill),
       ),
       child: Text(
         label,
-        style: const TextStyle(
-          color: _ink,
-          fontSize: 9,
-          fontWeight: FontWeight.bold,
-          letterSpacing: 0.6,
-        ),
+        style: Theme.of(context).textTheme.labelSmall!.copyWith(color: t.ink, fontSize: 9, letterSpacing: 0.8),
       ),
     );
   }
@@ -398,10 +342,10 @@ class _SkeletonGrid extends StatelessWidget {
         childAspectRatio: 3 / 4,
       ),
       itemCount: 4,
-      itemBuilder: (_, _) => Container(
+      itemBuilder: (context, _) => Container(
         decoration: BoxDecoration(
-          color: const Color(0xFFF0EBE1),
-          borderRadius: BorderRadius.circular(20),
+          color: context.tokens.line,
+          borderRadius: BorderRadius.circular(SeeItOnTokens.radiusMd),
         ),
       ),
     );
@@ -425,6 +369,7 @@ class _Message extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.tokens;
     return Center(
       child: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 36),
@@ -433,55 +378,21 @@ class _Message extends StatelessWidget {
           children: [
             Container(
               padding: const EdgeInsets.all(18),
-              decoration: const BoxDecoration(
-                color: Color(0xFFF0EBE1),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(icon, color: _ink.withValues(alpha: 0.6), size: 30),
+              decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: t.line)),
+              child: Icon(icon, color: t.muted, size: 30),
             ),
             const SizedBox(height: 20),
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: _ink,
-                fontSize: 22,
-                fontFamily: 'Georgia',
-                fontWeight: FontWeight.w500,
-              ),
-            ),
+            EditorialHeading(title, size: 24, textAlign: TextAlign.center),
             if (body != null) ...[
               const SizedBox(height: 10),
               Text(
                 body!,
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: _ink.withValues(alpha: 0.6),
-                  fontSize: 13,
-                  height: 1.5,
-                ),
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: t.muted, height: 1.5),
               ),
             ],
             const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: onAction,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: _dark,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 28,
-                  vertical: 16,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                elevation: 0,
-              ),
-              child: Text(
-                action,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
+            PillButton(label: action, onPressed: onAction),
           ],
         ),
       ),

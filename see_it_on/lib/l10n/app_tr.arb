@@ -246,5 +246,32 @@
   "wardrobeCancel": "Vazgeç",
   "wardrobeDeleted": "Kombin silindi.",
   "wardrobeDeleteFailed": "Kombin silinemedi. Tekrar dene.",
-  "wardrobeShareFailed": "Görsel paylaşılamadı."
+  "wardrobeShareFailed": "Görsel paylaşılamadı.",
+  "settingsAppearance": "GÖRÜNÜM",
+  "settingsThemeSystem": "Sistem",
+  "settingsThemeLight": "Açık",
+  "settingsThemeDark": "Koyu",
+  "onboardingIssue": "No. 01 — Sanal Kabin",
+  "onboardingCoverLine2": "Yerel yapay zeka",
+  "onboardingCoverLine3": "Türkçe & English",
+  "resultCaption": "{category} — {seconds} sn, yerel GPU",
+  "@resultCaption": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      },
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "cameraHint": "Tam boy görün, kollar hafif açık",
+  "cameraUse": "Kullan",
+  "cameraRetake": "Tekrar çek",
+  "cameraSwitch": "Kamerayı değiştir",
+  "cameraDenied": "Kamera izni verilmedi.",
+  "cameraUnavailable": "Bu cihazda kamera bulunamadı.",
+  "cameraUseGallery": "Galeriden seç",
+  "cameraCapture": "Fotoğraf çek",
+  "cameraClose": "Kapat"
 }

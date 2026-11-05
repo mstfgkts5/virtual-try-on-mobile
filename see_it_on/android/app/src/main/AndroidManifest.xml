@@ -2,6 +2,9 @@
     <!-- Supabase (giriş, gardırop) ve yerel yapay zeka sunucusu için; yalnızca debug
          manifestinde olduğu için release APK internete hiç çıkamıyordu -->
     <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- Uygulama içi kamera (tam boy fotoğraf çekimi) -->
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-feature android:name="android.hardware.camera" android:required="false"/>
     <!-- usesCleartextTraffic: CatVTON backend'i yerel ağda http:// (TLS'siz) çalışıyor;
          Android 9+ şifresiz HTTP'yi varsayılan olarak engeller -->
     <application
