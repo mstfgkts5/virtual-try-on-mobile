@@ -25,14 +25,14 @@ def test_extract_returns_n_portrait_frames():
 
 
 def test_rotated_video_stays_portrait():
-    # Telefon videosu: sensör yatay kaydeder, döndürme bilgisi 90°
-    frames = extract_frames(make_video(640, 360, 2, rotate=90, marker=True), 4)
+    # iPhone dikey videosu: sensör yatay kaydeder, ffprobe döndürmeyi -90 gösterir.
+    # Doğru dik görüntüde (ffmpeg autorotate ile aynı) ham karenin sol tarafı ÜSTE gelir.
+    frames = extract_frames(make_video(640, 360, 2, rotate=-90, marker=True), 4)
     assert all(f.size == (768, 1024) for f in frames)
     arr = np.asarray(frames[0]).astype(int)
     red = (arr[..., 0] > 200) & (arr[..., 1] < 80)
     top, bottom = red[: arr.shape[0] // 2].mean(), red[arr.shape[0] // 2 :].mean()
-    # Kaynakta sol yarı kırmızıydı; 90° döndürülünce kırmızı yatay bir bant olur (üst ya da alt yarı)
-    assert abs(top - bottom) > 0.3
+    assert top > 0.9 and bottom < 0.1
 
 
 def test_invalid_bytes_raise_video_error():

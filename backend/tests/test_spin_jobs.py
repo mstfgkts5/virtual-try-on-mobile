@@ -1,3 +1,6 @@
+import threading
+import time
+
 import pytest
 from PIL import Image
 
@@ -177,3 +180,29 @@ def test_unknown_job_raises():
         m.status("nope")
     with pytest.raises(KeyError):
         m.cancel("nope")
+
+
+def test_single_tryon_can_run_between_frames():
+    """Gerçek iş parçacığı + motorun kilidi: iş sürerken gelen tek kare denemesi işin bitmesini beklemez."""
+    gpu = threading.Lock()  # CatVTONEngine._lock yerine
+    order = []
+
+    def run(person, garment, category):
+        with gpu:
+            order.append("spin")
+            time.sleep(0.05)
+        time.sleep(0.01)  # kareler arası iş (repaint, SCHP): kilit serbest
+        return person.copy(), 0.05
+
+    m = SpinJobManager(run, lambda p: False, start_thread=True)
+    job = m.submit(frames(6), FRONT, None, "upper")
+    while not order:  # ilk kare başlasın
+        time.sleep(0.005)
+    with gpu:  # tek kare denemesi (/api/v1/tryon) kilidi alır
+        order.append("tryon")
+    deadline = time.time() + 5
+    while m.status(job)["status"] != "done" and time.time() < deadline:
+        time.sleep(0.02)
+    assert m.status(job)["status"] == "done"
+    # Tek kare denemesi en fazla bir kare bekledi: son kareden önce araya girdi
+    assert order.index("tryon") <= 2
