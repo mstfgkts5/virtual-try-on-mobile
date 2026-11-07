@@ -64,6 +64,9 @@ class FakeCameraService implements CameraService {
 
   @override
   bool get hasMultipleCameras => true;
+
+  @override
+  bool get isFront => true;
 }
 
 /// Kamerayı bir düğmeyle açar; dönen değeri [results]'a yazar.

@@ -104,14 +104,17 @@ class CatVTONEngine:
         steps: int = 15,
         guidance_scale: float = 2.5,
         seed: int = 42,
+        size: tuple[int, int] | None = None,
     ) -> TryOnOutput:
+        """`size` (genişlik, yükseklik) verilirse o çözünürlükte çalışır (canlı önizleme: 384x512)."""
         mask_type = self.normalize_category(category)
+        width, height = size or (self.width, self.height)
 
         # Telefon fotoğraflarındaki EXIF dönüşünü uygula, yoksa görsel yan gelir
         person = ImageOps.exif_transpose(person).convert("RGB")
         garment = ImageOps.exif_transpose(garment).convert("RGB")
-        person = resize_and_crop(person, (self.width, self.height))
-        garment = resize_and_padding(garment, (self.width, self.height))
+        person = resize_and_crop(person, (width, height))
+        garment = resize_and_padding(garment, (width, height))
 
         with self._lock:
             start = time.perf_counter()
@@ -125,8 +128,8 @@ class CatVTONEngine:
                 mask=mask,
                 num_inference_steps=steps,
                 guidance_scale=guidance_scale,
-                height=self.height,
-                width=self.width,
+                height=height,
+                width=width,
                 generator=generator,
             )[0]
             torch.cuda.synchronize()

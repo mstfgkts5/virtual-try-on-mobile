@@ -22,7 +22,15 @@ PERSON = sys.argv[1] if len(sys.argv) > 1 else os.path.join(ASSETS, "mannequins"
 GARMENT = sys.argv[2] if len(sys.argv) > 2 else os.path.join(ASSETS, "garments", "blazer.jpg")
 OUT = os.path.join(ROOT, "tests", "output", "bench")
 
-# (adım, genişlik, yükseklik, rehberlik)
+# (adım, genişlik, yükseklik, rehberlik); BENCH_PREVIEW=1 → canlı önizleme adayları
+CONFIGS_PREVIEW = [
+    (15, 576, 768, 2.5),  # şu anki tam kalite
+    (10, 384, 512, 2.5),
+    (8, 384, 512, 2.5),
+    (6, 384, 512, 2.5),
+    (8, 320, 448, 2.5),
+    (6, 320, 448, 2.5),
+]
 CONFIGS = [
     (30, 768, 1024, 2.5),  # şu anki ayar
     (20, 768, 1024, 2.5),
@@ -34,6 +42,9 @@ CONFIGS = [
 
 
 def main() -> None:
+    global CONFIGS
+    if os.environ.get("BENCH_PREVIEW") == "1":
+        CONFIGS = CONFIGS_PREVIEW
     os.makedirs(OUT, exist_ok=True)
     person, garment = Image.open(PERSON), Image.open(GARMENT)
     engine = CatVTONEngine()
@@ -56,14 +67,15 @@ def main() -> None:
         d.text((8, 4), f"{steps} adım · {w}x{h} · g={g}", fill="white")
         d.text((8, 22), f"{out.render_time_sec:.1f} sn · {peak:.0f} MB", fill="white")
         tiles.append(tile)
-    with open(os.path.join(OUT, "bench.csv"), "w", newline="", encoding="utf-8") as f:
+    tag = "_preview" if os.environ.get("BENCH_PREVIEW") == "1" else ""
+    with open(os.path.join(OUT, f"bench{tag}.csv"), "w", newline="", encoding="utf-8") as f:
         wr = csv.DictWriter(f, fieldnames=list(rows[0]))
         wr.writeheader()
         wr.writerows(rows)
     sheet = Image.new("RGB", (384 * len(tiles), 512), "white")
     for i, t in enumerate(tiles):
         sheet.paste(t, (384 * i, 0))
-    sheet.save(os.path.join(OUT, "bench_sheet.jpg"), quality=90)
+    sheet.save(os.path.join(OUT, f"bench{tag}_sheet.jpg"), quality=90)
     print("tamam", flush=True)
 
 

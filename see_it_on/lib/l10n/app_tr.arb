@@ -308,5 +308,18 @@
   "homeSpinPreset": "Hazır 360° set",
   "homeSpinHint": "Ayakların sabit, yavaşça tam tur dön (10–20 sn)",
   "homeSpinTooLarge": "Video en fazla 60 MB olabilir; daha kısa bir video seçin.",
-  "spinUnknownError": "beklenmeyen bir hata oluştu"
+  "spinUnknownError": "beklenmeyen bir hata oluştu",
+  "liveTitle": "Canlı Dene",
+  "liveHint": "Bir kıyafet seç, birkaç saniyede üzerinde gör",
+  "liveUpdating": "Güncelleniyor…",
+  "liveSave": "Tam kaliteyle kaydet",
+  "liveFailed": "Bağlantı sorunu: {reason}",
+  "@liveFailed": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "homeLive": "Canlı dene"
 }

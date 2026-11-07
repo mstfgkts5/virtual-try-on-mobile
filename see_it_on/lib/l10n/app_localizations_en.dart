@@ -612,4 +612,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get spinUnknownError => 'an unexpected error occurred';
+
+  @override
+  String get liveTitle => 'Live Try-On';
+
+  @override
+  String get liveHint => 'Pick a garment and see it on you in a few seconds';
+
+  @override
+  String get liveUpdating => 'Updating…';
+
+  @override
+  String get liveSave => 'Save in full quality';
+
+  @override
+  String liveFailed(String reason) {
+    return 'Connection problem: $reason';
+  }
+
+  @override
+  String get homeLive => 'Live try-on';
 }

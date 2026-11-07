@@ -7,6 +7,7 @@ import '../models/spin.dart';
 import '../models/spin_preset.dart';
 import '../services/media_picker.dart';
 import 'camera_capture_screen.dart';
+import 'live_tryon_screen.dart';
 import 'loading_screen.dart';
 import 'settings_screen.dart';
 import 'spin_screen.dart';
@@ -274,6 +275,24 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  // Canlı deneme: kamera açık kalır, yan şeritteki örnek kıyafetler birkaç saniyede üzerinde görünür
+  Future<void> _openLive() async {
+    final l = context.l10n;
+    final bundle = DefaultAssetBundle.of(context);
+    final garments = <LiveGarment>[];
+    for (final g in _sampleGarments) {
+      final data = await bundle.load('assets/images/garments/${g['id']}.jpg');
+      garments.add(LiveGarment(
+        id: g['id']!,
+        name: garmentName(l, g['id']!),
+        category: g['category']!,
+        bytes: data.buffer.asUint8List(),
+      ));
+    }
+    if (!mounted) return;
+    pushEditorial(context, LiveTryOnScreen(garments: garments));
+  }
+
   Future<void> _pickGarmentBack() async {
     final file = await _picker.pickImage(ImageSource.gallery);
     if (file == null) return;
@@ -494,6 +513,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           _buildCardButton(Icons.camera_alt_outlined, l.homeCamera, _openCamera),
                           _buildCardButton(Icons.accessibility_new, l.homeMannequin, _showMannequinPicker),
                           _buildCardButton(Icons.threesixty, l.homeSpinVideo, _pickVideo),
+                          _buildCardButton(Icons.videocam_outlined, l.homeLive, _openLive),
                         ],
                       ),
                       const SizedBox(height: 16),

@@ -1159,6 +1159,42 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'beklenmeyen bir hata oluştu'**
   String get spinUnknownError;
+
+  /// No description provided for @liveTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Canlı Dene'**
+  String get liveTitle;
+
+  /// No description provided for @liveHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bir kıyafet seç, birkaç saniyede üzerinde gör'**
+  String get liveHint;
+
+  /// No description provided for @liveUpdating.
+  ///
+  /// In tr, this message translates to:
+  /// **'Güncelleniyor…'**
+  String get liveUpdating;
+
+  /// No description provided for @liveSave.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tam kaliteyle kaydet'**
+  String get liveSave;
+
+  /// No description provided for @liveFailed.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bağlantı sorunu: {reason}'**
+  String liveFailed(String reason);
+
+  /// No description provided for @homeLive.
+  ///
+  /// In tr, this message translates to:
+  /// **'Canlı dene'**
+  String get homeLive;
 }
 
 class _AppLocalizationsDelegate

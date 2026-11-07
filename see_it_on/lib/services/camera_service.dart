@@ -39,6 +39,9 @@ abstract class CameraService {
   Future<void> switchCamera();
   Future<void> dispose();
   bool get hasMultipleCameras;
+
+  /// Ön (selfie) kamera mı; önizleme aynalı göründüğü için sonuç da aynalanarak gösterilir
+  bool get isFront;
 }
 
 /// `camera` eklentisiyle gerçek kamera.
@@ -53,6 +56,9 @@ class PluginCameraService implements CameraService {
 
   @override
   bool get hasMultipleCameras => _cameras.length > 1;
+
+  @override
+  bool get isFront => _front;
 
   @override
   Future<void> init({bool front = true}) async {

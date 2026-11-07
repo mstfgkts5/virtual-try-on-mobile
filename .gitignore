@@ -39,3 +39,6 @@ test_images/
 
 # Deney çıktıları (yerel)
 tests/output/
+
+# Yerel geliştirme sertifikası (özel anahtar repoya girmez)
+backend/certs/

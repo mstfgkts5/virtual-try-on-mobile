@@ -19,6 +19,7 @@ Rapordaki "Sınırlılıklar" bölümü için. Her madde gözlem, sebep ve uygul
 - **Gözlem:** iPhone Safari'de uygulama yerel Wi-Fi üzerinden (http) açıldığında tarayıcı kamerayı açmıyor; ekran "Galeriden seç"e yönlendiriyor.
 - **Sebep:** Tarayıcılar kamerayı yalnızca güvenli bağlamda (HTTPS veya localhost) verir.
 - **Uygulamada:** Galeri ve manken yolları çalışır; yerel (Android/iOS) derlemede kamera eklentisi doğrudan çalışır.
+- **Demo için:** `start_demo.ps1` backend'i (8000) ve web uygulamasını (8443) kendi imzalı sertifikayla HTTPS üzerinden açar (`backend/certs/`, git dışında). Telefonda önce `https://<IP>:8000/health`, sonra `https://<IP>:8443` açılıp "bağlantı gizli değil" uyarısı bir kez kabul edilir. Gerçek bir dağıtımda tanınmış bir sertifika (ör. Let's Encrypt) gerekir.
 
 ## 4. 360° dönüş: kareler ayrı üretilir
 - **Gözlem:** Dönüşteki her kare CatVTON ile ayrı giydirildiği için kumaşın kırışıkları ve deseni kareden kareye biraz değişebilir; ince desenler (kareli, ekose) düz renge yaklaşabilir.
@@ -33,3 +34,8 @@ Rapordaki "Sınırlılıklar" bölümü için. Her madde gözlem, sebep ve uygul
 
 ## 6. 360° dönüş: iPhone video biçimi
 - **Gözlem:** iPhone varsayılan olarak HEVC `.MOV` kaydeder. Backend PyAV (kendi ffmpeg'i) ile bunu okur ve dikey döndürmeyi uygular; video yine açılamazsa kullanıcıya "Ayarlar → Kamera → Formatlar → En Uyumlu" ipucu gösterilir.
+
+## 7. Canlı deneme gerçek zamanlı değil
+- **Gözlem:** "Canlı dene" ekranında kamera açık kalır, ama giydirilmiş görüntü ~2–3 sn'de bir yenilenir; hareket sırasında görüntü bir önceki duruşu gösterir.
+- **Sebep:** Difüzyon modeli kare başına birkaç saniye ister; gerçek zamanlı (≥15 kare/sn) deneme, sunucu sınıfı GPU'larda çalışan özel video modelleri gerektirir.
+- **Uygulamada:** Önizleme 384×512 ve 10 adımla üretilir (~2,2 sn, şarjda); düşük adımda iç giysi ve kenarlarda bozulma görülebilir. "Bu kareyi kaydet" son kareyi tam kaliteyle (576×768, 15 adım) yeniden üretir.
