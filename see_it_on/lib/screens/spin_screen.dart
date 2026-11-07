@@ -119,10 +119,13 @@ class _SpinScreenState extends State<SpinScreen> {
   }
 
   int? get _etaMinutes {
+    // Süreyi yalnızca giydirilmiş ana kareler belirler; ara kareler neredeyse anlık
+    final keys = _frames.where((f) => !f.isTween).toList();
     final remaining = _total - _frames.length;
-    if (_frames.isEmpty || remaining <= 0) return null;
-    final avg = _frames.map((f) => f.renderTimeSec).reduce((a, b) => a + b) / _frames.length;
-    return (avg * remaining / 60).ceil().clamp(1, 99);
+    if (keys.isEmpty || remaining <= 0) return null;
+    final avg = keys.map((f) => f.renderTimeSec).reduce((a, b) => a + b) / keys.length;
+    final remainingKeys = remaining * keys.length / _frames.length;
+    return (avg * remainingKeys / 60).ceil().clamp(1, 99);
   }
 
   @override

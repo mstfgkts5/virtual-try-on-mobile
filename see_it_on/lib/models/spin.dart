@@ -3,20 +3,29 @@ import 'dart:typed_data';
 
 /// 360° dönüşün giydirilmiş tek karesi.
 class SpinFrame {
-  const SpinFrame({required this.index, required this.view, required this.bytes, this.renderTimeSec = 0});
+  const SpinFrame({
+    required this.index,
+    required this.view,
+    required this.bytes,
+    this.renderTimeSec = 0,
+    this.kind = 'key',
+  });
 
   final int index;
   final String view; // 'front' | 'back'
   final Uint8List bytes;
   final double renderTimeSec;
+  final String kind; // 'key' (giydirilmiş) | 'tween' (RIFE ara kare)
 
   bool get isBack => view == 'back';
+  bool get isTween => kind == 'tween';
 
   factory SpinFrame.fromJson(Map<String, dynamic> json) => SpinFrame(
         index: json['index'] as int,
         view: json['view'] as String? ?? 'front',
         bytes: base64Decode(json['image_base64'] as String),
         renderTimeSec: (json['render_time'] as num?)?.toDouble() ?? 0,
+        kind: json['kind'] as String? ?? 'key',
       );
 }
 
@@ -51,7 +60,7 @@ class SpinRequest {
     required this.garmentFront,
     this.garmentBack,
     this.category = 'upper',
-    this.frames = 8,
+    this.frames = 12, // ana kare; backend aralarına RIFE ara kareleri ekler
   });
 
   final Uint8List videoBytes;

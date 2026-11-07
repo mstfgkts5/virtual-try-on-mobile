@@ -15,7 +15,7 @@ void main() {
       'error': null,
       'frames': [
         {'index': 0, 'view': 'front', 'image_base64': png, 'render_time': 41.2},
-        {'index': 1, 'view': 'back', 'image_base64': png, 'render_time': 40},
+        {'index': 1, 'view': 'back', 'kind': 'tween', 'image_base64': png, 'render_time': 0},
       ],
     });
     expect(s.state, SpinState.running);
@@ -23,6 +23,8 @@ void main() {
     expect(s.done, 2);
     expect(s.frames, hasLength(2));
     expect(s.frames[1].isBack, isTrue);
+    expect(s.frames[1].isTween, isTrue);
+    expect(s.frames[0].isTween, isFalse); // 'kind' yoksa ana kare sayılır
     expect(s.frames[0].isBack, isFalse);
     expect(s.frames[0].bytes.sublist(0, 4), [137, 80, 78, 71]);
     expect(s.frames[0].renderTimeSec, 41.2);
@@ -40,9 +42,9 @@ void main() {
     expect(SpinStatus.fromJson({'status': 'queued', 'total': 1, 'done': 0, 'frames': []}).isFinished, isFalse);
   });
 
-  test('SpinRequest varsayılan 8 kare', () {
+  test('SpinRequest varsayılan 12 ana kare', () {
     final r = SpinRequest(videoBytes: Uint8List(1), videoName: 'v.mov', garmentFront: Uint8List(1), category: 'upper');
-    expect(r.frames, 8);
+    expect(r.frames, 12);
     expect(r.garmentBack, isNull);
   });
 }
