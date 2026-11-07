@@ -23,8 +23,11 @@ Teslim: çalışan uygulama + rapor + sunum.
 - [x] Önce/sonra karşılaştırmasını düzelt: backend 3:4 kırpılmış kişi fotoğrafını da döndürsün, karşılaştırma onu kullansın
 
 ## 3. Hafta (17–23 Kasım) – Çoklu açı, gardırop, tasarım
-- [x] **360° Dönüş Denemesi** (çoklu açının yerine): dönüş videosundan 8 kare çıkarılıp her biri giydirilir, arka kareler yüzden tanınıp arka kıyafet görseli kullanılır; parmakla döndürülen görüntüleyici, canlı ilerleme, iptal/kalp atışı; uygulamayla gelen hazır set (5 kare). Backend 34, uygulama 127 test
+- [x] **360° Dönüş Denemesi** (çoklu açının yerine): dönüş videosundan 8 kare çıkarılıp her biri giydirilir, arka kareler yüzden tanınıp arka kıyafet görseli kullanılır; parmakla döndürülen görüntüleyici, canlı ilerleme, iptal/kalp atışı; uygulamayla gelen hazır set
 - [x] Yan ve arka açı kalitesi denendi (3/4 ön, profil, arka sunulabilir); sınırlar KNOWN_LIMITATIONS 4–6
+- [x] Akıcı dönüş: 12 ana kare + RIFE ara kareleri (48 kare), sürüklemede eylemsizlik, JPEG kareler; hazır set 20 kare (ara)
+- [x] Hız: varsayılan 15 adım · 576×768 (tek görsel 73,6 → 16,8 sn; şarjda ~8 sn) — `tests/bench_speed.py`
+- [ ] Gerçek bir dönüş videosundan 48 karelik hazır set (`tools/make_spin_set.py --tweens 3`)
 - [ ] iPhone'da gerçek dönüş videosuyla dene (dikey döndürme, HEVC)
 - [x] **Türkçe / İngilizce dil desteği** (Flutter gen-l10n): tüm ekranlar iki dilli, Ayarlar ekranından TR/EN, seçim kalıcı, 23 otomatik test
 - [x] Kayıt ve giriş akışı: Supabase e-posta/şifre (doğrulamasız), oturum hatırlama (AuthGate), Ayarlar'da çıkış, TR/EN hata mesajları (hatalı şifre, kayıtlı e-posta, çok fazla deneme, bağlantı yok), 20 sn zaman aşımı, şifre göster/gizle — 43 test, gerçek hesapla tarayıcıda doğrulandı
