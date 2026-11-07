@@ -515,7 +515,7 @@ abstract class AppLocalizations {
   /// No description provided for @loadingEta.
   ///
   /// In tr, this message translates to:
-  /// **'Tahmini süre ~20 sn'**
+  /// **'Tahmini süre ~10 sn'**
   String get loadingEta;
 
   /// No description provided for @loadingFinalTouches.
@@ -545,7 +545,7 @@ abstract class AppLocalizations {
   /// No description provided for @loadingStepDiffusion.
   ///
   /// In tr, this message translates to:
-  /// **'Difüzyon (15 adım)'**
+  /// **'Difüzyon (8 adım)'**
   String get loadingStepDiffusion;
 
   /// No description provided for @loadingStepDiffusionDesc.

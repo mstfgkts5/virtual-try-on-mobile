@@ -16,6 +16,7 @@ from PIL import Image, ImageFilter, ImageOps
 CATVTON_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "ai", "CatVTON"))
 sys.path.insert(0, CATVTON_DIR)
 
+from diffusers import DPMSolverMultistepScheduler  # noqa: E402
 from diffusers.image_processor import VaeImageProcessor  # noqa: E402
 from huggingface_hub import snapshot_download  # noqa: E402
 from model.cloth_masker import AutoMasker  # noqa: E402  # type: ignore
@@ -64,6 +65,11 @@ class CatVTONEngine:
             skip_safety_check=True,  # 8 GB VRAM'de yer açmak için
             device=self.device,
         )
+        # DDIM (eta=1) yerine DPM-Solver++: az adımda aynı kalite. Ölçüm (2026-11-07, şarjda):
+        # 576x768 · 8 adım 4,4 sn (DDIM 15 adım 8,2 sn); 384x512 · 3 adım 0,75 sn (DDIM 10 adım 1,9 sn)
+        self.pipeline.noise_scheduler = DPMSolverMultistepScheduler.from_config(
+            self.pipeline.noise_scheduler.config, algorithm_type="dpmsolver++", solver_order=2
+        )
         self.automasker = AutoMasker(
             densepose_ckpt=os.path.join(repo_path, "DensePose"),
             schp_ckpt=os.path.join(repo_path, "SCHP"),
@@ -101,7 +107,7 @@ class CatVTONEngine:
         person: Image.Image,
         garment: Image.Image,
         category: str,
-        steps: int = 15,
+        steps: int = 8,
         guidance_scale: float = 2.5,
         seed: int = 42,
         size: tuple[int, int] | None = None,

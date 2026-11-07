@@ -45,14 +45,19 @@ class FakeCamera implements CameraService {
 }
 
 class FakeApi implements ApiService {
-  FakeApi({this.fail = false});
+  FakeApi({this.fail = false, this.delay = const Duration(milliseconds: 20)});
   final bool fail;
+  final Duration delay;
   final requests = <TryOnRequest>[];
+  int inFlight = 0, maxInFlight = 0;
 
   @override
   Future<TryOnResult> processVirtualTryOn(TryOnRequest request) async {
     requests.add(request);
-    await Future<void>.delayed(const Duration(milliseconds: 20));
+    inFlight++;
+    if (inFlight > maxInFlight) maxInFlight = inFlight;
+    await Future<void>.delayed(delay);
+    inFlight--;
     if (fail) throw Exception('ağ yok');
     return TryOnResult(id: '1', title: 'upper', resultImageBytes: _png, renderTimeSec: 2.2);
   }
@@ -82,7 +87,7 @@ Future<void> run(WidgetTester tester, [int ticks = 10]) async {
 /// Ekranı kapatıp döngünün bekleyen zamanlayıcılarının bitmesini bekler.
 Future<void> finish(WidgetTester tester) async {
   await tester.pumpWidget(const SizedBox());
-  await run(tester, 5);
+  await run(tester, 20); // ikinci işçinin 400 ms gecikmesi dahil
 }
 
 void main() {
@@ -119,6 +124,17 @@ void main() {
     await run(tester, 20);
     expect(api.requests.length, greaterThanOrEqualTo(3));
     expect(cam.captures, greaterThanOrEqualTo(api.requests.length));
+    await finish(tester);
+  });
+
+  testWidgets('GPU boş kalmasın diye en fazla iki istek aynı anda gider', (tester) async {
+    final cam = FakeCamera(), api = FakeApi(delay: const Duration(milliseconds: 300));
+    await tester.pumpWidget(localized(live(cam, api)));
+    await run(tester, 2);
+    await tester.tap(find.byKey(const ValueKey('live-garment-blazer')));
+    await run(tester, 40);
+    expect(api.maxInFlight, 2);
+    expect(find.byKey(const ValueKey('live-result')), findsOneWidget);
     await finish(tester);
   });
 

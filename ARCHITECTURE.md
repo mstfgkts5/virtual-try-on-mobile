@@ -18,7 +18,7 @@ flowchart LR
         FAST["FastAPI<br/>/api/v1/tryon · /api/v1/spin"]
         JOBS["SpinJobManager<br/>FIFO kuyruk · kalp atışı · iptal"]
         FRAMES["spin_frames<br/>PyAV kare çıkarma · arka kare tanıma"]
-        ENG["CatVTONEngine<br/>15 adım · 576×768 · bf16"]
+        ENG["CatVTONEngine<br/>DPM-Solver++ 8 adım · 576×768 · bf16"]
         MASK["AutoMasker<br/>DensePose + SCHP"]
         RIFE["RIFE<br/>ara kareler"]
         FAST --> JOBS
@@ -65,7 +65,7 @@ sequenceDiagram
     API->>E: run(kişi, kıyafet, kategori)
     E->>E: EXIF düzelt, 576×768 kırp
     E->>E: AutoMasker: DensePose + SCHP → kıyafet maskesi
-    E->>E: 15 adım difüzyon (rehberlik 2,5)
+    E->>E: 8 adım difüzyon, DPM-Solver++ (rehberlik 2,5)
     E->>E: Maske dışını orijinalden geri al (kenar izi yok)
     E-->>API: sonuç + kırpılmış kişi + süre
     API-->>App: 200 {image_base64, person_base64, category, render_time}
@@ -171,6 +171,7 @@ flowchart LR
 |---|---|
 | IDM-VTON (Hugging Face Space) yerine yerel CatVTON | Uzak sıra ve zaman aşımları demo için güvenilir değildi; CatVTON 8 GB VRAM'e sığıyor ve alt giyimi de destekliyor |
 | 15 adım · 576×768 · rehberlik 2,5 | Ölçüm: 73,6 sn → 16,8 sn; rehberliği kapatmak süreyi yarılar ama kumaş desenini siliyor (`tests/bench_speed.py`) |
+| DPM-Solver++ 8 adım (önizleme 3 adım · 384×512) | DDIM 15 adıma göre yarı süre (8,2 → ~5 sn), aynı kalite; canlı önizleme ~1 sn (`docs/PERFORMANCE.md`) |
 | 360° için gerçek 3D yerine "dönüş videosu + kareler" | Görüntüden 3D modeller 8 GB'a sığmıyor ve yüz/desen kalitesi düşük; kare yaklaşımı gerçek fotoğraf kalitesini korur |
 | 12 ana kare + RIFE ara kare | Akıcılık için kareler arası açı küçük olmalı; 48 kareyi tek tek giydirmek 4 kat uzun sürerdi |
 | Uzun işler için iş numarası + sorgulama | Tarayıcıda (Safari) uzun açık bağlantı güvenilir değil; kalp atışı sahipsiz işleri temizler |

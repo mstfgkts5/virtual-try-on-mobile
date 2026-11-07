@@ -4,7 +4,7 @@ Bütün ölçümler aynı bilgisayarda, yerel GPU ile yapıldı: **NVIDIA GeForc
 
 ## 1. Kategori başına süre (varsayılan profil)
 
-Varsayılan profil: **15 adım · 576×768 · rehberlik 2,5**. Ölçüm: 2026-11-07, bilgisayar şarjda, Windows güç planı "Performance", her test 3 tekrar (ısınmadan sonra). Betik: `tests/bench_categories.py`.
+Varsayılan profil: **15 adım · 576×768 · rehberlik 2,5**. Ölçüm: 2026-11-07, bilgisayar şarjda, Windows güç planı "Performance", her test 3 tekrar (ısınmadan sonra). Betik: `tests/bench_categories.py`. **Not:** Bu tablo DDIM dönemine aittir; 2026-11-07 itibarıyla DPM-Solver++ 8 adımla süreler yaklaşık yarıya indi (bkz. 2. bölüm).
 
 | Test | Tekrar | Ortalama (sn) | En az | En çok | En yüksek VRAM (MB) |
 |---|---|---|---|---|---|
@@ -32,18 +32,18 @@ Aynı manken ve ceketle, tek görsel. Betik: `tests/bench_speed.py`. Bu ölçüm
 
 **Sonuç:** Rehberliği kapatmak süreyi yarıya indiriyor ama kıyafet desenini siliyor; çözünürlük ve adım sayısını düşürmek kaliteyi koruyarak **4,4 kat** hızlandırdı. Seçilen profil şarjda tek görseli ~8 sn'de üretiyor.
 
-### Canlı deneme önizlemesi
+### Örnekleyici: DDIM → DPM-Solver++ (2026-11-07, şarjda)
 
-`BENCH_PREVIEW=1 tests/bench_speed.py` ile, bilgisayar şarjdayken (2026-11-07):
+CatVTON'un varsayılan örnekleyicisi DDIM (eta=1) az adımda kumaşı bozuyor. DPM-Solver++ (2. derece) aynı kaliteye çok daha az adımda ulaşıyor. Model süresi, maske (~0,25 sn) hariç:
 
-| Adım | Çözünürlük | Süre (sn) | Kalite |
+| Profil | DDIM | DPM-Solver++ | Seçim |
 |---|---|---|---|
-| 15 | 576×768 | ~8,2 | Tam kalite (kaydet) |
-| **10** | **384×512** | **2,15** | **Seçilen önizleme profili** |
-| 8 | 384×512 | 1,8 | Kenarlarda bozulma artıyor |
-| 6 | 320×448 | 1,1 | Kullanılamaz |
+| Tam kalite, 576×768 | 15 adım: 8,2 sn | 8 adım: 4,4 sn (istekte ~5 sn) | **8 adım** |
+| Canlı önizleme, 384×512 | 10 adım: 1,9 sn | 3 adım: 0,75 sn | **3 adım** |
+| 384×512, 4 adım | desen dağılıyor | 0,86 sn, temiz | — |
+| 288×384 / 320×448 | — | 0,5–0,7 sn, kumaş bozuk | Kullanılmadı (model bu boyutta kötü) |
 
-Ağ ve kamera ile birlikte canlı ekranda görüntü ~3 sn'de bir yenilenir.
+Canlı ekranda iki istek üst üste gönderilir (biri GPU'dayken diğeri yüklenir) ve önizleme küçük JPEG döner (~24 KB, PNG ~10 kat büyük). Bilgisayarın kendisinden ölçülen istek süresi 1,2 sn, yani görüntü ~1 sn'de bir yenilenir.
 
 ## 3. Güç durumunun etkisi
 

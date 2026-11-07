@@ -238,7 +238,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get loadingTitle => 'Kıyafet giydiriliyor •';
 
   @override
-  String get loadingEta => 'Tahmini süre ~20 sn';
+  String get loadingEta => 'Tahmini süre ~10 sn';
 
   @override
   String get loadingFinalTouches => 'Son rötuşlar...';
@@ -254,7 +254,7 @@ class AppLocalizationsTr extends AppLocalizations {
       'DensePose + SCHP ile giydirilecek bölge bulunur';
 
   @override
-  String get loadingStepDiffusion => 'Difüzyon (15 adım)';
+  String get loadingStepDiffusion => 'Difüzyon (8 adım)';
 
   @override
   String get loadingStepDiffusionDesc =>

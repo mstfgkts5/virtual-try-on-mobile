@@ -22,22 +22,21 @@ class LiveGarment {
 }
 
 /// "Neredeyse canlı" deneme: kamera açık kalır, şeritten seçilen kıyafet birkaç saniyede bir
-/// o anki kare üzerine (önizleme kalitesinde, ~2 sn) giydirilip kameranın üstünde gösterilir.
-/// Aynı anda tek istek gönderilir; sonuç gelince yeni kare çekilir.
+/// o anki kare üzerine (önizleme kalitesinde, ~1 sn) giydirilip kameranın üstünde gösterilir.
 class LiveTryOnScreen extends StatefulWidget {
   const LiveTryOnScreen({
     super.key,
     required this.garments,
     this.camera,
     this.api,
-    this.pause = const Duration(milliseconds: 300),
+    this.pause = Duration.zero,
   });
 
   final List<LiveGarment> garments;
   final CameraService? camera;
   final ApiService? api;
 
-  /// İki önizleme isteği arasındaki kısa bekleme
+  /// Bir işçinin iki isteği arasındaki bekleme (varsayılan yok: GPU sürekli dolu)
   final Duration pause;
 
   @override
@@ -46,6 +45,8 @@ class LiveTryOnScreen extends StatefulWidget {
 
 class _LiveTryOnScreenState extends State<LiveTryOnScreen> with WidgetsBindingObserver {
   static const _maxFailures = 3;
+  static const _workers = 2;
+  static const _stagger = Duration(milliseconds: 400);
 
   late final CameraService _camera = widget.camera ?? PluginCameraService();
   late final ApiService _api = widget.api ?? ApiService();
@@ -58,6 +59,8 @@ class _LiveTryOnScreenState extends State<LiveTryOnScreen> with WidgetsBindingOb
   int _failures = 0;
   String? _error;
   late String _category = widget.garments.isEmpty ? 'upper' : widget.garments.first.category;
+  int _active = 0; // çalışan işçi sayısı
+  int _seq = 0, _shownSeq = 0; // kare sırası; eski sonuç yenisinin üstüne yazılmaz
   int _loopToken = 0; // her seçim/durdurma yeni bir döngü başlatır; eskisi kendiliğinden biter
 
   @override
@@ -128,48 +131,62 @@ class _LiveTryOnScreenState extends State<LiveTryOnScreen> with WidgetsBindingOb
     });
   }
 
-  Future<void> _loop() async {
+  /// İki işçi aynı anda çalışır: biri GPU'dayken diğeri kareyi çekip yükler, böylece GPU hiç boş
+  /// beklemez ve görüntü GPU süresi kadar sıklıkla (~1 sn) yenilenir. Geç gelen eski sonuç gösterilmez.
+  void _loop() {
     final token = ++_loopToken;
-    while (mounted && token == _loopToken && _selected != null && _ready) {
+    for (var i = 0; i < _workers; i++) {
+      _worker(token, i == 0 ? Duration.zero : _stagger);
+    }
+  }
+
+  Future<void> _worker(int token, Duration startDelay) async {
+    bool alive() => mounted && token == _loopToken && _selected != null && _ready;
+    if (startDelay > Duration.zero) await Future<void>.delayed(startDelay);
+    if (!alive()) return;
+    _active++;
+    setState(() => _busy = true);
+    while (alive()) {
       final garment = _selected!;
-      setState(() => _busy = true);
       try {
         final frame = await _camera.capture();
-        if (!mounted || token != _loopToken) break;
+        if (!alive()) break;
+        final seq = ++_seq;
         final res = await _api.processVirtualTryOn(TryOnRequest(
           personImageBytes: frame,
           garmentImageBytes: garment.bytes,
           category: garment.category,
           preview: true,
         ));
-        if (!mounted || token != _loopToken) break;
-        setState(() {
-          _lastFrame = frame;
-          _result = res.resultImageBytes;
-          _failures = 0;
-          _error = null;
-        });
+        if (!alive()) break;
+        _failures = 0;
+        if (seq > _shownSeq) {
+          _shownSeq = seq;
+          setState(() {
+            _lastFrame = frame;
+            _result = res.resultImageBytes;
+            _error = null;
+          });
+        }
       } catch (e) {
         if (!mounted || token != _loopToken) break;
         _failures++;
         if (_failures >= _maxFailures) {
-          setState(() {
-            _error = context.l10n.liveFailed(ApiService.friendlyError(context.l10n, e));
-            _busy = false;
-          });
-          return; // art arda hata: döngü durur, kullanıcı kıyafete tekrar dokunarak yeniden dener
+          _loopToken++; // art arda hata: iki işçi de durur, kullanıcı kıyafete tekrar dokunarak yeniden dener
+          setState(() => _error = context.l10n.liveFailed(ApiService.friendlyError(context.l10n, e)));
+          break;
         }
       }
-      await Future<void>.delayed(widget.pause);
+      if (widget.pause > Duration.zero) await Future<void>.delayed(widget.pause);
     }
-    if (mounted && token == _loopToken) setState(() => _busy = false);
+    _active--;
+    if (mounted && _active == 0) setState(() => _busy = false);
   }
 
   void _save() {
     final frame = _lastFrame, garment = _selected;
     if (frame == null || garment == null) return;
     _loopToken++; // tam kalite sırasında GPU önizlemeyle paylaşılmasın
-    setState(() => _busy = false);
     pushEditorial(
       context,
       LoadingScreen(personImageBytes: frame, garmentImageBytes: garment.bytes, category: garment.category),

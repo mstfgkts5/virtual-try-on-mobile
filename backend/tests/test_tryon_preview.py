@@ -1,3 +1,4 @@
+import base64
 import io
 import types
 
@@ -24,7 +25,7 @@ class RecordingEngine:
             raise ValueError("Geçersiz kategori")
         return category
 
-    def run(self, person, garment, category, steps=15, guidance_scale=2.5, seed=42, size=None):
+    def run(self, person, garment, category, steps=8, guidance_scale=2.5, seed=42, size=None):
         self.calls.append({"steps": steps, "size": size})
         img = Image.new("RGB", size or (576, 768), "blue")
         return types.SimpleNamespace(image=img, person=img, category=category, render_time_sec=0.5)
@@ -46,14 +47,19 @@ def test_preview_uses_fast_profile(client):
     c, eng = client
     r = post(c, category="upper", preview="true")
     assert r.status_code == 200, r.text
-    # Canlı deneme: 10 adım · 384x512 (ölçüm: ~2,2 sn, şarjda)
-    assert eng.calls[-1] == {"steps": 10, "size": (384, 512)}
+    # Canlı deneme: DPM++ 3 adım · 384x512 (ölçüm: ~0,75 sn + maske 0,25 sn, şarjda)
+    assert eng.calls[-1] == {"steps": 3, "size": (384, 512)}
     assert r.json()["width"] == 384 and r.json()["preview"] is True
+    # Ağda hızlı gitsin: JPEG ve kişi fotoğrafı yok
+    assert base64.b64decode(r.json()["image_base64"])[:2] == bytes([0xFF, 0xD8])
+    assert "person_base64" not in r.json()
 
 
 def test_full_quality_by_default(client):
     c, eng = client
     r = post(c, category="upper")
     assert r.status_code == 200
-    assert eng.calls[-1] == {"steps": 15, "size": None}
+    assert eng.calls[-1] == {"steps": 8, "size": None}
     assert r.json()["preview"] is False
+    assert base64.b64decode(r.json()["image_base64"])[:4] == bytes([0x89]) + b"PNG"
+    assert "person_base64" in r.json()

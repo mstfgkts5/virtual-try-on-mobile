@@ -235,7 +235,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loadingTitle => 'Dressing you up •';
 
   @override
-  String get loadingEta => 'Estimated time ~20 s';
+  String get loadingEta => 'Estimated time ~10 s';
 
   @override
   String get loadingFinalTouches => 'Final touches...';
@@ -250,7 +250,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loadingStepMaskDesc => 'DensePose + SCHP find the region to dress';
 
   @override
-  String get loadingStepDiffusion => 'Diffusion (15 steps)';
+  String get loadingStepDiffusion => 'Diffusion (8 steps)';
 
   @override
   String get loadingStepDiffusionDesc =>
