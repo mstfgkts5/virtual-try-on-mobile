@@ -27,6 +27,12 @@ void main() {
     expect(en.resultTitle(categoryName(en, 'overall')), 'Full outfit result');
   });
 
+  test('Yükleme adımında gösterilen adım sayısı gönderilenle aynı', () {
+    final steps = TryOnRequest(personImageBytes: Uint8List(0), garmentImageBytes: Uint8List(0)).toFieldsMap()['steps'];
+    expect(l10nFor('tr').loadingStepDiffusion, contains('$steps adım'));
+    expect(l10nFor('en').loadingStepDiffusion, contains('$steps steps'));
+  });
+
   test('Yükleme adımları iki dilde', () {
     expect(l10nFor('tr').loadingStepMask, 'Vücut Maskesi');
     expect(l10nFor('en').loadingStepMask, 'Body mask');

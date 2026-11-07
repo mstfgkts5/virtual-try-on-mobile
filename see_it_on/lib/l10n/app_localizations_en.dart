@@ -250,7 +250,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loadingStepMaskDesc => 'DensePose + SCHP find the region to dress';
 
   @override
-  String get loadingStepDiffusion => 'Diffusion (30 steps)';
+  String get loadingStepDiffusion => 'Diffusion (15 steps)';
 
   @override
   String get loadingStepDiffusionDesc =>

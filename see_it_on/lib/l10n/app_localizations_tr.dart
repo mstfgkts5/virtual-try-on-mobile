@@ -254,7 +254,7 @@ class AppLocalizationsTr extends AppLocalizations {
       'DensePose + SCHP ile giydirilecek bölge bulunur';
 
   @override
-  String get loadingStepDiffusion => 'Difüzyon (30 adım)';
+  String get loadingStepDiffusion => 'Difüzyon (15 adım)';
 
   @override
   String get loadingStepDiffusionDesc =>

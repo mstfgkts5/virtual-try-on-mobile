@@ -259,13 +259,25 @@ def test_tweens_keep_indices_contiguous():
 
 def test_cancel_skips_closing_tweens():
     interp = FakeInterp()
-    m = make_interp(interp)
-    job = m.submit(frames(2), FRONT, None, "upper")
-    m.step()  # ana kare 0
-    m.cancel(job)
+    holder = {}
+
+    def run(person, garment, category):
+        # Son ana kare işlenirken iş iptal edilir: o kare kaydedilir ama tur kapatılmaz
+        if len(run.calls) == 1:
+            holder["m"].cancel(holder["job"])
+        run.calls.append(person)
+        return person.copy(), 1.0
+
+    run.calls = []
+    m = make_interp(interp, run=run)
+    holder["m"] = m
+    holder["job"] = m.submit(frames(2), FRONT, None, "upper")
     m.step()
-    assert interp.calls == []
-    assert m.status(job)["status"] == "cancelled"
+    m.step()
+    s = m.status(holder["job"])
+    assert s["status"] == "cancelled"
+    assert len(interp.calls) == 1  # yalnızca 0→1, kapanış (1→0) yok
+    assert len(s["frames"]) == 5
 
 
 def test_interpolate_error_falls_back_to_blend():

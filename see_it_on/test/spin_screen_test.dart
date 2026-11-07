@@ -146,6 +146,27 @@ void main() {
     expect(find.textContaining('Dönüş oluşturulamadı'), findsOneWidget);
   });
 
+  testWidgets('kalan süre istenen ana kare sayısından hesaplanır', (tester) async {
+    // 12 ana kare istendi; 1 ana kare hazır (17 sn), toplam 48 (ara karelerle) → kalan 11 × 17 sn ≈ 4 dk
+    final api = FakeSpinApi([
+      SpinStatus.fromJson({
+        'status': 'running',
+        'total': 48,
+        'done': 1,
+        'frames': [
+          {'index': 0, 'view': 'front', 'kind': 'key', 'image_base64': base64Encode(_png), 'render_time': 17.0},
+        ],
+      }),
+    ]);
+    await tester.pumpWidget(localized(SpinScreen.live(
+      request: SpinRequest(videoBytes: Uint8List(1), videoName: 'turn.mov', garmentFront: _png, frames: 12),
+      api: api,
+      pollEvery: const Duration(milliseconds: 10),
+    )));
+    await settle(tester);
+    expect(find.text(l.spinEta(4)), findsOneWidget);
+  });
+
   testWidgets('hazır set hemen döner', (tester) async {
     await tester.pumpWidget(localized(SpinScreen.preset(
       frames: List.generate(7, (_) => MemoryImage(_png)),

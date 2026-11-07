@@ -82,12 +82,14 @@ class _SpinViewerState extends State<SpinViewer> with TickerProviderStateMixin {
   }
 
   void _play() {
+    _fling.stop(); // fırlatma ile oynatma aynı anda konumu yazmasın
     _playFrom = _controller.position;
     _controller._setPlaying(true);
     _anim.forward(from: 0);
   }
 
   void _stopPlaying() {
+    _fling.stop();
     if (!_anim.isAnimating) return;
     _anim.stop();
     _controller._setPlaying(false);
@@ -97,6 +99,8 @@ class _SpinViewerState extends State<SpinViewer> with TickerProviderStateMixin {
   void didUpdateWidget(SpinViewer old) {
     super.didUpdateWidget(old);
     if (widget.controller != null && widget.controller != _controller) _controller = widget.controller!;
+    // Kare sayısı değişince fırlatmanın mutlak konumu başka bir açıya denk gelir; fırlatma durdurulur
+    if (old.frames.length != widget.frames.length) _fling.stop();
     // Yeni kareler gelince konum korunur
     _attach();
   }

@@ -124,7 +124,8 @@ class _SpinScreenState extends State<SpinScreen> {
     final remaining = _total - _frames.length;
     if (keys.isEmpty || remaining <= 0) return null;
     final avg = keys.map((f) => f.renderTimeSec).reduce((a, b) => a + b) / keys.length;
-    final remainingKeys = remaining * keys.length / _frames.length;
+    final requested = widget.request?.frames ?? keys.length;
+    final remainingKeys = (requested - keys.length).clamp(0, requested);
     return (avg * remainingKeys / 60).ceil().clamp(1, 99);
   }
 

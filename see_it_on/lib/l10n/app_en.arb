@@ -74,7 +74,7 @@
   "loadingProcessing": "Processing...",
   "loadingStepMask": "Body mask",
   "loadingStepMaskDesc": "DensePose + SCHP find the region to dress",
-  "loadingStepDiffusion": "Diffusion (30 steps)",
+  "loadingStepDiffusion": "Diffusion (15 steps)",
   "loadingStepDiffusionDesc": "CatVTON draws the garment onto the person",
   "loadingStepBlend": "Blending",
   "loadingStepBlendDesc": "Face and background are kept from the original photo",

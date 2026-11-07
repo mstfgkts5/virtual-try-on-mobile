@@ -545,7 +545,7 @@ abstract class AppLocalizations {
   /// No description provided for @loadingStepDiffusion.
   ///
   /// In tr, this message translates to:
-  /// **'Difüzyon (30 adım)'**
+  /// **'Difüzyon (15 adım)'**
   String get loadingStepDiffusion;
 
   /// No description provided for @loadingStepDiffusionDesc.

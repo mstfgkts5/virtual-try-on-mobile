@@ -116,7 +116,7 @@
   "loadingProcessing": "İşleniyor...",
   "loadingStepMask": "Vücut Maskesi",
   "loadingStepMaskDesc": "DensePose + SCHP ile giydirilecek bölge bulunur",
-  "loadingStepDiffusion": "Difüzyon (30 adım)",
+  "loadingStepDiffusion": "Difüzyon (15 adım)",
   "loadingStepDiffusionDesc": "CatVTON kıyafeti kişinin üzerine çizer",
   "loadingStepBlend": "Birleştirme",
   "loadingStepBlendDesc": "Yüz ve arka plan orijinal fotoğraftan korunur",
