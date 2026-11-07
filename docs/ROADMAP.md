@@ -47,7 +47,7 @@ Teslim: çalışan uygulama + rapor + sunum.
 - [ ] Yerel iOS/Android derlemesiyle (kamera dahil) test — iOS için Mac gerekir
 - [x] Performans ölçümleri: kategori başına ~8 sn (şarjda), 48 karelik dönüş 111 sn, VRAM 3,7 GB — [PERFORMANCE.md](PERFORMANCE.md)
 - [x] Mimari ve sıra diyagramları güncellendi (bileşenler, tek görsel, 360° dönüş, giriş/gardırop, veri modeli, kullanım senaryoları) — [ARCHITECTURE.md](../ARCHITECTURE.md)
-- [ ] Rapor taslağı
+- [x] Rapor taslağı (Claude Docs: özet, giriş, ilgili çalışmalar, sistem tasarımı + diyagram, yöntem, uygulama, test, sınırlılıklar, sonuç, kaynaklar) — kaynak künyeleri doğrulanacak, gerçek dönüş videosu sonuçları eklenecek
 
 ## Aralık başı – Teslim hazırlığı
 - [ ] Rapor ve sunumun son hali
