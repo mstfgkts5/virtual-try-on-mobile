@@ -57,6 +57,7 @@ class _LiveTryOnScreenState extends State<LiveTryOnScreen> with WidgetsBindingOb
   bool _busy = false;
   int _failures = 0;
   String? _error;
+  late String _category = widget.garments.isEmpty ? 'upper' : widget.garments.first.category;
   int _loopToken = 0; // her seçim/durdurma yeni bir döngü başlatır; eskisi kendiliğinden biter
 
   @override
@@ -111,6 +112,20 @@ class _LiveTryOnScreenState extends State<LiveTryOnScreen> with WidgetsBindingOb
       _error = null;
     });
     _loop();
+  }
+
+  /// Kategori değişince döngü durur; kullanıcı yeni şeritten bir kıyafet seçer.
+  void _setCategory(String c) {
+    if (c == _category) return;
+    _loopToken++;
+    setState(() {
+      _category = c;
+      _selected = null;
+      _result = null;
+      _busy = false;
+      _failures = 0;
+      _error = null;
+    });
   }
 
   Future<void> _loop() async {
@@ -173,6 +188,8 @@ class _LiveTryOnScreenState extends State<LiveTryOnScreen> with WidgetsBindingOb
     final l = context.l10n;
     final t = context.tokens;
     final text = Theme.of(context).textTheme;
+    final categories = <String>{for (final g in widget.garments) g.category}.toList();
+    final shown = widget.garments.where((g) => g.category == _category).toList();
     return Scaffold(
       backgroundColor: t.paper,
       appBar: AppBar(title: Text(l.liveTitle)),
@@ -180,6 +197,16 @@ class _LiveTryOnScreenState extends State<LiveTryOnScreen> with WidgetsBindingOb
         top: false,
         child: Column(
           children: [
+            if (categories.length > 1)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                child: SegmentedPills<String>(
+                  key: const ValueKey('live-category'),
+                  options: [for (final c in categories) (c, categoryName(l, c))],
+                  value: _category,
+                  onChanged: _setCategory,
+                ),
+              ),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
@@ -239,7 +266,7 @@ class _LiveTryOnScreenState extends State<LiveTryOnScreen> with WidgetsBindingOb
                       width: 72,
                       child: ListView(
                         children: [
-                          for (final g in widget.garments)
+                          for (final g in shown)
                             Padding(
                               padding: const EdgeInsets.only(bottom: 10),
                               child: GestureDetector(

@@ -33,6 +33,10 @@ String mannequinName(AppLocalizations l, String id) {
 
 String garmentName(AppLocalizations l, String id) => switch (id) {
       'blazer' => l.garmentBlazer,
+      'shirt-stripe' => l.garmentShirt,
+      'hoodie' => l.garmentHoodie,
+      'sweater-wave' => l.garmentSweater,
+      'turtleneck' => l.garmentTurtleneck,
       'jeans-w' => l.garmentJeans,
       'chino-m' => l.garmentChino,
       'trousers-m' => l.garmentTrousers,

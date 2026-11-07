@@ -106,7 +106,9 @@ void main() {
     }
     final live = tester.widget<LiveTryOnScreen>(find.byType(LiveTryOnScreen, skipOffstage: false));
     expect(live.garments.map((g) => g.id), contains('blazer'));
-    expect(live.garments.length, 6);
+    expect(live.garments.length, 10);
+    expect(live.garments.where((g) => g.category == 'upper').map((g) => g.id),
+        ['blazer', 'shirt-stripe', 'hoodie', 'sweater-wave', 'turtleneck']);
     await tester.pumpWidget(const SizedBox());
     await tester.pump(const Duration(milliseconds: 500));
   });

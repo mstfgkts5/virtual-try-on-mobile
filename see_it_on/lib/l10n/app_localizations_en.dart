@@ -632,4 +632,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeLive => 'Live try-on';
+
+  @override
+  String get garmentShirt => 'Gingham Shirt';
+
+  @override
+  String get garmentHoodie => 'Hoodie';
+
+  @override
+  String get garmentSweater => 'Wave Knit Sweater';
+
+  @override
+  String get garmentTurtleneck => 'Turtleneck Sweater';
 }

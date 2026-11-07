@@ -1195,6 +1195,30 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Canlı dene'**
   String get homeLive;
+
+  /// No description provided for @garmentShirt.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kareli Gömlek'**
+  String get garmentShirt;
+
+  /// No description provided for @garmentHoodie.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kapüşonlu Sweatshirt'**
+  String get garmentHoodie;
+
+  /// No description provided for @garmentSweater.
+  ///
+  /// In tr, this message translates to:
+  /// **'Desenli Kazak'**
+  String get garmentSweater;
+
+  /// No description provided for @garmentTurtleneck.
+  ///
+  /// In tr, this message translates to:
+  /// **'Balıkçı Yaka Kazak'**
+  String get garmentTurtleneck;
 }
 
 class _AppLocalizationsDelegate

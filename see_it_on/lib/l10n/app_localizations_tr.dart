@@ -633,4 +633,16 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get homeLive => 'Canlı dene';
+
+  @override
+  String get garmentShirt => 'Kareli Gömlek';
+
+  @override
+  String get garmentHoodie => 'Kapüşonlu Sweatshirt';
+
+  @override
+  String get garmentSweater => 'Desenli Kazak';
+
+  @override
+  String get garmentTurtleneck => 'Balıkçı Yaka Kazak';
 }

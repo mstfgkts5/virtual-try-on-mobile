@@ -136,6 +136,28 @@ void main() {
     expect(find.byKey(const ValueKey('live-result')), findsNothing);
   });
 
+  testWidgets('üst/alt seçimi şeridi süzer ve çalışan döngüyü durdurur', (tester) async {
+    final cam = FakeCamera(), api = FakeApi();
+    await tester.pumpWidget(localized(live(cam, api)));
+    await run(tester, 2);
+    expect(find.byKey(const ValueKey('live-garment-blazer')), findsOneWidget);
+    expect(find.byKey(const ValueKey('live-garment-jeans')), findsNothing);
+    await tester.tap(find.byKey(const ValueKey('live-garment-blazer')));
+    await run(tester);
+    await tester.tap(find.text(l.categoryLower));
+    await run(tester, 4);
+    final after = api.requests.length;
+    expect(find.byKey(const ValueKey('live-garment-blazer')), findsNothing);
+    expect(find.byKey(const ValueKey('live-garment-jeans')), findsOneWidget);
+    expect(find.byKey(const ValueKey('live-result')), findsNothing);
+    await run(tester, 10);
+    expect(api.requests.length, after);
+    await tester.tap(find.byKey(const ValueKey('live-garment-jeans')));
+    await run(tester);
+    expect(api.requests.last.category, 'lower');
+    await finish(tester);
+  });
+
   testWidgets('art arda hatada döngü durur ve mesaj görünür', (tester) async {
     final cam = FakeCamera(), api = FakeApi(fail: true);
     await tester.pumpWidget(localized(live(cam, api)));

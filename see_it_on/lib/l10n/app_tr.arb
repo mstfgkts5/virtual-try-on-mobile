@@ -321,5 +321,9 @@
       }
     }
   },
-  "homeLive": "Canlı dene"
+  "homeLive": "Canlı dene",
+  "garmentShirt": "Kareli Gömlek",
+  "garmentHoodie": "Kapüşonlu Sweatshirt",
+  "garmentSweater": "Desenli Kazak",
+  "garmentTurtleneck": "Balıkçı Yaka Kazak"
 }

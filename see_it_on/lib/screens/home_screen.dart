@@ -86,6 +86,10 @@ class _HomeScreenState extends State<HomeScreen> {
   // tools/generate_garments.py ile üretilen örnek ürün fotoğrafları (gerçek marka ürünü değildir)
   static const _sampleGarments = [
     {'id': 'blazer', 'category': 'upper'},
+    {'id': 'shirt-stripe', 'category': 'upper'},
+    {'id': 'hoodie', 'category': 'upper'},
+    {'id': 'sweater-wave', 'category': 'upper'},
+    {'id': 'turtleneck', 'category': 'upper'},
     {'id': 'jeans-w', 'category': 'lower'},
     {'id': 'chino-m', 'category': 'lower'},
     {'id': 'trousers-m', 'category': 'lower'},

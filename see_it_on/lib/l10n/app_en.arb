@@ -182,5 +182,9 @@
   "liveUpdating": "Updating…",
   "liveSave": "Save in full quality",
   "liveFailed": "Connection problem: {reason}",
-  "homeLive": "Live try-on"
+  "homeLive": "Live try-on",
+  "garmentShirt": "Gingham Shirt",
+  "garmentHoodie": "Hoodie",
+  "garmentSweater": "Wave Knit Sweater",
+  "garmentTurtleneck": "Turtleneck Sweater"
 }
