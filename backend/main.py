@@ -137,7 +137,7 @@ async def start_spin(
     garment_front: UploadFile = File(...),
     garment_back: UploadFile | None = File(None),
     category: str = Form("upper"),
-    frames: int = Form(8),
+    frames: int = Form(12),
 ):
     """360° dönüş: videodan `frames` kare alınır, her biri sırayla giydirilir; iş numarası döner."""
     _require_engine()
@@ -145,8 +145,8 @@ async def start_spin(
         engine.normalize_category(category)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
-    if not 4 <= frames <= 12:
-        raise HTTPException(status_code=400, detail="frames 4 ile 12 arasında olmalı.")
+    if not 4 <= frames <= 16:
+        raise HTTPException(status_code=400, detail="frames 4 ile 16 arasında olmalı.")
 
     data = await video.read()
     if not data:
@@ -162,7 +162,7 @@ async def start_spin(
 
     job_id = spin_manager.submit(people, front, back, category)
     print(f"[SeeItOn] Dönüş işi {job_id[:8]} -> {len(people)} kare, kategori: {category}, arka görsel: {back is not None}")
-    return {"job_id": job_id, "total": len(people)}
+    return {"job_id": job_id, "total": spin_manager.status(job_id)["total"]}
 
 
 @app.get("/api/v1/spin/{job_id}")
@@ -173,7 +173,9 @@ def spin_status(job_id: str, since: int = 0):
     except KeyError:
         raise HTTPException(status_code=404, detail="Dönüş işi bulunamadı.")
     s["frames"] = [
-        {"index": f["index"], "view": f["view"], "image_base64": _encode(f["image"], "PNG"), "render_time": f["render_time"]}
+        # JPEG: kare başına PNG'nin ~1/5'i; zayıf Wi-Fi'da sorgular zaman aşımına düşmesin
+        {"index": f["index"], "kind": f.get("kind", "key"), "view": f["view"],
+         "image_base64": _encode(f["image"], "JPEG", quality=90), "render_time": f["render_time"]}
         for f in s["frames"]
     ]
     return s
@@ -190,9 +192,9 @@ def cancel_spin(job_id: str):
     return {"status": "cancelled"}
 
 
-def _encode(image: Image.Image, fmt: str) -> str:
+def _encode(image: Image.Image, fmt: str, quality: int = 95) -> str:
     buffer = io.BytesIO()
-    image.save(buffer, format=fmt, **({"quality": 95} if fmt == "JPEG" else {}))
+    image.convert("RGB").save(buffer, format=fmt, **({"quality": quality} if fmt == "JPEG" else {}))
     return base64.b64encode(buffer.getvalue()).decode("ascii")
 
 
