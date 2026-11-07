@@ -15,6 +15,8 @@ from spin_jobs import SpinJobManager
 sys.stdout.reconfigure(encoding="utf-8")  # Windows konsolunda Türkçe log'lar için
 
 MAX_UPLOAD_BYTES = 15 * 1024 * 1024
+PREVIEW_SIZE = (384, 512)
+PREVIEW_STEPS = 10
 engine = None  # CatVTONEngine, sunucu açılırken yüklenir
 engine_error = None
 spin_manager = None  # SpinJobManager, model yüklenince kurulur
@@ -92,6 +94,7 @@ async def process_tryon(
     category: str = Form("upper"),
     steps: int = Form(15),
     seed: int = Form(42),
+    preview: bool = Form(False),
 ):
     if engine is None:
         raise HTTPException(status_code=503, detail=engine_error or "Model henüz yükleniyor, birazdan tekrar deneyin.")
@@ -106,9 +109,13 @@ async def process_tryon(
     person = await _read_image(person_image, "Kişi fotoğrafı")
     garment = await _read_image(garment_image, "Kıyafet fotoğrafı")
 
-    print(f"[SeeItOn] İstek -> kategori: {category}, adım: {steps}")
+    # Canlı deneme önizlemesi: 10 adım · 384x512 (~2,2 sn, şarjda); kaydederken tam kalite istenir
+    size = PREVIEW_SIZE if preview else None
+    if preview:
+        steps = PREVIEW_STEPS
+    print(f"[SeeItOn] İstek -> kategori: {category}, adım: {steps}{' (önizleme)' if preview else ''}")
     try:
-        output = await asyncio.to_thread(engine.run, person, garment, category, steps, 2.5, seed)
+        output = await asyncio.to_thread(engine.run, person, garment, category, steps, 2.5, seed, size)
     except Exception as e:
         print(f"[HATA] Çıkarım hatası: {e}")
         raise HTTPException(status_code=500, detail=f"Model çalıştırılamadı: {e}")
@@ -123,6 +130,7 @@ async def process_tryon(
         "render_time": output.render_time_sec,
         "width": output.image.width,
         "height": output.image.height,
+        "preview": preview,
     }
 
 
