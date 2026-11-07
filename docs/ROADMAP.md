@@ -38,7 +38,8 @@ Teslim: çalışan uygulama + rapor + sunum.
 - [x] Tasarım düzenlemesi (dergi tarzı): Playfair Display + Inter, renk belirteçleri, açık/koyu tema (Ayarlar'da Sistem/Açık/Koyu, kalıcı), ortak bileşenler, sayfa geçişi; tanıtım dergi kapağı, giriş, ana, yükleme, sonuç, gardırop ekranları yenilendi — 360 px taşma testleri (TR/EN, açık/koyu)
 - [x] Uygulama içi kamera (1. aşama): silüet rehberi, 3-2-1 geri sayım, Kullan/Tekrar çek, ön/arka kamera, izin reddi ve kamera yok ekranları, galeriye geçiş; Android/iOS izinleri — 92 test
 - [ ] Kamerayı gerçek telefonda ve tarayıcı kamerasıyla dene
-- [ ] (2. aşama, isteğe bağlı) Canlı AR önizleme: ML Kit poz algılama ile kıyafet katmanı (`CameraOverlay` yuvası hazır) + HD CatVTON render
+- [x] **Canlı dene** (neredeyse canlı): kamera açık, yandaki şeritten kıyafet seçilince ~3 sn'de bir önizleme (384×512, 10 adım, ~2,2 sn), "Bu kareyi kaydet" tam kalite; HTTPS demo betiği `start_demo.ps1`
+- [ ] Canlı denemeyi iPhone'da HTTPS üzerinden dene
 - [x] Tekrarlanan ve kullanılmayan kodu temizle (`splash_screen.dart` kopyası, 8 widget, eski görseller)
 
 ## 4. Hafta (24–30 Kasım) – Test ve dokümantasyon

@@ -32,6 +32,19 @@ Aynı manken ve ceketle, tek görsel. Betik: `tests/bench_speed.py`. Bu ölçüm
 
 **Sonuç:** Rehberliği kapatmak süreyi yarıya indiriyor ama kıyafet desenini siliyor; çözünürlük ve adım sayısını düşürmek kaliteyi koruyarak **4,4 kat** hızlandırdı. Seçilen profil şarjda tek görseli ~8 sn'de üretiyor.
 
+### Canlı deneme önizlemesi
+
+`BENCH_PREVIEW=1 tests/bench_speed.py` ile, bilgisayar şarjdayken (2026-11-07):
+
+| Adım | Çözünürlük | Süre (sn) | Kalite |
+|---|---|---|---|
+| 15 | 576×768 | ~8,2 | Tam kalite (kaydet) |
+| **10** | **384×512** | **2,15** | **Seçilen önizleme profili** |
+| 8 | 384×512 | 1,8 | Kenarlarda bozulma artıyor |
+| 6 | 320×448 | 1,1 | Kullanılamaz |
+
+Ağ ve kamera ile birlikte canlı ekranda görüntü ~3 sn'de bir yenilenir.
+
 ## 3. Güç durumunun etkisi
 
 Aynı profil (15 adım · 576×768): pilde 16,8 sn, şarjda + "Performance" planında 8,2 sn. Sunum ve demolarda bilgisayar şarja takılı ve güç planı "En iyi performans" olmalıdır.

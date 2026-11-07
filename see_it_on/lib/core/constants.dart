@@ -8,9 +8,11 @@ class AppConstants {
   static String get defaultBaseUrl => kIsWeb ? webBaseUrl(Uri.base) : 'http://10.0.2.2:8000';
 
   /// Web'de backend, sayfanın açıldığı bilgisayarın 8000 portundadır.
+  /// Sayfa HTTPS ile açıldıysa backend de HTTPS'tir (tarayıcı karışık içeriği engeller).
   static String webBaseUrl(Uri page) {
     final host = page.host.isEmpty ? '127.0.0.1' : page.host;
-    return 'http://$host:8000';
+    final scheme = page.scheme == 'https' ? 'https' : 'http';
+    return '$scheme://$host:8000';
   }
   static const String tryOnEndpoint = '/api/v1/tryon';
 }
