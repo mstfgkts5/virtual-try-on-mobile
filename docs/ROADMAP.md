@@ -45,8 +45,8 @@ Teslim: çalışan uygulama + rapor + sunum.
 - [x] Gerçek telefonda uçtan uca test (iPhone 15 Pro, Safari, kişisel erişim noktası üzerinden): giriş, manken + örnek kıyafet, kendi fotoğrafı, sonuç, gardırop, koyu tema, EN — hepsi çalıştı (~48 sn / deneme)
 - [x] Bol/açık dış giyimde vücudun ince görünmesi incelendi: maskeyi siluete kırpmak denendi, iyileşme yok → bilinen sınır olarak belgelendi ([KNOWN_LIMITATIONS.md](KNOWN_LIMITATIONS.md))
 - [ ] Yerel iOS/Android derlemesiyle (kamera dahil) test — iOS için Mac gerekir
-- [ ] Performans ölçümleri (kategori ve açı başına süre, VRAM)
-- [ ] Mimari ve sıra diyagramlarını güncelle (CatVTON, çoklu açı akışı)
+- [x] Performans ölçümleri: kategori başına ~8 sn (şarjda), 48 karelik dönüş 111 sn, VRAM 3,7 GB — [PERFORMANCE.md](PERFORMANCE.md)
+- [x] Mimari ve sıra diyagramları güncellendi (bileşenler, tek görsel, 360° dönüş, giriş/gardırop, veri modeli, kullanım senaryoları) — [ARCHITECTURE.md](../ARCHITECTURE.md)
 - [ ] Rapor taslağı
 
 ## Aralık başı – Teslim hazırlığı
