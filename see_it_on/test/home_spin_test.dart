@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:see_it_on/screens/home_screen.dart';
+import 'package:see_it_on/screens/live_tryon_screen.dart';
 import 'package:see_it_on/screens/loading_screen.dart';
 import 'package:see_it_on/screens/spin_screen.dart';
 import 'package:see_it_on/services/media_picker.dart';
@@ -92,6 +93,22 @@ void main() {
     await tapText(tester, l.homeSpinVideo);
     expect(find.text(l.homeSpinTooLarge), findsOneWidget);
     expect(find.text(l.homeSpinSelected), findsNothing);
+  });
+
+  testWidgets('Canlı dene örnek kıyafetlerle canlı ekranı açar', (tester) async {
+    await open(tester);
+    // Canlı ekranda kamera açılırken dönen gösterge olduğu için pumpAndSettle yerine birkaç kare ilerletilir
+    final btn = find.text(l.homeLive);
+    await tester.ensureVisible(btn);
+    await tester.tap(btn);
+    for (var i = 0; i < 10; i++) {
+      await tester.pump(const Duration(milliseconds: 50));
+    }
+    final live = tester.widget<LiveTryOnScreen>(find.byType(LiveTryOnScreen, skipOffstage: false));
+    expect(live.garments.map((g) => g.id), contains('blazer'));
+    expect(live.garments.length, 6);
+    await tester.pumpWidget(const SizedBox());
+    await tester.pump(const Duration(milliseconds: 500));
   });
 
   testWidgets('video ve fotoğraf birbirini temizler', (tester) async {

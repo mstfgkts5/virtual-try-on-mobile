@@ -613,4 +613,24 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get spinUnknownError => 'beklenmeyen bir hata oluştu';
+
+  @override
+  String get liveTitle => 'Canlı Dene';
+
+  @override
+  String get liveHint => 'Bir kıyafet seç, birkaç saniyede üzerinde gör';
+
+  @override
+  String get liveUpdating => 'Güncelleniyor…';
+
+  @override
+  String get liveSave => 'Tam kaliteyle kaydet';
+
+  @override
+  String liveFailed(String reason) {
+    return 'Bağlantı sorunu: $reason';
+  }
+
+  @override
+  String get homeLive => 'Canlı dene';
 }
