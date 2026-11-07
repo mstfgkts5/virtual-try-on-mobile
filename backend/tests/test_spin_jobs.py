@@ -206,3 +206,88 @@ def test_single_tryon_can_run_between_frames():
     assert m.status(job)["status"] == "done"
     # Tek kare denemesi en fazla bir kare bekledi: son kareden önce araya girdi
     assert order.index("tryon") <= 2
+
+
+# --- Ara kareler (akıcı dönüş) -----------------------------------------------
+
+class FakeInterp:
+    def __init__(self, fail=False):
+        self.calls = []
+        self.fail = fail
+
+    def __call__(self, a, b, n):
+        self.calls.append((a, b, n))
+        if self.fail:
+            raise RuntimeError("RIFE hatası")
+        return [img((200, 200, 200)) for _ in range(n)]
+
+
+def make_interp(interp, run=None):
+    return SpinJobManager(run or Recorder(), lambda p: False, interpolate=interp, tweens=3,
+                          clock=FakeClock(), start_thread=False)
+
+
+def drain(m):
+    while m.step():
+        pass
+
+
+def test_tweens_inserted_between_keys():
+    interp = FakeInterp()
+    m = make_interp(interp)
+    job = m.submit(frames(3), FRONT, None, "upper")
+    drain(m)
+    s = m.status(job)
+    assert s["status"] == "done" and s["total"] == 12
+    assert [f["index"] for f in s["frames"]] == list(range(12))
+    kinds = [f["kind"] for f in s["frames"]]
+    assert kinds == ["key", "tween", "tween", "tween"] * 3
+    # 0→1, 1→2 ve kapanış 2→0
+    assert len(interp.calls) == 3 and all(c[2] == 3 for c in interp.calls)
+
+
+def test_tweens_keep_indices_contiguous():
+    m = make_interp(FakeInterp())
+    job = m.submit(frames(4), FRONT, None, "upper")
+    seen = []
+    while m.step():
+        got = m.status(job, since=len(seen))["frames"]
+        seen += [f["index"] for f in got]
+        assert seen == list(range(len(seen)))  # hiçbir an boşluk yok
+    assert len(seen) == 16
+
+
+def test_cancel_skips_closing_tweens():
+    interp = FakeInterp()
+    m = make_interp(interp)
+    job = m.submit(frames(2), FRONT, None, "upper")
+    m.step()  # ana kare 0
+    m.cancel(job)
+    m.step()
+    assert interp.calls == []
+    assert m.status(job)["status"] == "cancelled"
+
+
+def test_interpolate_error_falls_back_to_blend():
+    m = make_interp(FakeInterp(fail=True))
+    job = m.submit(frames(2), FRONT, None, "upper")
+    drain(m)
+    s = m.status(job)
+    assert s["status"] == "done" and len(s["frames"]) == 8
+    assert [f["kind"] for f in s["frames"]].count("tween") == 6
+
+
+def test_single_key_no_tweens():
+    interp = FakeInterp()
+    m = make_interp(interp)
+    job = m.submit(frames(1), FRONT, None, "upper")
+    drain(m)
+    s = m.status(job)
+    assert s["total"] == 1 and len(s["frames"]) == 1 and interp.calls == []
+
+
+def test_without_interpolator_kind_is_key():
+    m = make()
+    job = m.submit(frames(2), FRONT, None, "upper")
+    drain(m)
+    assert [f["kind"] for f in m.status(job)["frames"]] == ["key", "key"]
