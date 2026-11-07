@@ -37,7 +37,7 @@ async def lifespan(_: FastAPI):
             out = engine.run(person, garment, category)
             return out.image, out.render_time_sec
 
-        spin_manager = SpinJobManager(run_frame, engine.is_back_view)
+        spin_manager = SpinJobManager(run_frame, engine.is_back_view, interpolate=engine.interpolate)
     except Exception as e:
         engine_error = str(e)
         print(f"[HATA] Model yüklenemedi: {e}")

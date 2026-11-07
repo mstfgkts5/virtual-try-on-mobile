@@ -69,6 +69,14 @@ class CatVTONEngine:
             schp_ckpt=os.path.join(repo_path, "SCHP"),
             device=self.device,
         )
+        # 360° dönüş ara kareleri (RIFE, ~25 MB); yüklenemezse dönüş basit karışımla devam eder
+        try:
+            from interpolator import RifeInterpolator
+
+            self.rife = RifeInterpolator.from_hub(self.device)
+        except Exception as e:
+            print(f"[SeeItOn] RIFE yüklenemedi, ara kareler karışımla üretilecek: {e}")
+            self.rife = None
         self.mask_processor = VaeImageProcessor(
             vae_scale_factor=8, do_normalize=False, do_binarize=True, do_convert_grayscale=True
         )
@@ -136,6 +144,13 @@ class CatVTONEngine:
         with self._lock:
             lip = self.automasker.process_schp_lip(person)
         return face_ratio(np.array(lip))
+
+    def interpolate(self, a: Image.Image, b: Image.Image, n: int) -> list:
+        """İki giydirilmiş kare arasında `n` ara kare (RIFE). GPU'yu kısa süre kullanır."""
+        if self.rife is None:
+            raise RuntimeError("RIFE yüklü değil")
+        with self._lock:
+            return self.rife.between(a, b, n)
 
     def is_back_view(self, person: Image.Image) -> bool:
         """Yüz görünmüyorsa kişi arkası dönük sayılır; 360° dönüşte arka kıyafet görseli seçilir."""
