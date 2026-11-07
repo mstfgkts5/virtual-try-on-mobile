@@ -238,7 +238,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get loadingTitle => 'Kıyafet giydiriliyor •';
 
   @override
-  String get loadingEta => 'Tahmini süre ~40 sn';
+  String get loadingEta => 'Tahmini süre ~20 sn';
 
   @override
   String get loadingFinalTouches => 'Son rötuşlar...';
@@ -254,7 +254,7 @@ class AppLocalizationsTr extends AppLocalizations {
       'DensePose + SCHP ile giydirilecek bölge bulunur';
 
   @override
-  String get loadingStepDiffusion => 'Difüzyon (30 adım)';
+  String get loadingStepDiffusion => 'Difüzyon (15 adım)';
 
   @override
   String get loadingStepDiffusionDesc =>
@@ -606,4 +606,11 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get homeSpinHint => 'Ayakların sabit, yavaşça tam tur dön (10–20 sn)';
+
+  @override
+  String get homeSpinTooLarge =>
+      'Video en fazla 60 MB olabilir; daha kısa bir video seçin.';
+
+  @override
+  String get spinUnknownError => 'beklenmeyen bir hata oluştu';
 }

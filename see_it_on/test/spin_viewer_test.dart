@@ -75,6 +75,68 @@ void main() {
     expect(c.position, closeTo(2, 0.05));
   });
 
+  testWidgets('fırlatınca dönmeye devam eder ve durur', (tester) async {
+    final c = await pumpViewer(tester, 48);
+    await tester.fling(find.byType(SpinViewer), const Offset(-100, 0), 1500);
+    final atRelease = c.position;
+    await tester.pump(const Duration(milliseconds: 200));
+    final later = c.position;
+    // Parmak kalktıktan sonra da ileri dönmeye devam eder
+    expect(later, greaterThan(atRelease));
+    await tester.pumpAndSettle();
+    final settled = c.position;
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(c.position, settled); // sonunda durur
+  });
+
+  testWidgets('dokununca eylemsizlik durur', (tester) async {
+    final c = await pumpViewer(tester, 48);
+    await tester.fling(find.byType(SpinViewer), const Offset(-100, 0), 1500);
+    await tester.pump(const Duration(milliseconds: 50));
+    final gesture = await tester.startGesture(tester.getCenter(find.byType(SpinViewer)));
+    await tester.pump(const Duration(milliseconds: 50));
+    final held = c.position;
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(c.position, held);
+    await gesture.up();
+  });
+
+  testWidgets('Döndür fırlatmayı durdurur, tam tur başladığı yere döner', (tester) async {
+    final c = await pumpViewer(tester, 48);
+    await tester.fling(find.byType(SpinViewer), const Offset(-100, 0), 1500);
+    await tester.pump(const Duration(milliseconds: 50));
+    final start = c.position;
+    c.play();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 4100));
+    expect(c.isPlaying, isFalse);
+    expect(c.position, closeTo(start, 0.05));
+  });
+
+  testWidgets('Durdur fırlatmayı da durdurur', (tester) async {
+    final c = await pumpViewer(tester, 48);
+    await tester.fling(find.byType(SpinViewer), const Offset(-100, 0), 1500);
+    await tester.pump(const Duration(milliseconds: 50));
+    c.stop();
+    final held = c.position;
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(c.position, held);
+  });
+
+  testWidgets('fırlatma sırasında kare gelince açı sıçramaz', (tester) async {
+    final c = SpinViewerController();
+    Widget host(int n) => localized(Scaffold(
+          body: Center(child: SizedBox(width: 400, height: 533, child: SpinViewer(frames: frames(n), controller: c))),
+        ));
+    await tester.pumpWidget(host(8));
+    await tester.fling(find.byType(SpinViewer), const Offset(-300, 0), 3000);
+    await tester.pump(const Duration(milliseconds: 100));
+    final before = c.position;
+    await tester.pumpWidget(host(12));
+    await tester.pump(const Duration(milliseconds: 16));
+    expect(c.position, closeTo(before, 0.01));
+  });
+
   for (final b in Brightness.values) {
     testWidgets('görüntüleyici ${b.name} 360 taşmasız', (tester) async {
       await expectNoOverflow(tester, Scaffold(body: SpinViewer(frames: frames(8))), lang: 'tr', b: b);

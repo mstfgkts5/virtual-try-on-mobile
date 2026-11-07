@@ -235,7 +235,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loadingTitle => 'Dressing you up •';
 
   @override
-  String get loadingEta => 'Estimated time ~40 s';
+  String get loadingEta => 'Estimated time ~20 s';
 
   @override
   String get loadingFinalTouches => 'Final touches...';
@@ -250,7 +250,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loadingStepMaskDesc => 'DensePose + SCHP find the region to dress';
 
   @override
-  String get loadingStepDiffusion => 'Diffusion (30 steps)';
+  String get loadingStepDiffusion => 'Diffusion (15 steps)';
 
   @override
   String get loadingStepDiffusionDesc =>
@@ -605,4 +605,11 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get homeSpinHint =>
       'Keep your feet in place and turn slowly (10–20 s)';
+
+  @override
+  String get homeSpinTooLarge =>
+      'The video can be at most 60 MB; choose a shorter one.';
+
+  @override
+  String get spinUnknownError => 'an unexpected error occurred';
 }

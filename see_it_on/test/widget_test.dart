@@ -18,13 +18,19 @@ void main() {
       garmentImageBytes: Uint8List(0),
       category: 'LOWER',
     );
-    expect(request.toFieldsMap(), {'category': 'lower', 'steps': '30'});
+    expect(request.toFieldsMap(), {'category': 'lower', 'steps': '15'});
   });
 
   test('Sonuç başlığı iki dilde', () {
     final tr = l10nFor('tr'), en = l10nFor('en');
     expect(tr.resultTitle(categoryName(tr, 'lower')), 'Alt Giyim Sonucu');
     expect(en.resultTitle(categoryName(en, 'overall')), 'Full outfit result');
+  });
+
+  test('Yükleme adımında gösterilen adım sayısı gönderilenle aynı', () {
+    final steps = TryOnRequest(personImageBytes: Uint8List(0), garmentImageBytes: Uint8List(0)).toFieldsMap()['steps'];
+    expect(l10nFor('tr').loadingStepDiffusion, contains('$steps adım'));
+    expect(l10nFor('en').loadingStepDiffusion, contains('$steps steps'));
   });
 
   test('Yükleme adımları iki dilde', () {

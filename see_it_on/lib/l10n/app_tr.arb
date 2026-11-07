@@ -111,12 +111,12 @@
   },
   "loadingModelRunning": "DİFÜZYON MODELİ ÇALIŞIYOR",
   "loadingTitle": "Kıyafet giydiriliyor •",
-  "loadingEta": "Tahmini süre ~40 sn",
+  "loadingEta": "Tahmini süre ~20 sn",
   "loadingFinalTouches": "Son rötuşlar...",
   "loadingProcessing": "İşleniyor...",
   "loadingStepMask": "Vücut Maskesi",
   "loadingStepMaskDesc": "DensePose + SCHP ile giydirilecek bölge bulunur",
-  "loadingStepDiffusion": "Difüzyon (30 adım)",
+  "loadingStepDiffusion": "Difüzyon (15 adım)",
   "loadingStepDiffusionDesc": "CatVTON kıyafeti kişinin üzerine çizer",
   "loadingStepBlend": "Birleştirme",
   "loadingStepBlendDesc": "Yüz ve arka plan orijinal fotoğraftan korunur",
@@ -306,5 +306,7 @@
   "homeSpinSelected": "360° dönüş videosu",
   "homeGarmentBack": "Arka görsel (isteğe bağlı)",
   "homeSpinPreset": "Hazır 360° set",
-  "homeSpinHint": "Ayakların sabit, yavaşça tam tur dön (10–20 sn)"
+  "homeSpinHint": "Ayakların sabit, yavaşça tam tur dön (10–20 sn)",
+  "homeSpinTooLarge": "Video en fazla 60 MB olabilir; daha kısa bir video seçin.",
+  "spinUnknownError": "beklenmeyen bir hata oluştu"
 }

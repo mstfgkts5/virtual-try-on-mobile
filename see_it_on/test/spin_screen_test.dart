@@ -131,6 +131,13 @@ void main() {
     expect(find.text(l.spinFailed('x')), findsOneWidget);
   });
 
+  testWidgets('gerekçesiz başarısız iş genel mesaj gösterir', (tester) async {
+    final api = FakeSpinApi([status('failed', 0)]);
+    await tester.pumpWidget(localized(live(api)));
+    await settle(tester);
+    expect(find.text(l.spinFailed(l.spinUnknownError)), findsOneWidget);
+  });
+
   testWidgets('geçici ağ hatasında devam eder', (tester) async {
     final api = FakeSpinApi([Exception('ağ'), status('running', 2)]);
     await tester.pumpWidget(localized(live(api)));
@@ -144,6 +151,27 @@ void main() {
     await tester.pumpWidget(localized(live(api)));
     await settle(tester);
     expect(find.textContaining('Dönüş oluşturulamadı'), findsOneWidget);
+  });
+
+  testWidgets('kalan süre istenen ana kare sayısından hesaplanır', (tester) async {
+    // 12 ana kare istendi; 1 ana kare hazır (17 sn), toplam 48 (ara karelerle) → kalan 11 × 17 sn ≈ 4 dk
+    final api = FakeSpinApi([
+      SpinStatus.fromJson({
+        'status': 'running',
+        'total': 48,
+        'done': 1,
+        'frames': [
+          {'index': 0, 'view': 'front', 'kind': 'key', 'image_base64': base64Encode(_png), 'render_time': 17.0},
+        ],
+      }),
+    ]);
+    await tester.pumpWidget(localized(SpinScreen.live(
+      request: SpinRequest(videoBytes: Uint8List(1), videoName: 'turn.mov', garmentFront: _png, frames: 12),
+      api: api,
+      pollEvery: const Duration(milliseconds: 10),
+    )));
+    await settle(tester);
+    expect(find.text(l.spinEta(4)), findsOneWidget);
   });
 
   testWidgets('hazır set hemen döner', (tester) async {

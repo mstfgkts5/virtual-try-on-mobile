@@ -3,6 +3,10 @@
 Motor (CatVTON) dışarıdan fonksiyon olarak verilir; böylece kuyruk GPU olmadan test edilir.
 Her kare `run` ile ayrı çağrılır: motorun kilidi kareler arasında bırakılır, araya gelen
 tek kare denemesi (`/api/v1/tryon`) en fazla bir kare bekler.
+
+Akıcı dönüş için `interpolate` verilirse her yeni ana karenin önüne, önceki ana kareyle arasındaki
+`tweens` adet ara kare eklenir; son ana kareden sonra son→ilk arası eklenerek tur kapanır.
+Kareler genişletilmiş sırayla numaralanır (ana kare k → k * (tweens + 1)) ve hep bitişik gelir.
 """
 import threading
 import time
@@ -14,6 +18,7 @@ from PIL import Image
 
 Runner = Callable[[Image.Image, Image.Image, str], tuple[Image.Image, float]]
 BackCheck = Callable[[Image.Image], bool]
+Interpolator = Callable[[Image.Image, Image.Image, int], list]
 
 ACTIVE = ("queued", "running")
 
@@ -29,8 +34,10 @@ class _Job:
     last_seen: float
     status: str = "queued"
     results: list = field(default_factory=list)
+    keys: list = field(default_factory=list)  # giydirilmiş ana kareler (sırayla)
     error: Optional[str] = None
     finished: Optional[float] = None
+    started: Optional[float] = None  # ilk karenin işlenmeye başladığı an (sırada bekleme sayılmaz)
 
 
 class SpinJobManager:
@@ -43,8 +50,12 @@ class SpinJobManager:
         keep_done_s: float = 1800.0,
         clock: Callable[[], float] = time.monotonic,
         start_thread: bool = True,
+        interpolate: Optional[Interpolator] = None,
+        tweens: int = 3,
     ):
         self._run, self._is_back = run, is_back
+        self._interpolate = interpolate
+        self._tweens = tweens if interpolate is not None else 0
         self._heartbeat, self._max_job, self._keep = heartbeat_s, max_job_s, keep_done_s
         self._clock = clock
         self._jobs: dict[str, _Job] = {}  # ekleme sırası = FIFO
@@ -66,7 +77,7 @@ class SpinJobManager:
             job.last_seen = self._clock()  # kalp atışı
             return {
                 "status": job.status,
-                "total": len(job.frames),
+                "total": self._total(job),
                 "done": len(job.results),
                 "frames": [r for r in job.results if r["index"] >= since],
                 "error": job.error,
@@ -83,9 +94,11 @@ class SpinJobManager:
             job = next((j for j in self._jobs.values() if j.status in ACTIVE), None)
             if job is None:
                 return False
+            if job.started is None:
+                job.started = self._clock()
             job.status = "running"
-            index = len(job.results)
-            person = job.frames[index]
+            k = len(job.keys)
+            person = job.frames[k]
         try:
             back = self._is_back(person)
             garment = job.back if (back and job.back is not None) else job.front
@@ -95,10 +108,25 @@ class SpinJobManager:
                 job.error = str(e)
                 self._finish(job, "failed")
             return True
+        view = "back" if back else "front"
+        between = self._tweens_between(job.keys[-1]["image"], image) if k > 0 and self._tweens else []
+        last = k == len(job.frames) - 1
         with self._lock:
             # Kare işlenirken iş iptal edildiyse bu kare yine kaydedilir; sonraki kareler yapılmaz
-            job.results.append({"index": index, "view": "back" if back else "front", "image": image, "render_time": seconds})
-            if job.status == "running" and len(job.results) == len(job.frames):
+            self._append_tweens(job, between, job.keys[-1]["view"] if job.keys else view)
+            key = {"index": k * (self._tweens + 1), "kind": "key", "view": view, "image": image, "render_time": seconds}
+            job.keys.append(key)
+            job.results.append(key)
+            closing = last and job.status == "running" and self._tweens and len(job.frames) > 1
+            first = job.keys[0]["image"]
+        if closing:
+            # Turu kapatan son→ilk ara kareleri
+            closing_tweens = self._tweens_between(image, first)
+            with self._lock:
+                if job.status == "running":
+                    self._append_tweens(job, closing_tweens, view)
+        with self._lock:
+            if job.status == "running" and len(job.keys) == len(job.frames):
                 self._finish(job, "done")
         return True
 
@@ -110,13 +138,33 @@ class SpinJobManager:
                 if job.status in ACTIVE:
                     if now - job.last_seen >= self._heartbeat:
                         self._finish(job, "cancelled")
-                    elif now - job.created >= self._max_job:
+                    elif job.started is not None and now - job.started >= self._max_job:
                         job.error = "Süre aşıldı"
                         self._finish(job, "failed")
                 elif job.finished is not None and now - job.finished >= self._keep:
                     del self._jobs[job_id]
 
     # --- İç işler -----------------------------------------------------------
+    def _total(self, job: _Job) -> int:
+        n = len(job.frames)
+        return n * (self._tweens + 1) if self._tweens and n > 1 else n
+
+    def _tweens_between(self, a: Image.Image, b: Image.Image) -> list:
+        try:
+            out = list(self._interpolate(a, b, self._tweens))
+            if len(out) == self._tweens:
+                return out
+        except Exception as e:  # ara kare hatası işi durdurmaz
+            print(f"[SeeItOn] Ara kare üretilemedi, karışımla devam: {e}")
+        # Yedek: iki ana karenin doğrusal karışımı (indeksler bitişik kalsın)
+        n = self._tweens
+        return [Image.blend(a, b, (i + 1) / (n + 1)) for i in range(n)]
+
+    def _append_tweens(self, job: _Job, tweens: list, view: str) -> None:
+        start = len(job.results)
+        for i, t in enumerate(tweens):
+            job.results.append({"index": start + i, "kind": "tween", "view": view, "image": t, "render_time": 0.0})
+
     def _finish(self, job: _Job, status: str) -> None:
         if job.status in ACTIVE:
             job.status = status

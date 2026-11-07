@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/physics.dart';
 
 /// [SpinViewer]'ın konumunu dışarıdan okumak ve "Döndür" ile oynatmak için.
 /// `position` 0 ile kare sayısı arasında süreklidir; 2,5 = 2. ve 3. karenin yarı yarıya karışımı.
@@ -38,6 +39,7 @@ class SpinViewerController extends ChangeNotifier {
 
 /// Dönüş kareleri: parmakla sağa sola sürükledikçe kişi kendi etrafında döner.
 /// Genişliğin tamamı kadar sürükleme = tam tur; komşu kareler arasında saydamlıkla geçiş yapılır.
+/// Hızlıca kaydırıp bırakınca dönüş sürtünmeyle yavaşlayarak durur; dokununca hemen durur.
 class SpinViewer extends StatefulWidget {
   const SpinViewer({super.key, required this.frames, this.controller});
 
@@ -48,11 +50,14 @@ class SpinViewer extends StatefulWidget {
   State<SpinViewer> createState() => _SpinViewerState();
 }
 
-class _SpinViewerState extends State<SpinViewer> with SingleTickerProviderStateMixin {
+class _SpinViewerState extends State<SpinViewer> with TickerProviderStateMixin {
   static const _turnDuration = Duration(seconds: 4);
 
   late SpinViewerController _controller = widget.controller ?? SpinViewerController();
   late final AnimationController _anim = AnimationController(vsync: this, duration: _turnDuration);
+  // Fırlatma eylemsizliği: konum (kare cinsinden) sürtünmeli bir simülasyonla ilerler
+  late final AnimationController _fling = AnimationController.unbounded(vsync: this);
+  static const _friction = 0.12; // küçüldükçe daha çabuk durur
   double _playFrom = 0;
 
   @override
@@ -60,6 +65,7 @@ class _SpinViewerState extends State<SpinViewer> with SingleTickerProviderStateM
     super.initState();
     _attach();
     _anim.addListener(() => _controller._set(_playFrom + _anim.value * widget.frames.length));
+    _fling.addListener(() => _controller._set(_fling.value));
     _anim.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         _controller._set(_playFrom);
@@ -76,12 +82,14 @@ class _SpinViewerState extends State<SpinViewer> with SingleTickerProviderStateM
   }
 
   void _play() {
+    _fling.stop(); // fırlatma ile oynatma aynı anda konumu yazmasın
     _playFrom = _controller.position;
     _controller._setPlaying(true);
     _anim.forward(from: 0);
   }
 
   void _stopPlaying() {
+    _fling.stop();
     if (!_anim.isAnimating) return;
     _anim.stop();
     _controller._setPlaying(false);
@@ -91,6 +99,8 @@ class _SpinViewerState extends State<SpinViewer> with SingleTickerProviderStateM
   void didUpdateWidget(SpinViewer old) {
     super.didUpdateWidget(old);
     if (widget.controller != null && widget.controller != _controller) _controller = widget.controller!;
+    // Kare sayısı değişince fırlatmanın mutlak konumu başka bir açıya denk gelir; fırlatma durdurulur
+    if (old.frames.length != widget.frames.length) _fling.stop();
     // Yeni kareler gelince konum korunur
     _attach();
   }
@@ -98,6 +108,7 @@ class _SpinViewerState extends State<SpinViewer> with SingleTickerProviderStateM
   @override
   void dispose() {
     _anim.dispose();
+    _fling.dispose();
     _controller
       .._start = null
       .._stop = null;
@@ -105,9 +116,25 @@ class _SpinViewerState extends State<SpinViewer> with SingleTickerProviderStateM
     super.dispose();
   }
 
+  void _onTouch() {
+    _fling.stop();
+    _stopPlaying();
+  }
+
+  void _onDragEnd(DragEndDetails d, double width) {
+    final n = widget.frames.length;
+    if (n < 2 || width <= 0) return;
+    // px/sn → kare/sn; sola kaydırma ileri
+    final velocity = -d.velocity.pixelsPerSecond.dx / width * n;
+    if (velocity.abs() < 0.5) return;
+    _fling.value = _controller.position;
+    _fling.animateWith(FrictionSimulation(_friction, _controller.position, velocity));
+  }
+
   void _onDrag(DragUpdateDetails d, double width) {
     final n = widget.frames.length;
     if (n < 2 || width <= 0) return;
+    _fling.stop();
     _stopPlaying();
     // Sola sürükleme saat yönünde ilerletir
     _controller._set(_controller.position - d.delta.dx / width * n);
@@ -119,7 +146,9 @@ class _SpinViewerState extends State<SpinViewer> with SingleTickerProviderStateM
     return LayoutBuilder(
       builder: (context, constraints) => GestureDetector(
         behavior: HitTestBehavior.opaque,
+        onHorizontalDragDown: (_) => _onTouch(),
         onHorizontalDragUpdate: (d) => _onDrag(d, constraints.maxWidth),
+        onHorizontalDragEnd: (d) => _onDragEnd(d, constraints.maxWidth),
         child: ListenableBuilder(
           listenable: _controller,
           builder: (context, _) {

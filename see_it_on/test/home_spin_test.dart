@@ -21,11 +21,14 @@ final _png = Uint8List.fromList(const [
 ]);
 
 class FakePicker implements MediaPicker {
+  FakePicker({this.videoBytes = 10});
+  final int videoBytes;
+
   @override
   Future<XFile?> pickImage(ImageSource source) async => XFile.fromData(_png, name: 'photo.png');
 
   @override
-  Future<XFile?> pickVideo(ImageSource source) async => XFile.fromData(Uint8List(10), name: 'turn.mov');
+  Future<XFile?> pickVideo(ImageSource source) async => XFile.fromData(Uint8List(videoBytes), name: 'turn.mov');
 }
 
 /// Hazır set manifest'ini ve karelerini sağlayan sahte varlık paketi; diğer varlıklar gerçek paketten.
@@ -47,9 +50,9 @@ class FakeBundle extends CachingAssetBundle {
   }
 }
 
-Widget home({bool preset = true}) => DefaultAssetBundle(
+Widget home({bool preset = true, int videoBytes = 10}) => DefaultAssetBundle(
       bundle: FakeBundle(withPreset: preset),
-      child: HomeScreen(picker: FakePicker()),
+      child: HomeScreen(picker: FakePicker(videoBytes: videoBytes)),
     );
 
 Future<void> tapText(WidgetTester tester, String text) async {
@@ -78,6 +81,17 @@ void main() {
     await tapText(tester, l.homeSpinVideo);
     expect(find.text(l.homeSpinSelected), findsOneWidget);
     expect(find.text(l.homeGarmentBack), findsOneWidget);
+  });
+
+  testWidgets('60 MB üstü video seçilmez ve uyarı gösterilir', (tester) async {
+    tester.view.physicalSize = const Size(400, 1600);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(localized(home(videoBytes: 60 * 1024 * 1024 + 1)));
+    await tester.pumpAndSettle();
+    await tapText(tester, l.homeSpinVideo);
+    expect(find.text(l.homeSpinTooLarge), findsOneWidget);
+    expect(find.text(l.homeSpinSelected), findsNothing);
   });
 
   testWidgets('video ve fotoğraf birbirini temizler', (tester) async {

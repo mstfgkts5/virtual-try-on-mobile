@@ -23,7 +23,8 @@ Rapordaki "Sınırlılıklar" bölümü için. Her madde gözlem, sebep ve uygul
 ## 4. 360° dönüş: kareler ayrı üretilir
 - **Gözlem:** Dönüşteki her kare CatVTON ile ayrı giydirildiği için kumaşın kırışıkları ve deseni kareden kareye biraz değişebilir; ince desenler (kareli, ekose) düz renge yaklaşabilir.
 - **Sebep:** Model kareler arası tutarlılık bilmez; gerçek 3D/video modeli 8 GB VRAM'e sığmıyor.
-- **Uygulamada:** Kareler hızlı video olarak değil, parmakla döndürülen ve aralarında yumuşak geçiş olan bir görüntüleyicide gösterilir; titreme bu şekilde göze daha az batar. 8 kare ~6 dk sürer; sunum için hazır set (5 kare) uygulamayla gelir.
+- **Uygulamada:** 12 giydirilmiş ana kare arasına RIFE ile 3'er ara kare eklenir (48 kare); görüntüleyici parmakla ve eylemsizlikle döner. Ölçüm (2026-11-07, 576×768, 15 adım): ana kare ~8–17 sn (bilgisayar şarjda/pilde), 3 ara kare 0,09 sn → 12 karelik dönüş ~1,5–3,5 dk.
+- **Ara kare sınırı:** Komşu ana kareler arası açı büyükse (≥60°) ara karelerde hayalet/çift görüntü olur. Hazır sette tam önden görünüm olmadığı ve yarım tur aynalandığı için turun kapandığı noktada yüzde çift görüntü var; gerçek bir dönüş videosundan üretilen sette bu olmaz.
 
 ## 5. 360° dönüş: sekme kapanınca GPU'nun boşalma süresi
 - **Gözlem:** Kullanıcı Safari sekmesini kapatır veya Wi-Fi koparsa iş, son durum sorgusundan 30 sn sonra iptal edilir; ancak o anda işlenen kare yarıda kesilemediği için GPU en kötü durumda ~80 sn sonra boşalır.

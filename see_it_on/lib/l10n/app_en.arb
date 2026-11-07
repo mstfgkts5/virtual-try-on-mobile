@@ -69,12 +69,12 @@
   "loadingProgress": "PROGRESS: {percent}%",
   "loadingModelRunning": "DIFFUSION MODEL RUNNING",
   "loadingTitle": "Dressing you up •",
-  "loadingEta": "Estimated time ~40 s",
+  "loadingEta": "Estimated time ~20 s",
   "loadingFinalTouches": "Final touches...",
   "loadingProcessing": "Processing...",
   "loadingStepMask": "Body mask",
   "loadingStepMaskDesc": "DensePose + SCHP find the region to dress",
-  "loadingStepDiffusion": "Diffusion (30 steps)",
+  "loadingStepDiffusion": "Diffusion (15 steps)",
   "loadingStepDiffusionDesc": "CatVTON draws the garment onto the person",
   "loadingStepBlend": "Blending",
   "loadingStepBlendDesc": "Face and background are kept from the original photo",
@@ -174,5 +174,7 @@
   "homeSpinSelected": "360° spin video",
   "homeGarmentBack": "Back image (optional)",
   "homeSpinPreset": "Ready-made 360° set",
-  "homeSpinHint": "Keep your feet in place and turn slowly (10–20 s)"
+  "homeSpinHint": "Keep your feet in place and turn slowly (10–20 s)",
+  "homeSpinTooLarge": "The video can be at most 60 MB; choose a shorter one.",
+  "spinUnknownError": "an unexpected error occurred"
 }

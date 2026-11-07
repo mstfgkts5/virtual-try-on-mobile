@@ -93,7 +93,10 @@ class _SpinScreenState extends State<SpinScreen> {
             _images.add(MemoryImage(f.bytes));
           }
         }
-        if (s.state == SpinState.failed) _error = s.error ?? '';
+        if (s.state == SpinState.failed) {
+          final reason = s.error?.trim() ?? '';
+          _error = reason.isEmpty ? context.l10n.spinUnknownError : reason;
+        }
         if (s.state == SpinState.cancelled) _error = context.l10n.spinCancelled;
       });
       if (s.isFinished) _timer?.cancel();
@@ -119,10 +122,14 @@ class _SpinScreenState extends State<SpinScreen> {
   }
 
   int? get _etaMinutes {
+    // Süreyi yalnızca giydirilmiş ana kareler belirler; ara kareler neredeyse anlık
+    final keys = _frames.where((f) => !f.isTween).toList();
     final remaining = _total - _frames.length;
-    if (_frames.isEmpty || remaining <= 0) return null;
-    final avg = _frames.map((f) => f.renderTimeSec).reduce((a, b) => a + b) / _frames.length;
-    return (avg * remaining / 60).ceil().clamp(1, 99);
+    if (keys.isEmpty || remaining <= 0) return null;
+    final avg = keys.map((f) => f.renderTimeSec).reduce((a, b) => a + b) / keys.length;
+    final requested = widget.request?.frames ?? keys.length;
+    final remainingKeys = (requested - keys.length).clamp(0, requested);
+    return (avg * remainingKeys / 60).ceil().clamp(1, 99);
   }
 
   @override

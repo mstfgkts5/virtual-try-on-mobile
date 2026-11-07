@@ -18,7 +18,7 @@ class TryOnRequest {
   Map<String, String> toFieldsMap() {
     return {
       'category': category.toLowerCase(),
-      'steps': '30',
+      'steps': '15', // 15 adım · 576x768: tek görsel ~17 sn (30 adım · 768x1024: ~74 sn)
     };
   }
 }

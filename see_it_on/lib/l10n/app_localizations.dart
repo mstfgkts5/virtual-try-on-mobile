@@ -515,7 +515,7 @@ abstract class AppLocalizations {
   /// No description provided for @loadingEta.
   ///
   /// In tr, this message translates to:
-  /// **'Tahmini süre ~40 sn'**
+  /// **'Tahmini süre ~20 sn'**
   String get loadingEta;
 
   /// No description provided for @loadingFinalTouches.
@@ -545,7 +545,7 @@ abstract class AppLocalizations {
   /// No description provided for @loadingStepDiffusion.
   ///
   /// In tr, this message translates to:
-  /// **'Difüzyon (30 adım)'**
+  /// **'Difüzyon (15 adım)'**
   String get loadingStepDiffusion;
 
   /// No description provided for @loadingStepDiffusionDesc.
@@ -1147,6 +1147,18 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Ayakların sabit, yavaşça tam tur dön (10–20 sn)'**
   String get homeSpinHint;
+
+  /// No description provided for @homeSpinTooLarge.
+  ///
+  /// In tr, this message translates to:
+  /// **'Video en fazla 60 MB olabilir; daha kısa bir video seçin.'**
+  String get homeSpinTooLarge;
+
+  /// No description provided for @spinUnknownError.
+  ///
+  /// In tr, this message translates to:
+  /// **'beklenmeyen bir hata oluştu'**
+  String get spinUnknownError;
 }
 
 class _AppLocalizationsDelegate

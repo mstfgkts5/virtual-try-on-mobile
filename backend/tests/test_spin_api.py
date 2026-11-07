@@ -50,7 +50,7 @@ def test_post_returns_job_and_total(api):
     client, _ = api
     r = post(client)
     assert r.status_code == 200, r.text
-    assert r.json()["total"] == 8 and r.json()["job_id"]
+    assert r.json()["total"] == 12 and r.json()["job_id"]
 
 
 def test_post_without_back_image(api):
@@ -62,7 +62,8 @@ def test_post_frames_param(api):
     client, _ = api
     assert post(client, frames=4).json()["total"] == 4
     assert post(client, frames=3).status_code == 400
-    assert post(client, frames=13).status_code == 400
+    assert post(client, frames=16).json()["total"] == 16
+    assert post(client, frames=17).status_code == 400
 
 
 def test_post_bad_category_400(api):
@@ -100,8 +101,9 @@ def test_get_returns_base64_frames_since(api):
     assert body["status"] == "running" and body["done"] == 2 and body["total"] == 4
     assert [f["index"] for f in body["frames"]] == [1]
     frame = body["frames"][0]
-    assert frame["view"] == "front" and frame["render_time"] == 1.0
-    Image.open(io.BytesIO(base64.b64decode(frame["image_base64"]))).verify()
+    assert frame["view"] == "front" and frame["render_time"] == 1.0 and frame["kind"] == "key"
+    decoded = Image.open(io.BytesIO(base64.b64decode(frame["image_base64"])))
+    assert decoded.format == "JPEG"  # kareler hafif olsun diye JPEG
 
 
 def test_get_unknown_404(api):
