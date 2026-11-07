@@ -174,5 +174,7 @@
   "homeSpinSelected": "360° spin video",
   "homeGarmentBack": "Back image (optional)",
   "homeSpinPreset": "Ready-made 360° set",
-  "homeSpinHint": "Keep your feet in place and turn slowly (10–20 s)"
+  "homeSpinHint": "Keep your feet in place and turn slowly (10–20 s)",
+  "homeSpinTooLarge": "The video can be at most 60 MB; choose a shorter one.",
+  "spinUnknownError": "an unexpected error occurred"
 }

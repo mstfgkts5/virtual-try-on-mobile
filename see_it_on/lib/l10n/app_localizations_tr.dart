@@ -606,4 +606,11 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get homeSpinHint => 'Ayakların sabit, yavaşça tam tur dön (10–20 sn)';
+
+  @override
+  String get homeSpinTooLarge =>
+      'Video en fazla 60 MB olabilir; daha kısa bir video seçin.';
+
+  @override
+  String get spinUnknownError => 'beklenmeyen bir hata oluştu';
 }

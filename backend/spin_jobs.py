@@ -37,6 +37,7 @@ class _Job:
     keys: list = field(default_factory=list)  # giydirilmiş ana kareler (sırayla)
     error: Optional[str] = None
     finished: Optional[float] = None
+    started: Optional[float] = None  # ilk karenin işlenmeye başladığı an (sırada bekleme sayılmaz)
 
 
 class SpinJobManager:
@@ -93,6 +94,8 @@ class SpinJobManager:
             job = next((j for j in self._jobs.values() if j.status in ACTIVE), None)
             if job is None:
                 return False
+            if job.started is None:
+                job.started = self._clock()
             job.status = "running"
             k = len(job.keys)
             person = job.frames[k]
@@ -135,7 +138,7 @@ class SpinJobManager:
                 if job.status in ACTIVE:
                     if now - job.last_seen >= self._heartbeat:
                         self._finish(job, "cancelled")
-                    elif now - job.created >= self._max_job:
+                    elif job.started is not None and now - job.started >= self._max_job:
                         job.error = "Süre aşıldı"
                         self._finish(job, "failed")
                 elif job.finished is not None and now - job.finished >= self._keep:

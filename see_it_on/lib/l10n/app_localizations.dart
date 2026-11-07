@@ -1147,6 +1147,18 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Ayakların sabit, yavaşça tam tur dön (10–20 sn)'**
   String get homeSpinHint;
+
+  /// No description provided for @homeSpinTooLarge.
+  ///
+  /// In tr, this message translates to:
+  /// **'Video en fazla 60 MB olabilir; daha kısa bir video seçin.'**
+  String get homeSpinTooLarge;
+
+  /// No description provided for @spinUnknownError.
+  ///
+  /// In tr, this message translates to:
+  /// **'beklenmeyen bir hata oluştu'**
+  String get spinUnknownError;
 }
 
 class _AppLocalizationsDelegate

@@ -93,7 +93,10 @@ class _SpinScreenState extends State<SpinScreen> {
             _images.add(MemoryImage(f.bytes));
           }
         }
-        if (s.state == SpinState.failed) _error = s.error ?? '';
+        if (s.state == SpinState.failed) {
+          final reason = s.error?.trim() ?? '';
+          _error = reason.isEmpty ? context.l10n.spinUnknownError : reason;
+        }
         if (s.state == SpinState.cancelled) _error = context.l10n.spinCancelled;
       });
       if (s.isFinished) _timer?.cancel();

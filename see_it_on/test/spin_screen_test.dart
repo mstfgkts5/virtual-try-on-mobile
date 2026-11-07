@@ -131,6 +131,13 @@ void main() {
     expect(find.text(l.spinFailed('x')), findsOneWidget);
   });
 
+  testWidgets('gerekçesiz başarısız iş genel mesaj gösterir', (tester) async {
+    final api = FakeSpinApi([status('failed', 0)]);
+    await tester.pumpWidget(localized(live(api)));
+    await settle(tester);
+    expect(find.text(l.spinFailed(l.spinUnknownError)), findsOneWidget);
+  });
+
   testWidgets('geçici ağ hatasında devam eder', (tester) async {
     final api = FakeSpinApi([Exception('ağ'), status('running', 2)]);
     await tester.pumpWidget(localized(live(api)));

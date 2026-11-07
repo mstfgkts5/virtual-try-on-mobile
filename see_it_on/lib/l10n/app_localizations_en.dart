@@ -605,4 +605,11 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get homeSpinHint =>
       'Keep your feet in place and turn slowly (10–20 s)';
+
+  @override
+  String get homeSpinTooLarge =>
+      'The video can be at most 60 MB; choose a shorter one.';
+
+  @override
+  String get spinUnknownError => 'an unexpected error occurred';
 }

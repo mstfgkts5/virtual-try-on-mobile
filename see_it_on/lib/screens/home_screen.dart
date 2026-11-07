@@ -252,9 +252,19 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  // Backend sınırı (spin_frames.MAX_VIDEO_BYTES); büyük video boşuna yüklenmesin
+  static const _maxVideoBytes = 60 * 1024 * 1024;
+
   Future<void> _pickVideo() async {
     final file = await _picker.pickVideo(ImageSource.gallery);
     if (file == null) return;
+    if (await file.length() > _maxVideoBytes) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.homeSpinTooLarge), backgroundColor: context.tokens.danger),
+      );
+      return;
+    }
     final bytes = await file.readAsBytes();
     if (!mounted) return;
     setState(() {

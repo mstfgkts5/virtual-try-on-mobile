@@ -130,12 +130,31 @@ def test_max_job_time_fails():
     clock = FakeClock()
     m = make(clock=clock)
     job = m.submit(frames(3), FRONT, None, "upper")
+    m.step()  # iş t=0'da başlar; sınır başlangıçtan sayılır
     for t in range(0, 902, 20):
         clock.t = t
         m.status(job)
     m.sweep()
     s = m.status(job)
     assert s["status"] == "failed" and s["error"] == "Süre aşıldı"
+
+
+def test_max_job_time_counts_from_start_not_queue():
+    clock = FakeClock()
+    m = make(clock=clock)
+    a = m.submit(frames(1), FRONT, None, "upper")
+    b = m.submit(frames(2), FRONT, None, "upper")
+    # İkinci iş 12 dk sırada bekler (kalp atışı sürer), sonra başlar
+    for t in range(0, 721, 20):
+        clock.t = t
+        m.status(a)
+        m.status(b)
+    m.step()  # a biter
+    m.step()  # b başlar (t=720)
+    clock.t = 1000  # başladıktan 280 sn sonra; oluşturulmadan 1000 sn sonra
+    m.status(b)
+    m.sweep()
+    assert m.status(b)["status"] == "running"
 
 
 def test_done_jobs_removed_after_keep():

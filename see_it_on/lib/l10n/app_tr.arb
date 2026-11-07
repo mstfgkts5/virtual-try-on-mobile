@@ -306,5 +306,7 @@
   "homeSpinSelected": "360° dönüş videosu",
   "homeGarmentBack": "Arka görsel (isteğe bağlı)",
   "homeSpinPreset": "Hazır 360° set",
-  "homeSpinHint": "Ayakların sabit, yavaşça tam tur dön (10–20 sn)"
+  "homeSpinHint": "Ayakların sabit, yavaşça tam tur dön (10–20 sn)",
+  "homeSpinTooLarge": "Video en fazla 60 MB olabilir; daha kısa bir video seçin.",
+  "spinUnknownError": "beklenmeyen bir hata oluştu"
 }
