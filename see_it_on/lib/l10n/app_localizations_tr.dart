@@ -645,4 +645,89 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get garmentTurtleneck => 'Balıkçı Yaka Kazak';
+
+  @override
+  String get consentOverline => 'KVKK · AYDINLATMA METNİ';
+
+  @override
+  String get consentTitle => 'Fotoğrafların nasıl işlenir?';
+
+  @override
+  String get consentIntro =>
+      'SeeItOn, kıyafeti üzerinde gösterebilmek için yüklediğin fotoğrafları işler. 6698 sayılı Kişisel Verilerin Korunması Kanunu (KVKK) kapsamında seni bilgilendiriyor ve açık rızanı istiyoruz.';
+
+  @override
+  String get consentDataTitle => 'HANGİ VERİLER';
+
+  @override
+  String get consentDataBody =>
+      'Hesap için e-posta adresin; deneme için yüklediğin kişi ve kıyafet fotoğrafları (yüzün ve vücudun görünebilir); gardıroba kaydetmeyi seçtiğin sonuç görselleri.';
+
+  @override
+  String get consentPurposeTitle => 'NE AMAÇLA';
+
+  @override
+  String get consentPurposeBody =>
+      'Yalnızca istediğin sanal deneme sonucunu üretmek ve kaydetmeyi seçtiğin sonuçları sana göstermek için. Fotoğrafların kimlik tespiti, reklam veya model eğitimi için kullanılmaz ve üçüncü kişilerle paylaşılmaz.';
+
+  @override
+  String get consentStorageTitle => 'NEREDE VE NE KADAR SÜRE';
+
+  @override
+  String get consentStorageBody =>
+      'Deneme fotoğrafları yapay zeka sunucusunun belleğinde işlenir, diske yazılmaz ve yanıt gönderilince silinir. Kaydettiğin sonuçlar yalnızca senin erişebildiğin özel bir klasörde, sen silene kadar saklanır.';
+
+  @override
+  String get consentRightsTitle => 'HAKLARIN';
+
+  @override
+  String get consentRightsBody =>
+      'KVKK md. 11 uyarınca verilerinin işlenip işlenmediğini öğrenme, düzeltilmesini veya silinmesini isteme haklarına sahipsin. Kayıtlarını tek tek silebilir, Ayarlar\'dan hesabını ve tüm verilerini kalıcı olarak silebilir ya da bu rızayı geri çekebilirsin.';
+
+  @override
+  String get consentCheckbox =>
+      'Aydınlatma metnini okudum; fotoğraflarımın sanal deneme amacıyla işlenmesine açık rıza veriyorum.';
+
+  @override
+  String get consentAccept => 'Onayla ve devam et';
+
+  @override
+  String get consentWithdraw => 'Rızamı geri çek';
+
+  @override
+  String get consentWithdrawn =>
+      'Rızan geri çekildi. Fotoğraf yüklemek için metni yeniden onaylaman gerekir.';
+
+  @override
+  String get settingsPrivacy => 'GİZLİLİK';
+
+  @override
+  String get settingsPrivacyNotice => 'KVKK aydınlatma metni';
+
+  @override
+  String get settingsDeleteAccount => 'Hesabımı ve verilerimi sil';
+
+  @override
+  String get settingsDeleteHint =>
+      'Gardıroptaki tüm görseller, kayıtlar ve hesabın kalıcı olarak silinir.';
+
+  @override
+  String get settingsDeleteConfirmTitle => 'Hesap silinsin mi?';
+
+  @override
+  String get settingsDeleteConfirmBody =>
+      'Kaydettiğin tüm sonuçlar ve hesabın kalıcı olarak silinecek. Bu işlem geri alınamaz.';
+
+  @override
+  String get settingsDeleteConfirmYes => 'Kalıcı olarak sil';
+
+  @override
+  String get settingsDeleteCancel => 'Vazgeç';
+
+  @override
+  String get settingsDeleteDone => 'Hesabın ve tüm verilerin silindi.';
+
+  @override
+  String get settingsDeleteFailed =>
+      'Hesap silinemedi. Bağlantını kontrol edip tekrar dene.';
 }

@@ -16,6 +16,8 @@ class FakeWardrobeRepository implements WardrobeRepository {
   Completer<void>? gate;
   final deleted = <String>[];
   final added = <String>[]; // eklenen kategoriler
+  int deleteAccountCalls = 0;
+  bool failDeleteAccount = false;
 
   @override
   String? get currentUserEmail => email;
@@ -37,5 +39,12 @@ class FakeWardrobeRepository implements WardrobeRepository {
   Future<void> delete(WardrobeItem item) async {
     deleted.add(item.id);
     items.removeWhere((i) => i.id == item.id);
+  }
+
+  @override
+  Future<void> deleteAccount() async {
+    deleteAccountCalls++;
+    if (failDeleteAccount) throw Exception('offline');
+    items.clear();
   }
 }

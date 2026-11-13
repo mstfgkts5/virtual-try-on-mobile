@@ -1,0 +1,111 @@
+{
+  "backend": {
+    "status": "ok",
+    "engine": "CatVTON",
+    "gpu": {
+      "name": "NVIDIA GeForce RTX 5060 Laptop GPU",
+      "vram_total_mb": 8150,
+      "vram_free_mb": 4379
+    }
+  },
+  "power": "AC (şarjda)",
+  "repeat": 10,
+  "by_profile_category": {
+    "full/upper": {
+      "requests": 10,
+      "succeeded": 10,
+      "render_time": {
+        "n": 10,
+        "mean": 4.88,
+        "std": 0.04,
+        "min": 4.81,
+        "max": 4.93,
+        "median": 4.88
+      },
+      "wall_time": {
+        "n": 10,
+        "mean": 5.12,
+        "std": 0.05,
+        "min": 5.06,
+        "max": 5.22,
+        "median": 5.13
+      }
+    },
+    "full/lower": {
+      "requests": 10,
+      "succeeded": 10,
+      "render_time": {
+        "n": 10,
+        "mean": 5.0,
+        "std": 0.12,
+        "min": 4.88,
+        "max": 5.17,
+        "median": 4.94
+      },
+      "wall_time": {
+        "n": 10,
+        "mean": 5.28,
+        "std": 0.12,
+        "min": 5.16,
+        "max": 5.46,
+        "median": 5.23
+      }
+    },
+    "full/overall": {
+      "requests": 10,
+      "succeeded": 10,
+      "render_time": {
+        "n": 10,
+        "mean": 5.28,
+        "std": 0.05,
+        "min": 5.18,
+        "max": 5.35,
+        "median": 5.29
+      },
+      "wall_time": {
+        "n": 10,
+        "mean": 5.55,
+        "std": 0.06,
+        "min": 5.43,
+        "max": 5.62,
+        "median": 5.56
+      }
+    },
+    "preview/upper": {
+      "requests": 10,
+      "succeeded": 10,
+      "render_time": {
+        "n": 10,
+        "mean": 1.06,
+        "std": 0.02,
+        "min": 1.03,
+        "max": 1.08,
+        "median": 1.06
+      },
+      "wall_time": {
+        "n": 10,
+        "mean": 1.15,
+        "std": 0.02,
+        "min": 1.11,
+        "max": 1.17,
+        "median": 1.15
+      }
+    }
+  },
+  "success_rate": {
+    "requests": 40,
+    "succeeded": 40,
+    "rate": 1.0
+  },
+  "errors": [],
+  "capacity": {
+    "sequential_images_per_min": 11.3,
+    "concurrent_3_total_s": 16.96,
+    "concurrent_3_succeeded": 3,
+    "concurrent_3_wall_each": [
+      5.66,
+      11.33,
+      16.96
+    ]
+  }
+}

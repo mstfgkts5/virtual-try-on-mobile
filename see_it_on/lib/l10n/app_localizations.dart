@@ -1219,6 +1219,156 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Balıkçı Yaka Kazak'**
   String get garmentTurtleneck;
+
+  /// No description provided for @consentOverline.
+  ///
+  /// In tr, this message translates to:
+  /// **'KVKK · AYDINLATMA METNİ'**
+  String get consentOverline;
+
+  /// No description provided for @consentTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Fotoğrafların nasıl işlenir?'**
+  String get consentTitle;
+
+  /// No description provided for @consentIntro.
+  ///
+  /// In tr, this message translates to:
+  /// **'SeeItOn, kıyafeti üzerinde gösterebilmek için yüklediğin fotoğrafları işler. 6698 sayılı Kişisel Verilerin Korunması Kanunu (KVKK) kapsamında seni bilgilendiriyor ve açık rızanı istiyoruz.'**
+  String get consentIntro;
+
+  /// No description provided for @consentDataTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'HANGİ VERİLER'**
+  String get consentDataTitle;
+
+  /// No description provided for @consentDataBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hesap için e-posta adresin; deneme için yüklediğin kişi ve kıyafet fotoğrafları (yüzün ve vücudun görünebilir); gardıroba kaydetmeyi seçtiğin sonuç görselleri.'**
+  String get consentDataBody;
+
+  /// No description provided for @consentPurposeTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'NE AMAÇLA'**
+  String get consentPurposeTitle;
+
+  /// No description provided for @consentPurposeBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yalnızca istediğin sanal deneme sonucunu üretmek ve kaydetmeyi seçtiğin sonuçları sana göstermek için. Fotoğrafların kimlik tespiti, reklam veya model eğitimi için kullanılmaz ve üçüncü kişilerle paylaşılmaz.'**
+  String get consentPurposeBody;
+
+  /// No description provided for @consentStorageTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'NEREDE VE NE KADAR SÜRE'**
+  String get consentStorageTitle;
+
+  /// No description provided for @consentStorageBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Deneme fotoğrafları yapay zeka sunucusunun belleğinde işlenir, diske yazılmaz ve yanıt gönderilince silinir. Kaydettiğin sonuçlar yalnızca senin erişebildiğin özel bir klasörde, sen silene kadar saklanır.'**
+  String get consentStorageBody;
+
+  /// No description provided for @consentRightsTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'HAKLARIN'**
+  String get consentRightsTitle;
+
+  /// No description provided for @consentRightsBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'KVKK md. 11 uyarınca verilerinin işlenip işlenmediğini öğrenme, düzeltilmesini veya silinmesini isteme haklarına sahipsin. Kayıtlarını tek tek silebilir, Ayarlar\'dan hesabını ve tüm verilerini kalıcı olarak silebilir ya da bu rızayı geri çekebilirsin.'**
+  String get consentRightsBody;
+
+  /// No description provided for @consentCheckbox.
+  ///
+  /// In tr, this message translates to:
+  /// **'Aydınlatma metnini okudum; fotoğraflarımın sanal deneme amacıyla işlenmesine açık rıza veriyorum.'**
+  String get consentCheckbox;
+
+  /// No description provided for @consentAccept.
+  ///
+  /// In tr, this message translates to:
+  /// **'Onayla ve devam et'**
+  String get consentAccept;
+
+  /// No description provided for @consentWithdraw.
+  ///
+  /// In tr, this message translates to:
+  /// **'Rızamı geri çek'**
+  String get consentWithdraw;
+
+  /// No description provided for @consentWithdrawn.
+  ///
+  /// In tr, this message translates to:
+  /// **'Rızan geri çekildi. Fotoğraf yüklemek için metni yeniden onaylaman gerekir.'**
+  String get consentWithdrawn;
+
+  /// No description provided for @settingsPrivacy.
+  ///
+  /// In tr, this message translates to:
+  /// **'GİZLİLİK'**
+  String get settingsPrivacy;
+
+  /// No description provided for @settingsPrivacyNotice.
+  ///
+  /// In tr, this message translates to:
+  /// **'KVKK aydınlatma metni'**
+  String get settingsPrivacyNotice;
+
+  /// No description provided for @settingsDeleteAccount.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hesabımı ve verilerimi sil'**
+  String get settingsDeleteAccount;
+
+  /// No description provided for @settingsDeleteHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Gardıroptaki tüm görseller, kayıtlar ve hesabın kalıcı olarak silinir.'**
+  String get settingsDeleteHint;
+
+  /// No description provided for @settingsDeleteConfirmTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hesap silinsin mi?'**
+  String get settingsDeleteConfirmTitle;
+
+  /// No description provided for @settingsDeleteConfirmBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kaydettiğin tüm sonuçlar ve hesabın kalıcı olarak silinecek. Bu işlem geri alınamaz.'**
+  String get settingsDeleteConfirmBody;
+
+  /// No description provided for @settingsDeleteConfirmYes.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kalıcı olarak sil'**
+  String get settingsDeleteConfirmYes;
+
+  /// No description provided for @settingsDeleteCancel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vazgeç'**
+  String get settingsDeleteCancel;
+
+  /// No description provided for @settingsDeleteDone.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hesabın ve tüm verilerin silindi.'**
+  String get settingsDeleteDone;
+
+  /// No description provided for @settingsDeleteFailed.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hesap silinemedi. Bağlantını kontrol edip tekrar dene.'**
+  String get settingsDeleteFailed;
 }
 
 class _AppLocalizationsDelegate

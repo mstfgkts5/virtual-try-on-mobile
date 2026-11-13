@@ -1,0 +1,22 @@
+{
+  "dataset": "TryOnVirtual/VITON-HD-TEST",
+  "setting": "paired, upper body",
+  "pairs_requested": 50,
+  "succeeded": 50,
+  "resolution": "576x768",
+  "ssim": {
+    "n": 50,
+    "mean": 0.8562,
+    "std": 0.0545
+  },
+  "lpips_alex": {
+    "n": 50,
+    "mean": 0.1462,
+    "std": 0.0477
+  },
+  "render_time": {
+    "n": 50,
+    "mean": 10.2106,
+    "std": 0.4767
+  }
+}

@@ -2,6 +2,32 @@
 
 Bütün ölçümler aynı bilgisayarda, yerel GPU ile yapıldı: **NVIDIA GeForce RTX 5060 Laptop (8 GB)**, PyTorch bf16, CatVTON + DensePose + SCHP. Süreler yalnızca modelin çalışmasını kapsar (maske + difüzyon + birleştirme); ağ aktarımı hariçtir.
 
+## 0. Son sistem ölçümleri (2026-11-09 ve 2026-11-12) – güncel sonuçlar
+
+Aşağıdaki 1–3. bölümler ayarlama sürecinin geçmişidir (DDIM dönemi). Güncel sonuçlar bu bölümdedir; ham veriler `docs/evidence/` klasöründe.
+
+**Hız ve güvenilirlik** (`tests/bench_report.py`, 2026-11-09, şarjda, DPM-Solver++ 8 adım · 576×768; her ayar 10 istek, ısınma sonrası):
+
+| Profil | Kategori | İstek | Model süresi ort. ± std (sn) | En az–en çok (sn) | Toplam istek ort. (sn) |
+|---|---|---|---|---|---|
+| Tam, 576×768 | Üst giyim | 10 | 4,88 ± 0,04 | 4,81–4,93 | 5,12 |
+| Tam, 576×768 | Alt giyim | 10 | 5,00 ± 0,12 | 4,88–5,17 | 5,28 |
+| Tam, 576×768 | Tam kıyafet | 10 | 5,28 ± 0,05 | 5,18–5,35 | 5,55 |
+| Önizleme, 384×512 | Üst giyim | 10 | 1,06 ± 0,02 | 1,03–1,08 | 1,15 |
+
+- Başarı oranı: 40 / 40 (%100), hata yok.
+- Art arda tek istek: dakikada 11,3 görsel. Aynı anda 3 istek sıraya girer ve 5,7 / 11,3 / 17,0 sn'de biter (3 / 3 başarılı).
+- Bu süreler maske üretimi ve birleştirmeyi içerir; bu yüzden aşağıdaki yalnızca difüzyon süreleri (4,4 sn, 0,75 sn) 0,4–0,5 sn daha düşüktür.
+
+**Kalite** (`tests/quality_vitonhd.py`, 2026-11-12, VITON-HD test bölümünün ilk 50 eşli örneği, üst giyim, 576×768):
+
+| Ölçüt | SeeItOn | CatVTON makalesi (tüm test seti) |
+|---|---|---|
+| SSIM | 0,856 ± 0,055 | 0,875 |
+| LPIPS (AlexNet) | 0,146 ± 0,048 | 0,071 |
+
+Doğrudan karşılaştırılabilir değildir (çözünürlük, adım sayısı, LPIPS omurgası ve örnek sayısı farklı). Bu koşu pilde yapıldığı için görsel başına 10,2 ± 0,5 sn sürdü; aynı betiğin şarjda yarım kalan koşusunda ilk 13 örnek 5,1 sn sürdü.
+
 ## 1. Kategori başına süre (varsayılan profil)
 
 Varsayılan profil: **15 adım · 576×768 · rehberlik 2,5**. Ölçüm: 2026-11-07, bilgisayar şarjda, Windows güç planı "Performance", her test 3 tekrar (ısınmadan sonra). Betik: `tests/bench_categories.py`. **Not:** Bu tablo DDIM dönemine aittir; 2026-11-07 itibarıyla DPM-Solver++ 8 adımla süreler yaklaşık yarıya indi (bkz. 2. bölüm).

@@ -644,4 +644,90 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get garmentTurtleneck => 'Turtleneck Sweater';
+
+  @override
+  String get consentOverline => 'PRIVACY NOTICE · KVKK';
+
+  @override
+  String get consentTitle => 'How are your photos processed?';
+
+  @override
+  String get consentIntro =>
+      'SeeItOn processes the photos you upload so it can show a garment on you. Under the Turkish Personal Data Protection Law No. 6698 (KVKK) we inform you and ask for your explicit consent.';
+
+  @override
+  String get consentDataTitle => 'WHAT DATA';
+
+  @override
+  String get consentDataBody =>
+      'Your email address for the account; the person and garment photos you upload for a try-on (your face and body may be visible); the result images you choose to save to your wardrobe.';
+
+  @override
+  String get consentPurposeTitle => 'FOR WHAT PURPOSE';
+
+  @override
+  String get consentPurposeBody =>
+      'Only to produce the try-on result you request and to show you the results you choose to save. Your photos are not used for identification, advertising or model training, and are not shared with third parties.';
+
+  @override
+  String get consentStorageTitle => 'WHERE AND FOR HOW LONG';
+
+  @override
+  String get consentStorageBody =>
+      'Try-on photos are processed in the AI server\'s memory, never written to disk, and discarded once the response is sent. Saved results are kept in a private folder only you can access, until you delete them.';
+
+  @override
+  String get consentRightsTitle => 'YOUR RIGHTS';
+
+  @override
+  String get consentRightsBody =>
+      'Under Article 11 of KVKK you may learn whether your data is processed and ask for it to be corrected or deleted. You can delete saved items one by one, permanently delete your account and all data in Settings, or withdraw this consent.';
+
+  @override
+  String get consentCheckbox =>
+      'I have read the privacy notice and give my explicit consent to my photos being processed for virtual try-on.';
+
+  @override
+  String get consentAccept => 'Accept and continue';
+
+  @override
+  String get consentWithdraw => 'Withdraw my consent';
+
+  @override
+  String get consentWithdrawn =>
+      'Consent withdrawn. You need to accept the notice again to upload photos.';
+
+  @override
+  String get settingsPrivacy => 'PRIVACY';
+
+  @override
+  String get settingsPrivacyNotice => 'Privacy notice (KVKK)';
+
+  @override
+  String get settingsDeleteAccount => 'Delete my account and data';
+
+  @override
+  String get settingsDeleteHint =>
+      'All wardrobe images, records and your account are permanently deleted.';
+
+  @override
+  String get settingsDeleteConfirmTitle => 'Delete account?';
+
+  @override
+  String get settingsDeleteConfirmBody =>
+      'All saved results and your account will be permanently deleted. This cannot be undone.';
+
+  @override
+  String get settingsDeleteConfirmYes => 'Delete permanently';
+
+  @override
+  String get settingsDeleteCancel => 'Cancel';
+
+  @override
+  String get settingsDeleteDone =>
+      'Your account and all your data were deleted.';
+
+  @override
+  String get settingsDeleteFailed =>
+      'Could not delete the account. Check your connection and try again.';
 }

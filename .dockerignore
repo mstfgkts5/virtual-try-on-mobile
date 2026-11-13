@@ -1,0 +1,8 @@
+**/venv
+**/__pycache__
+see_it_on
+tests/output
+ai
+docs
+research
+.git
