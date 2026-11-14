@@ -607,11 +607,8 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               const SizedBox(height: 20),
 
-              Stack(
-                alignment: Alignment.center,
+              Column(
                 children: [
-                  Column(
-                    children: [
                       _buildUploadCard(
                         title: l.homeStepPerson,
                         isPerson: true,
@@ -628,7 +625,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         ],
                         footer: _videoBytes == null && _photoWarnings.isNotEmpty ? _buildPhotoWarnings() : null,
                       ),
-                      const SizedBox(height: 16),
+                  const SizedBox(height: 16),
+                  // İki adımı bağlayan düğüm ikinci kartın üst kenarına sabitlenir; birinci kart
+                  // uyarı kutusuyla uzayınca kartın ortasında kalıp metnin üstüne binmesin
+                  Stack(
+                    clipBehavior: Clip.none,
+                    children: [
                       _buildUploadCard(
                         title: l.homeStepGarment(categoryName(l, _category)),
                         isPerson: false,
@@ -644,19 +646,26 @@ class _HomeScreenState extends State<HomeScreen> {
                         ],
                         footer: _videoBytes == null ? null : _buildGarmentBackRow(),
                       ),
-                    ],
-                  ),
-                  // İki adımı birbirine bağlayan küçük düğüm
-                  IgnorePointer(
-                    child: Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: t.paper,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: t.line),
+                      Positioned(
+                        top: -25,
+                        left: 0,
+                        right: 0,
+                        child: Center(
+                          child: IgnorePointer(
+                            child: Container(
+                              key: const Key('stepLink'),
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: t.paper,
+                                shape: BoxShape.circle,
+                                border: Border.all(color: t.line),
+                              ),
+                              child: Icon(Icons.link, color: t.ink, size: 16),
+                            ),
+                          ),
+                        ),
                       ),
-                      child: Icon(Icons.link, color: t.ink, size: 16),
-                    ),
+                    ],
                   ),
                 ],
               ),

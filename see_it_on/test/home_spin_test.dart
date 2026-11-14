@@ -281,4 +281,17 @@ void main() {
       }
     });
   });
+
+  testWidgets('bağlantı düğümü uyarı kutusunun üstüne binmez', (tester) async {
+    tester.view.physicalSize = const Size(400, 1800);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(localized(home(checker: (_, _) async => ['person_small', 'back_view'])));
+    await tester.pumpAndSettle();
+    await tapText(tester, l.homeGallery);
+    final warn = tester.getRect(find.byKey(const Key('photoWarnings')));
+    final link = tester.getRect(find.byKey(const Key('stepLink')));
+    expect(link.overlaps(warn), isFalse);
+    expect(link.top, greaterThan(warn.bottom)); // düğüm iki kartın arasında, uyarının altında
+  });
 }
