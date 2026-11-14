@@ -23,7 +23,9 @@ from model.cloth_masker import AutoMasker  # noqa: E402  # type: ignore
 from model.pipeline import CatVTONPipeline  # noqa: E402  # type: ignore
 from utils import resize_and_crop, resize_and_padding  # noqa: E402  # type: ignore
 
-from person_crop import CLOTH_LABELS, canvas_of, fit_box, match_colors, person_bbox, trim_garment  # noqa: E402
+from person_crop import (  # noqa: E402
+    CLOTH_LABELS, canvas_of, fit_box, limit_mask_to_person, match_colors, person_bbox, trim_garment
+)  # noqa: E402
 from photo_check import assess_photo  # noqa: E402
 from spin_frames import BACK_FACE_RATIO, face_ratio  # noqa: E402
 
@@ -151,7 +153,9 @@ class CatVTONEngine:
             region = canvas.crop(box) if box else canvas
             model_in = region.resize((width, height), Image.LANCZOS) if region.size != (width, height) else region
 
-            mask = self.automasker(model_in, mask_type)["mask"]
+            parsed = self.automasker(model_in, mask_type)
+            # Arka plandaki heykel/afiş gibi yanlış "kişi" parçalarına model bir şey çizmesin
+            mask = limit_mask_to_person(parsed["mask"], np.array(parsed["schp_lip"]))
             mask = self.mask_processor.blur(mask, blur_factor=9)
 
             generator = torch.Generator(device=self.device).manual_seed(seed) if seed >= 0 else None

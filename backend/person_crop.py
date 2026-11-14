@@ -27,12 +27,46 @@ def canvas_of(person: Image.Image, width: int, height: int) -> Image.Image:
     return crop.resize((out_w, out_h), Image.LANCZOS)
 
 
+def main_person(labels: np.ndarray) -> np.ndarray:
+    """Ayrıştırma haritasında ana kişi: kişi piksellerinin (biraz genişletilip birleştirilmiş)
+    en büyük bağlı bölgesi. Arka plandaki heykel, afiş, uzaktaki insanlar gibi küçük "kişi"
+    parçaları kırpma kutusuna ve maskeye girmesin (Madrid fotoğrafı: gökyüzünde leke)."""
+    import cv2
+
+    person = (np.asarray(labels) != 0).astype(np.uint8)
+    if person.sum() == 0:
+        return person.astype(bool)
+    k = max(3, max(person.shape) // 100) | 1
+    joined = cv2.dilate(person, np.ones((k, k), np.uint8))  # kopuk kol/bacak parçalarını birleştir
+    n, lab, st, _ = cv2.connectedComponentsWithStats(joined, connectivity=8)
+    if n <= 2:
+        return person.astype(bool)
+    main = lab == 1 + int(np.argmax(st[1:, cv2.CC_STAT_AREA]))
+    return main & (person > 0)
+
+
 def person_bbox(labels: np.ndarray) -> tuple[int, int, int, int] | None:
-    """İnsan ayrıştırma haritasında (0 = arka plan) kişinin sınır kutusu: (sol, üst, sağ, alt)."""
-    ys, xs = np.nonzero(labels)
+    """Ana kişinin sınır kutusu: (sol, üst, sağ, alt). Kişi bulunamazsa None."""
+    ys, xs = np.nonzero(main_person(labels))
     if len(xs) < 50:  # Kişi bulunamadı
         return None
     return int(xs.min()), int(ys.min()), int(xs.max()) + 1, int(ys.max()) + 1
+
+
+def limit_mask_to_person(mask: Image.Image, labels: np.ndarray, reach: float = 1 / 12) -> Image.Image:
+    """Maskeyi ana kişinin geniş çevresiyle sınırlar. Yakın alan (kol-gövde arası, bol kıyafet)
+    olduğu gibi kalır; yalnızca kişiden uzak, ayrık maske parçaları atılır."""
+    import cv2
+
+    main = main_person(labels).astype(np.uint8)
+    if main.sum() == 0:
+        return mask
+    k = max(3, int(max(main.shape) * reach)) | 1
+    near = cv2.dilate(main, np.ones((k, k), np.uint8)) > 0
+    near = cv2.resize(near.astype(np.uint8), mask.size, interpolation=cv2.INTER_NEAREST) > 0
+    m = np.array(mask.convert("L"))
+    m[~near] = 0
+    return Image.fromarray(m)
 
 
 def fit_box(bbox, canvas_w: int, canvas_h: int, aspect: float = 3 / 4, margin: float = 0.10):

@@ -79,3 +79,24 @@ def test_garment_foreground_on_real_navy_trousers():
     fg = garment_foreground(img)
     r, g, b = np.asarray(img)[fg].mean(axis=0)
     assert max(r, g, b) < 70 and b > r  # koyu ve mavimsi: fon karışmadı
+
+
+def test_person_bbox_ignores_small_far_away_blobs():
+    # Ana kişi altta; gökyüzünde yanlışlıkla "kişi" sanılan küçük bir heykel parçası
+    labels = np.zeros((400, 300), dtype=np.uint8)
+    labels[180:400, 100:200] = 5
+    labels[20:50, 230:260] = 13
+    assert person_bbox(labels) == (100, 180, 200, 400)
+
+
+def test_limit_mask_drops_far_regions_but_keeps_the_person():
+    from person_crop import limit_mask_to_person
+    labels = np.zeros((400, 300), dtype=np.uint8)
+    labels[180:400, 100:200] = 5
+    labels[20:50, 230:260] = 13
+    m = np.zeros((400, 300), dtype=np.uint8)
+    m[180:400, 90:210] = 255  # kişinin maskesi (biraz geniş)
+    m[20:60, 220:270] = 255  # uzaktaki yanlış maske parçası
+    out = np.array(limit_mask_to_person(Image.fromarray(m), labels))
+    assert out[300, 95] == 255 and out[300, 150] == 255  # kişi ve hemen yanı kaldı
+    assert out[40, 245] == 0  # uzaktaki parça atıldı
