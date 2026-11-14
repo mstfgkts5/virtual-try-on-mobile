@@ -350,5 +350,15 @@
   "settingsDeleteConfirmYes": "Kalıcı olarak sil",
   "settingsDeleteCancel": "Vazgeç",
   "settingsDeleteDone": "Hesabın ve tüm verilerin silindi.",
-  "settingsDeleteFailed": "Hesap silinemedi. Bağlantını kontrol edip tekrar dene."
+  "settingsDeleteFailed": "Hesap silinemedi. Bağlantını kontrol edip tekrar dene.",
+  "photoCheckTitle": "Bu fotoğrafla sonuç iyi olmayabilir",
+  "photoCheckHint": "En iyi sonuç için: tek kişi, önden, ayakta, sade arka plan ve vücuda oturan kıyafet.",
+  "photoCheckContinue": "Yine de dene",
+  "photoCheckChange": "Fotoğrafı değiştir",
+  "photoWarnNoPerson": "Fotoğrafta kişi bulunamadı.",
+  "photoWarnMultiple": "Fotoğrafta birden fazla kişi var; yalnızca bir kişi olmalı.",
+  "photoWarnBack": "Yüz görünmüyor; önden çekilmiş bir fotoğraf kullan.",
+  "photoWarnSmall": "Kişi kadrajda çok küçük; daha yakından, boydan çek.",
+  "photoWarnRegion": "Denenecek bölge (üst ya da alt beden) fotoğrafta tam görünmüyor.",
+  "photoWarnLowRes": "Fotoğrafın çözünürlüğü düşük; daha net bir fotoğraf kullan."
 }

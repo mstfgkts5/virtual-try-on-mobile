@@ -730,4 +730,40 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get settingsDeleteFailed =>
       'Hesap silinemedi. Bağlantını kontrol edip tekrar dene.';
+
+  @override
+  String get photoCheckTitle => 'Bu fotoğrafla sonuç iyi olmayabilir';
+
+  @override
+  String get photoCheckHint =>
+      'En iyi sonuç için: tek kişi, önden, ayakta, sade arka plan ve vücuda oturan kıyafet.';
+
+  @override
+  String get photoCheckContinue => 'Yine de dene';
+
+  @override
+  String get photoCheckChange => 'Fotoğrafı değiştir';
+
+  @override
+  String get photoWarnNoPerson => 'Fotoğrafta kişi bulunamadı.';
+
+  @override
+  String get photoWarnMultiple =>
+      'Fotoğrafta birden fazla kişi var; yalnızca bir kişi olmalı.';
+
+  @override
+  String get photoWarnBack =>
+      'Yüz görünmüyor; önden çekilmiş bir fotoğraf kullan.';
+
+  @override
+  String get photoWarnSmall =>
+      'Kişi kadrajda çok küçük; daha yakından, boydan çek.';
+
+  @override
+  String get photoWarnRegion =>
+      'Denenecek bölge (üst ya da alt beden) fotoğrafta tam görünmüyor.';
+
+  @override
+  String get photoWarnLowRes =>
+      'Fotoğrafın çözünürlüğü düşük; daha net bir fotoğraf kullan.';
 }

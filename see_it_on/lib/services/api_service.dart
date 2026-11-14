@@ -109,6 +109,23 @@ class ApiService {
     );
   }
 
+  /// Deneme öncesi fotoğraf kontrolü: uyarı kodları ('person_small', 'back_view'...).
+  /// Kontrol yalnızca yardımcıdır; sunucuya ulaşılamazsa veya hata olursa boş liste döner.
+  Future<List<String>> checkPhoto(Uint8List personBytes, String category) async {
+    try {
+      final multipart = http.MultipartRequest('POST', Uri.parse('$_baseUrl/api/v1/check_photo'))
+        ..files.add(http.MultipartFile.fromBytes('person_image', personBytes, filename: 'person.jpg'))
+        ..fields['category'] = category.toLowerCase();
+      final response = await http.Response.fromStream(await multipart.send());
+      if (response.statusCode != 200) return const [];
+      final warnings = (jsonDecode(response.body) as Map<String, dynamic>)['warnings'] as List<dynamic>? ?? const [];
+      return warnings.cast<String>();
+    } catch (e) {
+      debugPrint('[ApiService] Fotoğraf kontrolü yapılamadı: $e');
+      return const [];
+    }
+  }
+
   /// 360° dönüş işini başlatır; iş numarasını döner. Video yüklemesi büyük olabilir.
   Future<String> startSpin(SpinRequest request) async {
     final multipart = http.MultipartRequest('POST', Uri.parse('$_baseUrl/api/v1/spin'))

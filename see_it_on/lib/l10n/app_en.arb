@@ -211,5 +211,15 @@
   "settingsDeleteConfirmYes": "Delete permanently",
   "settingsDeleteCancel": "Cancel",
   "settingsDeleteDone": "Your account and all your data were deleted.",
-  "settingsDeleteFailed": "Could not delete the account. Check your connection and try again."
+  "settingsDeleteFailed": "Could not delete the account. Check your connection and try again.",
+  "photoCheckTitle": "This photo may give a poor result",
+  "photoCheckHint": "For the best result: one person, facing the camera, standing, a plain background and fitted clothes.",
+  "photoCheckContinue": "Try anyway",
+  "photoCheckChange": "Change photo",
+  "photoWarnNoPerson": "No person was found in the photo.",
+  "photoWarnMultiple": "There is more than one person in the photo; use a photo of one person.",
+  "photoWarnBack": "The face is not visible; use a photo taken from the front.",
+  "photoWarnSmall": "The person is too small in the frame; take a closer, full-length photo.",
+  "photoWarnRegion": "The area to try on (upper or lower body) is not fully visible.",
+  "photoWarnLowRes": "The photo resolution is low; use a sharper photo."
 }

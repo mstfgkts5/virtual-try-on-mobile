@@ -17,6 +17,7 @@ sys.stdout.reconfigure(encoding="utf-8")  # Windows konsolunda Türkçe log'lar 
 MAX_UPLOAD_BYTES = 15 * 1024 * 1024
 PREVIEW_SIZE = (384, 512)
 PREVIEW_STEPS = 3
+SPIN_SIZE = (576, 768)  # 360° karelerinde hız öncelikli (12 kare x ~5 sn)
 engine = None  # CatVTONEngine, sunucu açılırken yüklenir
 engine_error = None
 spin_manager = None  # SpinJobManager, model yüklenince kurulur
@@ -30,13 +31,15 @@ async def lifespan(_: FastAPI):
         print("[SeeItOn] CatVTON modeli GPU'ya yükleniyor...")
         engine = await asyncio.to_thread(
             CatVTONEngine,
-            int(os.getenv("TRYON_WIDTH", "576")),
-            int(os.getenv("TRYON_HEIGHT", "768")),
+            # Tam sonuç CatVTON'un eğitildiği çözünürlükte: 576x768'de gerçek fotoğraflarda desen
+            # ve kumaş bozuluyordu (tanı: report_figures/diag_*.jpg, 2026-11-14)
+            int(os.getenv("TRYON_WIDTH", "768")),
+            int(os.getenv("TRYON_HEIGHT", "1024")),
         )
         print(f"[SeeItOn] Model hazır: {engine.gpu_info()}")
 
         def run_frame(person, garment, category):
-            out = engine.run(person, garment, category)
+            out = engine.run(person, garment, category, size=SPIN_SIZE, crop_person=False)  # 12 kare: hızlı profil
             return out.image, out.render_time_sec
 
         spin_manager = SpinJobManager(run_frame, engine.is_back_view, interpolate=engine.interpolate)
@@ -115,7 +118,9 @@ async def process_tryon(
         steps = PREVIEW_STEPS
     print(f"[SeeItOn] İstek -> kategori: {category}, adım: {steps}{' (önizleme)' if preview else ''}")
     try:
-        output = await asyncio.to_thread(engine.run, person, garment, category, steps, 2.5, seed, size)
+        output = await asyncio.to_thread(
+            engine.run, person, garment, category, steps, 2.5, seed, size, not preview
+        )
     except Exception as e:
         print(f"[HATA] Çıkarım hatası: {e}")
         raise HTTPException(status_code=500, detail=f"Model çalıştırılamadı: {e}")
@@ -135,6 +140,22 @@ async def process_tryon(
     if not preview:
         result["person_base64"] = _encode(output.person, "JPEG")
     return result
+
+
+@app.post("/api/v1/check_photo")
+async def check_photo(person_image: UploadFile = File(...), category: str = Form("upper")):
+    """Deneme öncesi fotoğraf kontrolü: kişi yok / küçük / arkası dönük / birden fazla kişi..."""
+    if engine is None:
+        raise HTTPException(status_code=503, detail=engine_error or "Model henüz yükleniyor, birazdan tekrar deneyin.")
+    try:
+        engine.normalize_category(category)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    person = await _read_image(person_image, "Kişi fotoğrafı")
+    warnings = await asyncio.to_thread(engine.check_photo, person, category)
+    if warnings:
+        print(f"[SeeItOn] Fotoğraf uyarıları: {', '.join(warnings)}")
+    return {"warnings": warnings}
 
 
 def _require_engine() -> None:

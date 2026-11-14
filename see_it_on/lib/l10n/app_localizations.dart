@@ -1369,6 +1369,66 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Hesap silinemedi. Bağlantını kontrol edip tekrar dene.'**
   String get settingsDeleteFailed;
+
+  /// No description provided for @photoCheckTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu fotoğrafla sonuç iyi olmayabilir'**
+  String get photoCheckTitle;
+
+  /// No description provided for @photoCheckHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'En iyi sonuç için: tek kişi, önden, ayakta, sade arka plan ve vücuda oturan kıyafet.'**
+  String get photoCheckHint;
+
+  /// No description provided for @photoCheckContinue.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yine de dene'**
+  String get photoCheckContinue;
+
+  /// No description provided for @photoCheckChange.
+  ///
+  /// In tr, this message translates to:
+  /// **'Fotoğrafı değiştir'**
+  String get photoCheckChange;
+
+  /// No description provided for @photoWarnNoPerson.
+  ///
+  /// In tr, this message translates to:
+  /// **'Fotoğrafta kişi bulunamadı.'**
+  String get photoWarnNoPerson;
+
+  /// No description provided for @photoWarnMultiple.
+  ///
+  /// In tr, this message translates to:
+  /// **'Fotoğrafta birden fazla kişi var; yalnızca bir kişi olmalı.'**
+  String get photoWarnMultiple;
+
+  /// No description provided for @photoWarnBack.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yüz görünmüyor; önden çekilmiş bir fotoğraf kullan.'**
+  String get photoWarnBack;
+
+  /// No description provided for @photoWarnSmall.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kişi kadrajda çok küçük; daha yakından, boydan çek.'**
+  String get photoWarnSmall;
+
+  /// No description provided for @photoWarnRegion.
+  ///
+  /// In tr, this message translates to:
+  /// **'Denenecek bölge (üst ya da alt beden) fotoğrafta tam görünmüyor.'**
+  String get photoWarnRegion;
+
+  /// No description provided for @photoWarnLowRes.
+  ///
+  /// In tr, this message translates to:
+  /// **'Fotoğrafın çözünürlüğü düşük; daha net bir fotoğraf kullan.'**
+  String get photoWarnLowRes;
 }
 
 class _AppLocalizationsDelegate

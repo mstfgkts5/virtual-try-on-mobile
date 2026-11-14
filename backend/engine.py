@@ -23,6 +23,8 @@ from model.cloth_masker import AutoMasker  # noqa: E402  # type: ignore
 from model.pipeline import CatVTONPipeline  # noqa: E402  # type: ignore
 from utils import resize_and_crop, resize_and_padding  # noqa: E402  # type: ignore
 
+from person_crop import CLOTH_LABELS, canvas_of, fit_box, match_colors, person_bbox, trim_garment  # noqa: E402
+from photo_check import assess_photo  # noqa: E402
 from spin_frames import BACK_FACE_RATIO, face_ratio  # noqa: E402
 
 BASE_MODEL = "booksforcharlie/stable-diffusion-inpainting"
@@ -111,25 +113,50 @@ class CatVTONEngine:
         guidance_scale: float = 2.5,
         seed: int = 42,
         size: tuple[int, int] | None = None,
+        crop_person: bool = True,
+        trim: bool = False,
+        color_fix: bool | None = None,
     ) -> TryOnOutput:
-        """`size` (genişlik, yükseklik) verilirse o çözünürlükte çalışır (canlı önizleme: 384x512)."""
+        """`size` (genişlik, yükseklik) verilirse o çözünürlükte çalışır (canlı önizleme: 384x512).
+
+        Tam kalitede (`size` yok) kişi kadrajda bulunur ve model kişinin etrafındaki 3:4 kutuda
+        çalışır; sonuç yüksek çözünürlüklü fotoğrafa geri yapıştırılır (bkz. person_crop.py).
+        """
         mask_type = self.normalize_category(category)
         width, height = size or (self.width, self.height)
 
         # Telefon fotoğraflarındaki EXIF dönüşünü uygula, yoksa görsel yan gelir
         person = ImageOps.exif_transpose(person).convert("RGB")
         garment = ImageOps.exif_transpose(garment).convert("RGB")
-        person = resize_and_crop(person, (width, height))
+        garment_raw = garment
+        if trim:
+            garment = trim_garment(garment)
         garment = resize_and_padding(garment, (width, height))
+        use_crop = crop_person
+        if color_fix is None:
+            # Tam sonuçta açık (+~0,3 sn): az adımda ve loş/sisli fotoğraflarda renkler soluyordu
+            color_fix = size is None
+        canvas = canvas_of(person, max(width, self.width), max(height, self.height)) if use_crop else resize_and_crop(person, (width, height))
 
         with self._lock:
             start = time.perf_counter()
-            mask = self.automasker(person, mask_type)["mask"]
+            box = None
+            if use_crop:
+                small = canvas.resize((width, height), Image.LANCZOS)
+                bbox = person_bbox(np.array(self.automasker.process_schp_lip(small)))
+                if bbox is not None:
+                    sx, sy = canvas.width / width, canvas.height / height
+                    bbox = (bbox[0] * sx, bbox[1] * sy, bbox[2] * sx, bbox[3] * sy)
+                    box = fit_box(bbox, canvas.width, canvas.height, aspect=width / height)
+            region = canvas.crop(box) if box else canvas
+            model_in = region.resize((width, height), Image.LANCZOS) if region.size != (width, height) else region
+
+            mask = self.automasker(model_in, mask_type)["mask"]
             mask = self.mask_processor.blur(mask, blur_factor=9)
 
             generator = torch.Generator(device=self.device).manual_seed(seed) if seed >= 0 else None
             result = self.pipeline(
-                image=person,
+                image=model_in,
                 condition_image=garment,
                 mask=mask,
                 num_inference_steps=steps,
@@ -138,14 +165,39 @@ class CatVTONEngine:
                 width=width,
                 generator=generator,
             )[0]
+            if color_fix:
+                # Renk düzeltme: sonuçtaki kıyafet pikselleri (SCHP) kıyafet görselinin renklerine çekilir
+                lip = np.array(self.automasker.process_schp_lip(result))
+                cloth = np.isin(lip, CLOTH_LABELS[mask_type]) & (np.array(mask.convert("L")) > 127)
+                result = match_colors(result, cloth, garment_raw)
             torch.cuda.synchronize()
             elapsed = time.perf_counter() - start
+        # Tanı betiği (diag_tryon.py) ara adımları buradan okur
+        self.last_debug = {"box": box, "model_in": model_in, "mask": mask, "raw": result}
 
-        # Maske dışındaki alanları (yüz, arka plan) orijinal fotoğraftan geri al
-        result = self._repaint(person, mask, result)
+        # Maske dışındaki alanları (yüz, arka plan) orijinal fotoğraftan geri al;
+        # yüksek çözünürlükte yapılır ki yüz ve arka plan bulanıklaşmasın
+        if region.size != (width, height):
+            result = result.resize(region.size, Image.LANCZOS)
+            mask = mask.convert("L").resize(region.size, Image.BILINEAR)
+        blended = self._repaint(region, mask, result)
+        if box:
+            out = canvas.copy()
+            out.paste(blended, box[:2])
+        else:
+            out = blended
         return TryOnOutput(
-            image=result, person=person, mask=mask, category=mask_type, render_time_sec=round(elapsed, 2)
+            image=out, person=canvas, mask=mask, category=mask_type, render_time_sec=round(elapsed, 2)
         )
+
+    def check_photo(self, person: Image.Image, category: str) -> list[str]:
+        """Deneme öncesi fotoğraf kontrolü (~0,3 sn): uyarı kodları, boş = sorun yok."""
+        mask_type = self.normalize_category(category)
+        person = ImageOps.exif_transpose(person).convert("RGB")
+        small = resize_and_crop(person, (self.width, self.height))
+        with self._lock:
+            lip = self.automasker.process_schp_lip(small)
+        return assess_photo(np.array(lip), person.size, mask_type)
 
     def face_ratio_of(self, person: Image.Image) -> float:
         """Kişi fotoğrafında yüz piksellerinin oranı (SCHP-LIP); arka kare tanıma için."""

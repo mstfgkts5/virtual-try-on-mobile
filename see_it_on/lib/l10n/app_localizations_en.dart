@@ -730,4 +730,40 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get settingsDeleteFailed =>
       'Could not delete the account. Check your connection and try again.';
+
+  @override
+  String get photoCheckTitle => 'This photo may give a poor result';
+
+  @override
+  String get photoCheckHint =>
+      'For the best result: one person, facing the camera, standing, a plain background and fitted clothes.';
+
+  @override
+  String get photoCheckContinue => 'Try anyway';
+
+  @override
+  String get photoCheckChange => 'Change photo';
+
+  @override
+  String get photoWarnNoPerson => 'No person was found in the photo.';
+
+  @override
+  String get photoWarnMultiple =>
+      'There is more than one person in the photo; use a photo of one person.';
+
+  @override
+  String get photoWarnBack =>
+      'The face is not visible; use a photo taken from the front.';
+
+  @override
+  String get photoWarnSmall =>
+      'The person is too small in the frame; take a closer, full-length photo.';
+
+  @override
+  String get photoWarnRegion =>
+      'The area to try on (upper or lower body) is not fully visible.';
+
+  @override
+  String get photoWarnLowRes =>
+      'The photo resolution is low; use a sharper photo.';
 }

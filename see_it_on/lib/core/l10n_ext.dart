@@ -44,3 +44,14 @@ String garmentName(AppLocalizations l, String id) => switch (id) {
       'shorts-w' => l.garmentShorts,
       _ => id,
     };
+
+/// Backend'in fotoğraf uyarı kodu -> kullanıcı dilinde açıklama (photo_check.py ile aynı kodlar)
+String photoWarning(AppLocalizations l, String code) => switch (code) {
+      'no_person' => l.photoWarnNoPerson,
+      'multiple_people' => l.photoWarnMultiple,
+      'back_view' => l.photoWarnBack,
+      'person_small' => l.photoWarnSmall,
+      'region_missing' => l.photoWarnRegion,
+      'low_resolution' => l.photoWarnLowRes,
+      _ => code,
+    };

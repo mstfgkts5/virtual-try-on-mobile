@@ -5,6 +5,7 @@ import '../core/design/widgets.dart';
 import '../core/l10n_ext.dart';
 import '../models/spin.dart';
 import '../models/spin_preset.dart';
+import '../services/api_service.dart';
 import '../services/media_picker.dart';
 import 'camera_capture_screen.dart';
 import 'live_tryon_screen.dart';
@@ -15,9 +16,11 @@ import 'wardrobe_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   /// [picker] verilmezse cihazın galeri/kamera seçicisi kullanılır; testlerde sahte seçici verilir.
-  const HomeScreen({super.key, this.picker});
+  /// [photoChecker] verilmezse fotoğraf kontrolü backend'e sorulur; testlerde sahte kontrol verilir.
+  const HomeScreen({super.key, this.picker, this.photoChecker});
 
   final MediaPicker? picker;
+  final Future<List<String>> Function(Uint8List personBytes, String category)? photoChecker;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -27,6 +30,35 @@ class _HomeScreenState extends State<HomeScreen> {
   Uint8List? _personImageBytes;
   Uint8List? _garmentImageBytes;
   late final MediaPicker _picker = widget.picker ?? ImagePickerMediaPicker();
+
+  // Kullanıcının kendi fotoğrafı için backend uyarıları (kişi küçük, arkası dönük...).
+  // Hazır mankenler kontrol edilmez. Eski bir kontrolün geç gelen yanıtı yenisini ezmesin diye sıra no tutulur.
+  List<String> _photoWarnings = const [];
+  bool _personIsUserPhoto = false;
+  int _checkSeq = 0;
+
+  void _checkPhoto() {
+    final bytes = _personImageBytes;
+    final seq = ++_checkSeq;
+    if (!_personIsUserPhoto || bytes == null || _videoBytes != null) {
+      if (_photoWarnings.isNotEmpty) setState(() => _photoWarnings = const []);
+      return;
+    }
+    final check = widget.photoChecker ?? ApiService().checkPhoto;
+    check(bytes, _category).then((warnings) {
+      if (mounted && seq == _checkSeq) setState(() => _photoWarnings = warnings);
+    });
+  }
+
+  void _setUserPhoto(Uint8List bytes) {
+    setState(() {
+      _videoBytes = null;
+      _personImageBytes = bytes;
+      _personIsUserPhoto = true;
+      _photoWarnings = const [];
+    });
+    _checkPhoto();
+  }
 
   // 360° dönüş: kişi fotoğrafı yerine dönüş videosu; ikisi birden seçili olmaz
   Uint8List? _videoBytes;
@@ -222,6 +254,9 @@ class _HomeScreenState extends State<HomeScreen> {
       if (isPerson) {
         _videoBytes = null;
         _personImageBytes = data.buffer.asUint8List();
+        _personIsUserPhoto = false;
+        _photoWarnings = const [];
+        _checkSeq++;
       } else {
         _garmentImageBytes = data.buffer.asUint8List();
       }
@@ -232,14 +267,12 @@ class _HomeScreenState extends State<HomeScreen> {
     final XFile? pickedFile = await _picker.pickImage(source);
     if (pickedFile != null) {
       final bytes = await pickedFile.readAsBytes();
-      setState(() {
-        if (isPerson) {
-          _videoBytes = null;
-          _personImageBytes = bytes;
-        } else {
-          _garmentImageBytes = bytes;
-        }
-      });
+      if (!mounted) return;
+      if (isPerson) {
+        _setUserPhoto(bytes);
+      } else {
+        setState(() => _garmentImageBytes = bytes);
+      }
     }
   }
 
@@ -248,10 +281,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final result = await pushEditorial<Object>(context, const CameraCaptureScreen());
     if (!mounted) return;
     if (result is Uint8List) {
-      setState(() {
-        _videoBytes = null;
-        _personImageBytes = result;
-      });
+      _setUserPhoto(result);
     } else if (result == CameraResult.gallery) {
       await _pickImage(true, ImageSource.gallery);
     }
@@ -274,6 +304,9 @@ class _HomeScreenState extends State<HomeScreen> {
     if (!mounted) return;
     setState(() {
       _personImageBytes = null;
+      _personIsUserPhoto = false;
+      _photoWarnings = const [];
+      _checkSeq++;
       _videoBytes = bytes;
       _videoName = file.name.isEmpty ? 'turn.mp4' : file.name;
     });
@@ -438,12 +471,83 @@ class _HomeScreenState extends State<HomeScreen> {
       return;
     }
 
+    if (_photoWarnings.isNotEmpty) {
+      _confirmPhotoThenTry();
+      return;
+    }
+    _pushLoading();
+  }
+
+  void _pushLoading() {
     pushEditorial(
       context,
       LoadingScreen(
         personImageBytes: _personImageBytes!,
         garmentImageBytes: _garmentImageBytes!,
         category: _category,
+      ),
+    );
+  }
+
+  // Fotoğrafta sorun varsa kullanıcıya söylenir; karar kullanıcınındır
+  Future<void> _confirmPhotoThenTry() async {
+    final l = context.l10n;
+    final goOn = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l.photoCheckTitle),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            for (final w in _photoWarnings)
+              Padding(padding: const EdgeInsets.only(bottom: 6), child: Text('• ${photoWarning(l, w)}')),
+            const SizedBox(height: 6),
+            Text(l.photoCheckHint, style: Theme.of(ctx).textTheme.bodySmall),
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l.photoCheckChange)),
+          TextButton(onPressed: () => Navigator.pop(ctx, true), child: Text(l.photoCheckContinue)),
+        ],
+      ),
+    );
+    if (!mounted || goOn != true) return;
+    _pushLoading();
+  }
+
+  Widget _buildPhotoWarnings() {
+    final l = context.l10n;
+    final t = context.tokens;
+    final text = Theme.of(context).textTheme;
+    return Container(
+      key: const Key('photoWarnings'),
+      width: double.infinity,
+      margin: const EdgeInsets.only(top: 14),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(SeeItOnTokens.radiusMd),
+        border: Border.all(color: t.danger),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.warning_amber_rounded, color: t.danger, size: 18),
+              const SizedBox(width: 8),
+              Expanded(child: Text(l.photoCheckTitle, style: text.labelLarge!.copyWith(color: t.danger))),
+            ],
+          ),
+          const SizedBox(height: 8),
+          for (final w in _photoWarnings)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 4),
+              child: Text('• ${photoWarning(l, w)}', style: text.bodySmall!.copyWith(height: 1.4)),
+            ),
+          const SizedBox(height: 4),
+          Text(l.photoCheckHint, style: text.bodySmall!.copyWith(color: t.muted, height: 1.4)),
+        ],
       ),
     );
   }
@@ -496,7 +600,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 options: [for (final id in _categoryIcons.keys) (id, categoryName(l, id))],
                 icons: _categoryIcons,
                 value: _category,
-                onChanged: (id) => setState(() => _category = id),
+                onChanged: (id) {
+                  setState(() => _category = id);
+                  _checkPhoto(); // denenecek bölge değişti
+                },
               ),
               const SizedBox(height: 20),
 
@@ -519,6 +626,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           _buildCardButton(Icons.threesixty, l.homeSpinVideo, _pickVideo),
                           _buildCardButton(Icons.videocam_outlined, l.homeLive, _openLive),
                         ],
+                        footer: _videoBytes == null && _photoWarnings.isNotEmpty ? _buildPhotoWarnings() : null,
                       ),
                       const SizedBox(height: 16),
                       _buildUploadCard(
