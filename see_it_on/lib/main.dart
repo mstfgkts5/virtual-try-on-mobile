@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'core/consent_controller.dart';
@@ -6,6 +7,7 @@ import 'core/l10n_ext.dart';
 import 'core/locale_controller.dart';
 import 'core/theme_mode_controller.dart';
 import 'screens/auth_gate.dart';
+import 'services/api_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,6 +21,8 @@ Future<void> main() async {
   localeController = await LocaleController.load();
   themeModeController = await ThemeModeController.load();
   consentController = await ConsentController.load();
+  // Telefon uygulamasında Ayarlar'dan girilen sunucu adresi (web'de sayfanın adresi kullanılır)
+  if (!kIsWeb) await ApiService().loadSavedBaseUrl();
 
   runApp(const SeeItOnApp());
 }

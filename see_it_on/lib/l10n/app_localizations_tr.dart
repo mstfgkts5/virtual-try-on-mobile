@@ -768,22 +768,50 @@ class AppLocalizationsTr extends AppLocalizations {
       'Fotoğrafın çözünürlüğü düşük; daha net bir fotoğraf kullan.';
 
   @override
-  String get loadingErrorTitle => 'Deneme tamamlanamadı';
+  String get loadingErrorTitle =>
+      'Deneme tamamlanamadı';
 
   @override
-  String get actionRetry => 'Tekrar dene';
+  String get actionRetry =>
+      'Tekrar dene';
 
   @override
-  String get actionGoBack => 'Geri dön';
+  String get actionGoBack =>
+      'Geri dön';
 
   @override
   String get loadingDemoHint =>
       'Bu manken ve kıyafet için önceden üretilmiş bir sonuç var; sunucu olmadan gösterilebilir.';
 
   @override
-  String get loadingShowDemo => 'Örnek sonucu göster';
+  String get loadingShowDemo =>
+      'Örnek sonucu göster';
 
   @override
   String get resultDemoBadge =>
       'Örnek sonuç: sunucu kapalıyken önceden üretilmiş sonuç gösteriliyor.';
+
+  @override
+  String get settingsServer =>
+      'SUNUCU';
+
+  @override
+  String get settingsServerHint =>
+      'Yapay zeka sunucusunun adresi. Telefon ve bilgisayar aynı ağdayken bilgisayarın IP adresini yaz, örneğin 172.20.10.2:8000.';
+
+  @override
+  String get settingsServerSave =>
+      'Kaydet ve bağlantıyı dene';
+
+  @override
+  String get settingsServerOk =>
+      'Sunucuya bağlanıldı.';
+
+  @override
+  String get settingsServerFail =>
+      'Sunucuya ulaşılamadı. Adresi ve iki cihazın aynı ağda olduğunu kontrol et.';
+
+  @override
+  String get settingsServerInvalid =>
+      'Geçerli bir adres yaz, örneğin 172.20.10.2:8000.';
 }

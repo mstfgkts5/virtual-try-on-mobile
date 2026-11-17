@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -5,15 +6,28 @@ import '../core/design/widgets.dart';
 import '../core/l10n_ext.dart';
 import '../core/locale_controller.dart';
 import '../core/theme_mode_controller.dart';
+import '../services/api_service.dart';
 import '../services/wardrobe_repository.dart';
+import '../widgets/server_address_section.dart';
 import 'consent_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
   /// [userEmail] verilmezse Supabase oturumundan okunur; [onSignOut] verilmezse
   /// Supabase'den çıkış yapılır. İkisi de yalnızca testlerde dışarıdan verilir.
   /// [onDeleteAccount] verilmezse Supabase'deki tüm veriler ve hesap silinir (testlerde dışarıdan verilir).
-  const SettingsScreen({super.key, this.userEmail, this.onSignOut, this.onDeleteAccount});
+  /// [showServer] verilmezse sunucu adresi yalnızca telefon uygulamasında gösterilir
+  /// (web'de adres sayfanın açıldığı bilgisayardan bilinir). [api] testlerde sahte servistir.
+  const SettingsScreen({
+    super.key,
+    this.userEmail,
+    this.onSignOut,
+    this.onDeleteAccount,
+    this.showServer,
+    this.api,
+  });
 
+  final bool? showServer;
+  final ApiService? api;
   final String? userEmail;
   final Future<void> Function()? onSignOut;
   final Future<void> Function()? onDeleteAccount;
@@ -119,6 +133,10 @@ class SettingsScreen extends StatelessWidget {
                   onChanged: themeModeController.setMode,
                 ),
               ),
+              if (showServer ?? !kIsWeb) ...[
+                const HairlineDivider(verticalPadding: 24),
+                ServerAddressSection(api: api),
+              ],
               const HairlineDivider(verticalPadding: 24),
               EditorialOverline(l.settingsPrivacy),
               const SizedBox(height: 10),

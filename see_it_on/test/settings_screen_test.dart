@@ -165,6 +165,9 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('GİZLİLİK'), findsOneWidget);
     expect(find.text('Hesabımı ve verilerimi sil'), findsNothing);
+    // Sunucu bölümü (telefon uygulaması) ekranı uzattığı için düğme kaydırılarak görünür hale getirilir
+    await tester.ensureVisible(find.text('KVKK aydınlatma metni'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('KVKK aydınlatma metni'));
     await tester.pumpAndSettle();
     expect(find.text('Fotoğrafların nasıl işlenir?'), findsOneWidget);

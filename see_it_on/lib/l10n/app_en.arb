@@ -227,5 +227,11 @@
   "actionGoBack": "Go back",
   "loadingDemoHint": "A result for this mannequin and garment was generated earlier and can be shown without the server.",
   "loadingShowDemo": "Show sample result",
-  "resultDemoBadge": "Sample result: shown from a result generated earlier, because the server is offline."
+  "resultDemoBadge": "Sample result: shown from a result generated earlier, because the server is offline.",
+  "settingsServer": "SERVER",
+  "settingsServerHint": "Address of the AI server. With the phone and the computer on the same network, enter the computer's IP address, for example 172.20.10.2:8000.",
+  "settingsServerSave": "Save and test the connection",
+  "settingsServerOk": "Connected to the server.",
+  "settingsServerFail": "Could not reach the server. Check the address and that both devices are on the same network.",
+  "settingsServerInvalid": "Enter a valid address, for example 172.20.10.2:8000."
 }

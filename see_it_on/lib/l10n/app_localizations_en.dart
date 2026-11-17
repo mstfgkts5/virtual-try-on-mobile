@@ -768,22 +768,50 @@ class AppLocalizationsEn extends AppLocalizations {
       'The photo resolution is low; use a sharper photo.';
 
   @override
-  String get loadingErrorTitle => 'Try-on could not finish';
+  String get loadingErrorTitle =>
+      'Try-on could not finish';
 
   @override
-  String get actionRetry => 'Try again';
+  String get actionRetry =>
+      'Try again';
 
   @override
-  String get actionGoBack => 'Go back';
+  String get actionGoBack =>
+      'Go back';
 
   @override
   String get loadingDemoHint =>
       'A result for this mannequin and garment was generated earlier and can be shown without the server.';
 
   @override
-  String get loadingShowDemo => 'Show sample result';
+  String get loadingShowDemo =>
+      'Show sample result';
 
   @override
   String get resultDemoBadge =>
       'Sample result: shown from a result generated earlier, because the server is offline.';
+
+  @override
+  String get settingsServer =>
+      'SERVER';
+
+  @override
+  String get settingsServerHint =>
+      'Address of the AI server. With the phone and the computer on the same network, enter the computer\'s IP address, for example 172.20.10.2:8000.';
+
+  @override
+  String get settingsServerSave =>
+      'Save and test the connection';
+
+  @override
+  String get settingsServerOk =>
+      'Connected to the server.';
+
+  @override
+  String get settingsServerFail =>
+      'Could not reach the server. Check the address and that both devices are on the same network.';
+
+  @override
+  String get settingsServerInvalid =>
+      'Enter a valid address, for example 172.20.10.2:8000.';
 }

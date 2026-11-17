@@ -1465,6 +1465,42 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Örnek sonuç: sunucu kapalıyken önceden üretilmiş sonuç gösteriliyor.'**
   String get resultDemoBadge;
+
+  /// No description provided for @settingsServer.
+  ///
+  /// In tr, this message translates to:
+  /// **'SUNUCU'**
+  String get settingsServer;
+
+  /// No description provided for @settingsServerHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yapay zeka sunucusunun adresi. Telefon ve bilgisayar aynı ağdayken bilgisayarın IP adresini yaz, örneğin 172.20.10.2:8000.'**
+  String get settingsServerHint;
+
+  /// No description provided for @settingsServerSave.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kaydet ve bağlantıyı dene'**
+  String get settingsServerSave;
+
+  /// No description provided for @settingsServerOk.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sunucuya bağlanıldı.'**
+  String get settingsServerOk;
+
+  /// No description provided for @settingsServerFail.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sunucuya ulaşılamadı. Adresi ve iki cihazın aynı ağda olduğunu kontrol et.'**
+  String get settingsServerFail;
+
+  /// No description provided for @settingsServerInvalid.
+  ///
+  /// In tr, this message translates to:
+  /// **'Geçerli bir adres yaz, örneğin 172.20.10.2:8000.'**
+  String get settingsServerInvalid;
 }
 
 class _AppLocalizationsDelegate

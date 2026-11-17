@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import '../core/l10n_ext.dart';
 import '../core/constants.dart';
 import '../models/spin.dart';
@@ -19,6 +20,45 @@ class ApiService {
   String get baseUrl => _baseUrl;
   set baseUrl(String url) {
     _baseUrl = url.trim().replaceAll(RegExp(r'/+$'), '');
+  }
+
+  // Telefondaki uygulama (APK) sunucunun yerini bilemez: kullanıcı Ayarlar'dan bilgisayarın
+  // adresini girer, cihazda saklanır ve açılışta yüklenir. Web'de adres sayfanın açıldığı
+  // bilgisayardan zaten bilinir.
+  static const serverPrefKey = 'server_url';
+  static const defaultPort = 8000;
+
+  /// '172.20.10.2' -> 'http://172.20.10.2:8000'; şema ve port yazılmışsa korunur.
+  /// Adres anlamsızsa null döner.
+  static String? normalizeServerUrl(String input) {
+    var text = input.trim().replaceAll(RegExp(r'/+$'), '');
+    if (text.isEmpty || text.contains(' ')) return null;
+    if (!text.contains('://')) text = 'http://$text';
+    final uri = Uri.tryParse(text);
+    if (uri == null || uri.host.isEmpty || !(uri.scheme == 'http' || uri.scheme == 'https')) return null;
+    if (uri.path.isNotEmpty && uri.path != '/') return null;
+    final port = uri.hasPort ? uri.port : defaultPort;
+    return '${uri.scheme}://${uri.host}:$port';
+  }
+
+  /// Kayıtlı sunucu adresini yükler; yoksa veya okunamazsa varsayılan adres kalır.
+  Future<void> loadSavedBaseUrl() async {
+    try {
+      final saved = (await SharedPreferences.getInstance()).getString(serverPrefKey);
+      if (saved != null && saved.isNotEmpty) baseUrl = saved;
+    } catch (e) {
+      debugPrint('[ApiService] Kayıtlı sunucu adresi okunamadı: $e');
+    }
+  }
+
+  /// Adresi hemen kullanır ve cihazda saklar; saklanamazsa yalnızca bu oturumda geçerli kalır.
+  Future<void> saveBaseUrl(String url) async {
+    baseUrl = url;
+    try {
+      await (await SharedPreferences.getInstance()).setString(serverPrefKey, _baseUrl);
+    } catch (e) {
+      debugPrint('[ApiService] Sunucu adresi kaydedilemedi: $e');
+    }
   }
 
   /// Checks if the FastAPI backend is running and reachable

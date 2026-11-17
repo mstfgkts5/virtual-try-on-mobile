@@ -366,5 +366,11 @@
   "actionGoBack": "Geri dön",
   "loadingDemoHint": "Bu manken ve kıyafet için önceden üretilmiş bir sonuç var; sunucu olmadan gösterilebilir.",
   "loadingShowDemo": "Örnek sonucu göster",
-  "resultDemoBadge": "Örnek sonuç: sunucu kapalıyken önceden üretilmiş sonuç gösteriliyor."
+  "resultDemoBadge": "Örnek sonuç: sunucu kapalıyken önceden üretilmiş sonuç gösteriliyor.",
+  "settingsServer": "SUNUCU",
+  "settingsServerHint": "Yapay zeka sunucusunun adresi. Telefon ve bilgisayar aynı ağdayken bilgisayarın IP adresini yaz, örneğin 172.20.10.2:8000.",
+  "settingsServerSave": "Kaydet ve bağlantıyı dene",
+  "settingsServerOk": "Sunucuya bağlanıldı.",
+  "settingsServerFail": "Sunucuya ulaşılamadı. Adresi ve iki cihazın aynı ağda olduğunu kontrol et.",
+  "settingsServerInvalid": "Geçerli bir adres yaz, örneğin 172.20.10.2:8000."
 }
