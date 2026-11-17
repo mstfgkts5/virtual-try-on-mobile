@@ -2,9 +2,35 @@
 
 Bütün ölçümler aynı bilgisayarda, yerel GPU ile yapıldı: **NVIDIA GeForce RTX 5060 Laptop (8 GB)**, PyTorch bf16, CatVTON + DensePose + SCHP. Süreler yalnızca modelin çalışmasını kapsar (maske + difüzyon + birleştirme); ağ aktarımı hariçtir.
 
+## 0. Son sistem ölçümleri (2026-11-09 ve 2026-11-12) – güncel sonuçlar
+
+Aşağıdaki 1–3. bölümler ayarlama sürecinin geçmişidir (DDIM dönemi). Güncel sonuçlar bu bölümdedir; ham veriler `docs/evidence/` klasöründe.
+
+**Hız ve güvenilirlik** (`tests/bench_report.py`, 2026-11-09, şarjda, DPM-Solver++ 8 adım · 576×768; her ayar 10 istek, ısınma sonrası):
+
+| Profil | Kategori | İstek | Model süresi ort. ± std (sn) | En az–en çok (sn) | Toplam istek ort. (sn) |
+|---|---|---|---|---|---|
+| Tam, 576×768 | Üst giyim | 10 | 4,88 ± 0,04 | 4,81–4,93 | 5,12 |
+| Tam, 576×768 | Alt giyim | 10 | 5,00 ± 0,12 | 4,88–5,17 | 5,28 |
+| Tam, 576×768 | Tam kıyafet | 10 | 5,28 ± 0,05 | 5,18–5,35 | 5,55 |
+| Önizleme, 384×512 | Üst giyim | 10 | 1,06 ± 0,02 | 1,03–1,08 | 1,15 |
+
+- Başarı oranı: 40 / 40 (%100), hata yok.
+- Art arda tek istek: dakikada 11,3 görsel. Aynı anda 3 istek sıraya girer ve 5,7 / 11,3 / 17,0 sn'de biter (3 / 3 başarılı).
+- Bu süreler maske üretimi ve birleştirmeyi içerir; bu yüzden aşağıdaki yalnızca difüzyon süreleri (4,4 sn, 0,75 sn) 0,4–0,5 sn daha düşüktür.
+
+**Kalite** (`tests/quality_vitonhd.py`, 2026-11-12, VITON-HD test bölümünün ilk 50 eşli örneği, üst giyim, 576×768):
+
+| Ölçüt | SeeItOn | CatVTON makalesi (tüm test seti) |
+|---|---|---|
+| SSIM | 0,856 ± 0,055 | 0,875 |
+| LPIPS (AlexNet) | 0,146 ± 0,048 | 0,071 |
+
+Doğrudan karşılaştırılabilir değildir (çözünürlük, adım sayısı, LPIPS omurgası ve örnek sayısı farklı). Bu koşu pilde yapıldığı için görsel başına 10,2 ± 0,5 sn sürdü; aynı betiğin şarjda yarım kalan koşusunda ilk 13 örnek 5,1 sn sürdü.
+
 ## 1. Kategori başına süre (varsayılan profil)
 
-Varsayılan profil: **15 adım · 576×768 · rehberlik 2,5**. Ölçüm: 2026-11-07, bilgisayar şarjda, Windows güç planı "Performance", her test 3 tekrar (ısınmadan sonra). Betik: `tests/bench_categories.py`.
+Varsayılan profil: **15 adım · 576×768 · rehberlik 2,5**. Ölçüm: 2026-11-07, bilgisayar şarjda, Windows güç planı "Performance", her test 3 tekrar (ısınmadan sonra). Betik: `tests/bench_categories.py`. **Not:** Bu tablo DDIM dönemine aittir; 2026-11-07 itibarıyla DPM-Solver++ 8 adımla süreler yaklaşık yarıya indi (bkz. 2. bölüm).
 
 | Test | Tekrar | Ortalama (sn) | En az | En çok | En yüksek VRAM (MB) |
 |---|---|---|---|---|---|
@@ -32,18 +58,18 @@ Aynı manken ve ceketle, tek görsel. Betik: `tests/bench_speed.py`. Bu ölçüm
 
 **Sonuç:** Rehberliği kapatmak süreyi yarıya indiriyor ama kıyafet desenini siliyor; çözünürlük ve adım sayısını düşürmek kaliteyi koruyarak **4,4 kat** hızlandırdı. Seçilen profil şarjda tek görseli ~8 sn'de üretiyor.
 
-### Canlı deneme önizlemesi
+### Örnekleyici: DDIM → DPM-Solver++ (2026-11-07, şarjda)
 
-`BENCH_PREVIEW=1 tests/bench_speed.py` ile, bilgisayar şarjdayken (2026-11-07):
+CatVTON'un varsayılan örnekleyicisi DDIM (eta=1) az adımda kumaşı bozuyor. DPM-Solver++ (2. derece) aynı kaliteye çok daha az adımda ulaşıyor. Model süresi, maske (~0,25 sn) hariç:
 
-| Adım | Çözünürlük | Süre (sn) | Kalite |
+| Profil | DDIM | DPM-Solver++ | Seçim |
 |---|---|---|---|
-| 15 | 576×768 | ~8,2 | Tam kalite (kaydet) |
-| **10** | **384×512** | **2,15** | **Seçilen önizleme profili** |
-| 8 | 384×512 | 1,8 | Kenarlarda bozulma artıyor |
-| 6 | 320×448 | 1,1 | Kullanılamaz |
+| Tam kalite, 576×768 | 15 adım: 8,2 sn | 8 adım: 4,4 sn (istekte ~5 sn) | **8 adım** |
+| Canlı önizleme, 384×512 | 10 adım: 1,9 sn | 3 adım: 0,75 sn | **3 adım** |
+| 384×512, 4 adım | desen dağılıyor | 0,86 sn, temiz | — |
+| 288×384 / 320×448 | — | 0,5–0,7 sn, kumaş bozuk | Kullanılmadı (model bu boyutta kötü) |
 
-Ağ ve kamera ile birlikte canlı ekranda görüntü ~3 sn'de bir yenilenir.
+Canlı ekranda iki istek üst üste gönderilir (biri GPU'dayken diğeri yüklenir) ve önizleme küçük JPEG döner (~24 KB, PNG ~10 kat büyük). Bilgisayarın kendisinden ölçülen istek süresi 1,2 sn, yani görüntü ~1 sn'de bir yenilenir.
 
 ## 3. Güç durumunun etkisi
 

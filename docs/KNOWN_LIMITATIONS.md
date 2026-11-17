@@ -24,7 +24,7 @@ Rapordaki "Sınırlılıklar" bölümü için. Her madde gözlem, sebep ve uygul
 ## 4. 360° dönüş: kareler ayrı üretilir
 - **Gözlem:** Dönüşteki her kare CatVTON ile ayrı giydirildiği için kumaşın kırışıkları ve deseni kareden kareye biraz değişebilir; ince desenler (kareli, ekose) düz renge yaklaşabilir.
 - **Sebep:** Model kareler arası tutarlılık bilmez; gerçek 3D/video modeli 8 GB VRAM'e sığmıyor.
-- **Uygulamada:** 12 giydirilmiş ana kare arasına RIFE ile 3'er ara kare eklenir (48 kare); görüntüleyici parmakla ve eylemsizlikle döner. Ölçüm (2026-11-07, 576×768, 15 adım): ana kare ~8–17 sn (bilgisayar şarjda/pilde), 3 ara kare 0,09 sn → 12 karelik dönüş ~1,5–3,5 dk.
+- **Uygulamada:** 12 giydirilmiş ana kare arasına RIFE ile 3'er ara kare eklenir (48 kare); görüntüleyici parmakla ve eylemsizlikle döner. Ölçüm (2026-11-07, 576×768, 15 adım): ana kare ~8–17 sn (bilgisayar şarjda/pilde), 3 ara kare 0,09 sn → 12 karelik dönüş ~1,5–3,5 dk (DPM-Solver++ 8 adıma geçişle yaklaşık yarısı).
 - **Ara kare sınırı:** Komşu ana kareler arası açı büyükse (≥60°) ara karelerde hayalet/çift görüntü olur. Hazır sette tam önden görünüm olmadığı ve yarım tur aynalandığı için turun kapandığı noktada yüzde çift görüntü var; gerçek bir dönüş videosundan üretilen sette bu olmaz.
 
 ## 5. 360° dönüş: sekme kapanınca GPU'nun boşalma süresi
@@ -36,6 +36,6 @@ Rapordaki "Sınırlılıklar" bölümü için. Her madde gözlem, sebep ve uygul
 - **Gözlem:** iPhone varsayılan olarak HEVC `.MOV` kaydeder. Backend PyAV (kendi ffmpeg'i) ile bunu okur ve dikey döndürmeyi uygular; video yine açılamazsa kullanıcıya "Ayarlar → Kamera → Formatlar → En Uyumlu" ipucu gösterilir.
 
 ## 7. Canlı deneme gerçek zamanlı değil
-- **Gözlem:** "Canlı dene" ekranında kamera açık kalır, ama giydirilmiş görüntü ~2–3 sn'de bir yenilenir; hareket sırasında görüntü bir önceki duruşu gösterir.
+- **Gözlem:** "Canlı dene" ekranında kamera açık kalır, ama giydirilmiş görüntü ~1 sn'de bir yenilenir; hareket sırasında görüntü bir önceki duruşu gösterir.
 - **Sebep:** Difüzyon modeli kare başına birkaç saniye ister; gerçek zamanlı (≥15 kare/sn) deneme, sunucu sınıfı GPU'larda çalışan özel video modelleri gerektirir.
-- **Uygulamada:** Önizleme 384×512 ve 10 adımla üretilir (~2,2 sn, şarjda); düşük adımda iç giysi ve kenarlarda bozulma görülebilir. "Bu kareyi kaydet" son kareyi tam kaliteyle (576×768, 15 adım) yeniden üretir.
+- **Uygulamada:** Önizleme 384×512'de DPM-Solver++ ile 3 adımda üretilir (~1 sn, şarjda); kenarlarda hafif bozulma görülebilir. "Bu kareyi kaydet" son kareyi tam kaliteyle (576×768, 8 adım) yeniden üretir. Daha küçük çözünürlükte (288×384) süre 0,5 sn'ye iner ama model kumaşı bozuyor.

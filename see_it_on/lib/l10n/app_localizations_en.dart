@@ -235,7 +235,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loadingTitle => 'Dressing you up •';
 
   @override
-  String get loadingEta => 'Estimated time ~20 s';
+  String get loadingEta => 'Estimated time ~15 s';
 
   @override
   String get loadingFinalTouches => 'Final touches...';
@@ -250,7 +250,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loadingStepMaskDesc => 'DensePose + SCHP find the region to dress';
 
   @override
-  String get loadingStepDiffusion => 'Diffusion (15 steps)';
+  String get loadingStepDiffusion => 'Diffusion (8 steps)';
 
   @override
   String get loadingStepDiffusionDesc =>
@@ -632,4 +632,158 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeLive => 'Live try-on';
+
+  @override
+  String get garmentShirt => 'Gingham Shirt';
+
+  @override
+  String get garmentHoodie => 'Hoodie';
+
+  @override
+  String get garmentSweater => 'Wave Knit Sweater';
+
+  @override
+  String get garmentTurtleneck => 'Turtleneck Sweater';
+
+  @override
+  String get consentOverline => 'PRIVACY NOTICE · KVKK';
+
+  @override
+  String get consentTitle => 'How are your photos processed?';
+
+  @override
+  String get consentIntro =>
+      'SeeItOn processes the photos you upload so it can show a garment on you. Under the Turkish Personal Data Protection Law No. 6698 (KVKK) we inform you and ask for your explicit consent.';
+
+  @override
+  String get consentDataTitle => 'WHAT DATA';
+
+  @override
+  String get consentDataBody =>
+      'Your email address for the account; the person and garment photos you upload for a try-on (your face and body may be visible); the result images you choose to save to your wardrobe.';
+
+  @override
+  String get consentPurposeTitle => 'FOR WHAT PURPOSE';
+
+  @override
+  String get consentPurposeBody =>
+      'Only to produce the try-on result you request and to show you the results you choose to save. Your photos are not used for identification, advertising or model training, and are not shared with third parties.';
+
+  @override
+  String get consentStorageTitle => 'WHERE AND FOR HOW LONG';
+
+  @override
+  String get consentStorageBody =>
+      'Try-on photos are processed in the AI server\'s memory, never written to disk, and discarded once the response is sent. Saved results are kept in a private folder only you can access, until you delete them.';
+
+  @override
+  String get consentRightsTitle => 'YOUR RIGHTS';
+
+  @override
+  String get consentRightsBody =>
+      'Under Article 11 of KVKK you may learn whether your data is processed and ask for it to be corrected or deleted. You can delete saved items one by one, permanently delete your account and all data in Settings, or withdraw this consent.';
+
+  @override
+  String get consentCheckbox =>
+      'I have read the privacy notice and give my explicit consent to my photos being processed for virtual try-on.';
+
+  @override
+  String get consentAccept => 'Accept and continue';
+
+  @override
+  String get consentWithdraw => 'Withdraw my consent';
+
+  @override
+  String get consentWithdrawn =>
+      'Consent withdrawn. You need to accept the notice again to upload photos.';
+
+  @override
+  String get settingsPrivacy => 'PRIVACY';
+
+  @override
+  String get settingsPrivacyNotice => 'Privacy notice (KVKK)';
+
+  @override
+  String get settingsDeleteAccount => 'Delete my account and data';
+
+  @override
+  String get settingsDeleteHint =>
+      'All wardrobe images, records and your account are permanently deleted.';
+
+  @override
+  String get settingsDeleteConfirmTitle => 'Delete account?';
+
+  @override
+  String get settingsDeleteConfirmBody =>
+      'All saved results and your account will be permanently deleted. This cannot be undone.';
+
+  @override
+  String get settingsDeleteConfirmYes => 'Delete permanently';
+
+  @override
+  String get settingsDeleteCancel => 'Cancel';
+
+  @override
+  String get settingsDeleteDone =>
+      'Your account and all your data were deleted.';
+
+  @override
+  String get settingsDeleteFailed =>
+      'Could not delete the account. Check your connection and try again.';
+
+  @override
+  String get photoCheckTitle => 'This photo may give a poor result';
+
+  @override
+  String get photoCheckHint =>
+      'For the best result: one person, facing the camera, standing, a plain background and fitted clothes.';
+
+  @override
+  String get photoCheckContinue => 'Try anyway';
+
+  @override
+  String get photoCheckChange => 'Change photo';
+
+  @override
+  String get photoWarnNoPerson => 'No person was found in the photo.';
+
+  @override
+  String get photoWarnMultiple =>
+      'There is more than one person in the photo; use a photo of one person.';
+
+  @override
+  String get photoWarnBack =>
+      'The face is not visible; use a photo taken from the front.';
+
+  @override
+  String get photoWarnSmall =>
+      'The person is too small in the frame; take a closer, full-length photo.';
+
+  @override
+  String get photoWarnRegion =>
+      'The area to try on (upper or lower body) is not fully visible.';
+
+  @override
+  String get photoWarnLowRes =>
+      'The photo resolution is low; use a sharper photo.';
+
+  @override
+  String get loadingErrorTitle => 'Try-on could not finish';
+
+  @override
+  String get actionRetry => 'Try again';
+
+  @override
+  String get actionGoBack => 'Go back';
+
+  @override
+  String get loadingDemoHint =>
+      'A result for this mannequin and garment was generated earlier and can be shown without the server.';
+
+  @override
+  String get loadingShowDemo => 'Show sample result';
+
+  @override
+  String get resultDemoBadge =>
+      'Sample result: shown from a result generated earlier, because the server is offline.';
 }

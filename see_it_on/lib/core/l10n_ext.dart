@@ -33,10 +33,25 @@ String mannequinName(AppLocalizations l, String id) {
 
 String garmentName(AppLocalizations l, String id) => switch (id) {
       'blazer' => l.garmentBlazer,
+      'shirt-stripe' => l.garmentShirt,
+      'hoodie' => l.garmentHoodie,
+      'sweater-wave' => l.garmentSweater,
+      'turtleneck' => l.garmentTurtleneck,
       'jeans-w' => l.garmentJeans,
       'chino-m' => l.garmentChino,
       'trousers-m' => l.garmentTrousers,
       'skirt-w' => l.garmentSkirt,
       'shorts-w' => l.garmentShorts,
       _ => id,
+    };
+
+/// Backend'in fotoğraf uyarı kodu -> kullanıcı dilinde açıklama (photo_check.py ile aynı kodlar)
+String photoWarning(AppLocalizations l, String code) => switch (code) {
+      'no_person' => l.photoWarnNoPerson,
+      'multiple_people' => l.photoWarnMultiple,
+      'back_view' => l.photoWarnBack,
+      'person_small' => l.photoWarnSmall,
+      'region_missing' => l.photoWarnRegion,
+      'low_resolution' => l.photoWarnLowRes,
+      _ => code,
     };

@@ -1,0 +1,397 @@
+{
+ "note": "backend/make_demo_results.py ile üretildi; 768x1024, 8 adım, seed 42; elenen çiftler REJECTED listesinde",
+ "items": [
+  {
+   "mannequin": "w-s",
+   "garment": "blazer",
+   "category": "upper",
+   "result": "w-s__blazer.jpg",
+   "person": "w-s__person_upper.jpg",
+   "render_time": 21.87
+  },
+  {
+   "mannequin": "w-s",
+   "garment": "shirt-stripe",
+   "category": "upper",
+   "result": "w-s__shirt-stripe.jpg",
+   "person": "w-s__person_upper.jpg",
+   "render_time": 16.03
+  },
+  {
+   "mannequin": "w-s",
+   "garment": "hoodie",
+   "category": "upper",
+   "result": "w-s__hoodie.jpg",
+   "person": "w-s__person_upper.jpg",
+   "render_time": 15.86
+  },
+  {
+   "mannequin": "w-s",
+   "garment": "sweater-wave",
+   "category": "upper",
+   "result": "w-s__sweater-wave.jpg",
+   "person": "w-s__person_upper.jpg",
+   "render_time": 16.08
+  },
+  {
+   "mannequin": "w-s",
+   "garment": "turtleneck",
+   "category": "upper",
+   "result": "w-s__turtleneck.jpg",
+   "person": "w-s__person_upper.jpg",
+   "render_time": 16.04
+  },
+  {
+   "mannequin": "w-s",
+   "garment": "jeans-w",
+   "category": "lower",
+   "result": "w-s__jeans-w.jpg",
+   "person": "w-s__person_lower.jpg",
+   "render_time": 17.03
+  },
+  {
+   "mannequin": "w-m",
+   "garment": "blazer",
+   "category": "upper",
+   "result": "w-m__blazer.jpg",
+   "person": "w-m__person_upper.jpg",
+   "render_time": 17.22
+  },
+  {
+   "mannequin": "w-m",
+   "garment": "shirt-stripe",
+   "category": "upper",
+   "result": "w-m__shirt-stripe.jpg",
+   "person": "w-m__person_upper.jpg",
+   "render_time": 16.84
+  },
+  {
+   "mannequin": "w-m",
+   "garment": "hoodie",
+   "category": "upper",
+   "result": "w-m__hoodie.jpg",
+   "person": "w-m__person_upper.jpg",
+   "render_time": 16.4
+  },
+  {
+   "mannequin": "w-m",
+   "garment": "sweater-wave",
+   "category": "upper",
+   "result": "w-m__sweater-wave.jpg",
+   "person": "w-m__person_upper.jpg",
+   "render_time": 16.72
+  },
+  {
+   "mannequin": "w-m",
+   "garment": "turtleneck",
+   "category": "upper",
+   "result": "w-m__turtleneck.jpg",
+   "person": "w-m__person_upper.jpg",
+   "render_time": 16.44
+  },
+  {
+   "mannequin": "w-m",
+   "garment": "jeans-w",
+   "category": "lower",
+   "result": "w-m__jeans-w.jpg",
+   "person": "w-m__person_lower.jpg",
+   "render_time": 17.43
+  },
+  {
+   "mannequin": "w-l",
+   "garment": "blazer",
+   "category": "upper",
+   "result": "w-l__blazer.jpg",
+   "person": "w-l__person_upper.jpg",
+   "render_time": 17.25
+  },
+  {
+   "mannequin": "w-l",
+   "garment": "shirt-stripe",
+   "category": "upper",
+   "result": "w-l__shirt-stripe.jpg",
+   "person": "w-l__person_upper.jpg",
+   "render_time": 16.96
+  },
+  {
+   "mannequin": "w-l",
+   "garment": "hoodie",
+   "category": "upper",
+   "result": "w-l__hoodie.jpg",
+   "person": "w-l__person_upper.jpg",
+   "render_time": 17.73
+  },
+  {
+   "mannequin": "w-l",
+   "garment": "sweater-wave",
+   "category": "upper",
+   "result": "w-l__sweater-wave.jpg",
+   "person": "w-l__person_upper.jpg",
+   "render_time": 16.36
+  },
+  {
+   "mannequin": "w-l",
+   "garment": "turtleneck",
+   "category": "upper",
+   "result": "w-l__turtleneck.jpg",
+   "person": "w-l__person_upper.jpg",
+   "render_time": 16.67
+  },
+  {
+   "mannequin": "w-l",
+   "garment": "jeans-w",
+   "category": "lower",
+   "result": "w-l__jeans-w.jpg",
+   "person": "w-l__person_lower.jpg",
+   "render_time": 17.52
+  },
+  {
+   "mannequin": "w-xl",
+   "garment": "blazer",
+   "category": "upper",
+   "result": "w-xl__blazer.jpg",
+   "person": "w-xl__person_upper.jpg",
+   "render_time": 16.98
+  },
+  {
+   "mannequin": "w-xl",
+   "garment": "shirt-stripe",
+   "category": "upper",
+   "result": "w-xl__shirt-stripe.jpg",
+   "person": "w-xl__person_upper.jpg",
+   "render_time": 16.52
+  },
+  {
+   "mannequin": "w-xl",
+   "garment": "hoodie",
+   "category": "upper",
+   "result": "w-xl__hoodie.jpg",
+   "person": "w-xl__person_upper.jpg",
+   "render_time": 16.49
+  },
+  {
+   "mannequin": "w-xl",
+   "garment": "sweater-wave",
+   "category": "upper",
+   "result": "w-xl__sweater-wave.jpg",
+   "person": "w-xl__person_upper.jpg",
+   "render_time": 16.26
+  },
+  {
+   "mannequin": "w-xl",
+   "garment": "turtleneck",
+   "category": "upper",
+   "result": "w-xl__turtleneck.jpg",
+   "person": "w-xl__person_upper.jpg",
+   "render_time": 16.71
+  },
+  {
+   "mannequin": "w-xl",
+   "garment": "jeans-w",
+   "category": "lower",
+   "result": "w-xl__jeans-w.jpg",
+   "person": "w-xl__person_lower.jpg",
+   "render_time": 17.66
+  },
+  {
+   "mannequin": "m-s",
+   "garment": "blazer",
+   "category": "upper",
+   "result": "m-s__blazer.jpg",
+   "person": "m-s__person_upper.jpg",
+   "render_time": 17.86
+  },
+  {
+   "mannequin": "m-s",
+   "garment": "shirt-stripe",
+   "category": "upper",
+   "result": "m-s__shirt-stripe.jpg",
+   "person": "m-s__person_upper.jpg",
+   "render_time": 17.4
+  },
+  {
+   "mannequin": "m-s",
+   "garment": "hoodie",
+   "category": "upper",
+   "result": "m-s__hoodie.jpg",
+   "person": "m-s__person_upper.jpg",
+   "render_time": 17.47
+  },
+  {
+   "mannequin": "m-s",
+   "garment": "sweater-wave",
+   "category": "upper",
+   "result": "m-s__sweater-wave.jpg",
+   "person": "m-s__person_upper.jpg",
+   "render_time": 17.48
+  },
+  {
+   "mannequin": "m-s",
+   "garment": "turtleneck",
+   "category": "upper",
+   "result": "m-s__turtleneck.jpg",
+   "person": "m-s__person_upper.jpg",
+   "render_time": 17.44
+  },
+  {
+   "mannequin": "m-s",
+   "garment": "chino-m",
+   "category": "lower",
+   "result": "m-s__chino-m.jpg",
+   "person": "m-s__person_lower.jpg",
+   "render_time": 18.32
+  },
+  {
+   "mannequin": "m-s",
+   "garment": "trousers-m",
+   "category": "lower",
+   "result": "m-s__trousers-m.jpg",
+   "person": "m-s__person_lower.jpg",
+   "render_time": 18.06
+  },
+  {
+   "mannequin": "m-m",
+   "garment": "blazer",
+   "category": "upper",
+   "result": "m-m__blazer.jpg",
+   "person": "m-m__person_upper.jpg",
+   "render_time": 17.36
+  },
+  {
+   "mannequin": "m-m",
+   "garment": "shirt-stripe",
+   "category": "upper",
+   "result": "m-m__shirt-stripe.jpg",
+   "person": "m-m__person_upper.jpg",
+   "render_time": 17.02
+  },
+  {
+   "mannequin": "m-m",
+   "garment": "hoodie",
+   "category": "upper",
+   "result": "m-m__hoodie.jpg",
+   "person": "m-m__person_upper.jpg",
+   "render_time": 16.71
+  },
+  {
+   "mannequin": "m-m",
+   "garment": "sweater-wave",
+   "category": "upper",
+   "result": "m-m__sweater-wave.jpg",
+   "person": "m-m__person_upper.jpg",
+   "render_time": 16.9
+  },
+  {
+   "mannequin": "m-m",
+   "garment": "turtleneck",
+   "category": "upper",
+   "result": "m-m__turtleneck.jpg",
+   "person": "m-m__person_upper.jpg",
+   "render_time": 16.64
+  },
+  {
+   "mannequin": "m-m",
+   "garment": "chino-m",
+   "category": "lower",
+   "result": "m-m__chino-m.jpg",
+   "person": "m-m__person_lower.jpg",
+   "render_time": 19.42
+  },
+  {
+   "mannequin": "m-m",
+   "garment": "trousers-m",
+   "category": "lower",
+   "result": "m-m__trousers-m.jpg",
+   "person": "m-m__person_lower.jpg",
+   "render_time": 19.08
+  },
+  {
+   "mannequin": "m-l",
+   "garment": "blazer",
+   "category": "upper",
+   "result": "m-l__blazer.jpg",
+   "person": "m-l__person_upper.jpg",
+   "render_time": 17.29
+  },
+  {
+   "mannequin": "m-l",
+   "garment": "shirt-stripe",
+   "category": "upper",
+   "result": "m-l__shirt-stripe.jpg",
+   "person": "m-l__person_upper.jpg",
+   "render_time": 16.97
+  },
+  {
+   "mannequin": "m-l",
+   "garment": "sweater-wave",
+   "category": "upper",
+   "result": "m-l__sweater-wave.jpg",
+   "person": "m-l__person_upper.jpg",
+   "render_time": 16.64
+  },
+  {
+   "mannequin": "m-l",
+   "garment": "turtleneck",
+   "category": "upper",
+   "result": "m-l__turtleneck.jpg",
+   "person": "m-l__person_upper.jpg",
+   "render_time": 16.53
+  },
+  {
+   "mannequin": "m-l",
+   "garment": "chino-m",
+   "category": "lower",
+   "result": "m-l__chino-m.jpg",
+   "person": "m-l__person_lower.jpg",
+   "render_time": 18.0
+  },
+  {
+   "mannequin": "m-l",
+   "garment": "trousers-m",
+   "category": "lower",
+   "result": "m-l__trousers-m.jpg",
+   "person": "m-l__person_lower.jpg",
+   "render_time": 18.09
+  },
+  {
+   "mannequin": "m-xl",
+   "garment": "blazer",
+   "category": "upper",
+   "result": "m-xl__blazer.jpg",
+   "person": "m-xl__person_upper.jpg",
+   "render_time": 17.02
+  },
+  {
+   "mannequin": "m-xl",
+   "garment": "shirt-stripe",
+   "category": "upper",
+   "result": "m-xl__shirt-stripe.jpg",
+   "person": "m-xl__person_upper.jpg",
+   "render_time": 16.59
+  },
+  {
+   "mannequin": "m-xl",
+   "garment": "turtleneck",
+   "category": "upper",
+   "result": "m-xl__turtleneck.jpg",
+   "person": "m-xl__person_upper.jpg",
+   "render_time": 16.43
+  },
+  {
+   "mannequin": "m-xl",
+   "garment": "chino-m",
+   "category": "lower",
+   "result": "m-xl__chino-m.jpg",
+   "person": "m-xl__person_lower.jpg",
+   "render_time": 17.64
+  },
+  {
+   "mannequin": "m-xl",
+   "garment": "trousers-m",
+   "category": "lower",
+   "result": "m-xl__trousers-m.jpg",
+   "person": "m-xl__person_lower.jpg",
+   "render_time": 17.71
+  }
+ ]
+}

@@ -21,7 +21,7 @@ class TryOnRequest {
   Map<String, String> toFieldsMap() {
     return {
       'category': category.toLowerCase(),
-      'steps': '15', // 15 adım · 576x768: tek görsel ~8–17 sn (30 adım · 768x1024: ~74 sn)
+      'steps': '8', // DPM++ 8 adım · 576x768: tek görsel ~4–9 sn (eski DDIM 30 adım · 768x1024: ~74 sn)
       if (preview) 'preview': 'true',
     };
   }

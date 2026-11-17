@@ -238,7 +238,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get loadingTitle => 'Kıyafet giydiriliyor •';
 
   @override
-  String get loadingEta => 'Tahmini süre ~20 sn';
+  String get loadingEta => 'Tahmini süre ~15 sn';
 
   @override
   String get loadingFinalTouches => 'Son rötuşlar...';
@@ -254,7 +254,7 @@ class AppLocalizationsTr extends AppLocalizations {
       'DensePose + SCHP ile giydirilecek bölge bulunur';
 
   @override
-  String get loadingStepDiffusion => 'Difüzyon (15 adım)';
+  String get loadingStepDiffusion => 'Difüzyon (8 adım)';
 
   @override
   String get loadingStepDiffusionDesc =>
@@ -633,4 +633,157 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get homeLive => 'Canlı dene';
+
+  @override
+  String get garmentShirt => 'Kareli Gömlek';
+
+  @override
+  String get garmentHoodie => 'Kapüşonlu Sweatshirt';
+
+  @override
+  String get garmentSweater => 'Desenli Kazak';
+
+  @override
+  String get garmentTurtleneck => 'Balıkçı Yaka Kazak';
+
+  @override
+  String get consentOverline => 'KVKK · AYDINLATMA METNİ';
+
+  @override
+  String get consentTitle => 'Fotoğrafların nasıl işlenir?';
+
+  @override
+  String get consentIntro =>
+      'SeeItOn, kıyafeti üzerinde gösterebilmek için yüklediğin fotoğrafları işler. 6698 sayılı Kişisel Verilerin Korunması Kanunu (KVKK) kapsamında seni bilgilendiriyor ve açık rızanı istiyoruz.';
+
+  @override
+  String get consentDataTitle => 'HANGİ VERİLER';
+
+  @override
+  String get consentDataBody =>
+      'Hesap için e-posta adresin; deneme için yüklediğin kişi ve kıyafet fotoğrafları (yüzün ve vücudun görünebilir); gardıroba kaydetmeyi seçtiğin sonuç görselleri.';
+
+  @override
+  String get consentPurposeTitle => 'NE AMAÇLA';
+
+  @override
+  String get consentPurposeBody =>
+      'Yalnızca istediğin sanal deneme sonucunu üretmek ve kaydetmeyi seçtiğin sonuçları sana göstermek için. Fotoğrafların kimlik tespiti, reklam veya model eğitimi için kullanılmaz ve üçüncü kişilerle paylaşılmaz.';
+
+  @override
+  String get consentStorageTitle => 'NEREDE VE NE KADAR SÜRE';
+
+  @override
+  String get consentStorageBody =>
+      'Deneme fotoğrafları yapay zeka sunucusunun belleğinde işlenir, diske yazılmaz ve yanıt gönderilince silinir. Kaydettiğin sonuçlar yalnızca senin erişebildiğin özel bir klasörde, sen silene kadar saklanır.';
+
+  @override
+  String get consentRightsTitle => 'HAKLARIN';
+
+  @override
+  String get consentRightsBody =>
+      'KVKK md. 11 uyarınca verilerinin işlenip işlenmediğini öğrenme, düzeltilmesini veya silinmesini isteme haklarına sahipsin. Kayıtlarını tek tek silebilir, Ayarlar\'dan hesabını ve tüm verilerini kalıcı olarak silebilir ya da bu rızayı geri çekebilirsin.';
+
+  @override
+  String get consentCheckbox =>
+      'Aydınlatma metnini okudum; fotoğraflarımın sanal deneme amacıyla işlenmesine açık rıza veriyorum.';
+
+  @override
+  String get consentAccept => 'Onayla ve devam et';
+
+  @override
+  String get consentWithdraw => 'Rızamı geri çek';
+
+  @override
+  String get consentWithdrawn =>
+      'Rızan geri çekildi. Fotoğraf yüklemek için metni yeniden onaylaman gerekir.';
+
+  @override
+  String get settingsPrivacy => 'GİZLİLİK';
+
+  @override
+  String get settingsPrivacyNotice => 'KVKK aydınlatma metni';
+
+  @override
+  String get settingsDeleteAccount => 'Hesabımı ve verilerimi sil';
+
+  @override
+  String get settingsDeleteHint =>
+      'Gardıroptaki tüm görseller, kayıtlar ve hesabın kalıcı olarak silinir.';
+
+  @override
+  String get settingsDeleteConfirmTitle => 'Hesap silinsin mi?';
+
+  @override
+  String get settingsDeleteConfirmBody =>
+      'Kaydettiğin tüm sonuçlar ve hesabın kalıcı olarak silinecek. Bu işlem geri alınamaz.';
+
+  @override
+  String get settingsDeleteConfirmYes => 'Kalıcı olarak sil';
+
+  @override
+  String get settingsDeleteCancel => 'Vazgeç';
+
+  @override
+  String get settingsDeleteDone => 'Hesabın ve tüm verilerin silindi.';
+
+  @override
+  String get settingsDeleteFailed =>
+      'Hesap silinemedi. Bağlantını kontrol edip tekrar dene.';
+
+  @override
+  String get photoCheckTitle => 'Bu fotoğrafla sonuç iyi olmayabilir';
+
+  @override
+  String get photoCheckHint =>
+      'En iyi sonuç için: tek kişi, önden, ayakta, sade arka plan ve vücuda oturan kıyafet.';
+
+  @override
+  String get photoCheckContinue => 'Yine de dene';
+
+  @override
+  String get photoCheckChange => 'Fotoğrafı değiştir';
+
+  @override
+  String get photoWarnNoPerson => 'Fotoğrafta kişi bulunamadı.';
+
+  @override
+  String get photoWarnMultiple =>
+      'Fotoğrafta birden fazla kişi var; yalnızca bir kişi olmalı.';
+
+  @override
+  String get photoWarnBack =>
+      'Yüz görünmüyor; önden çekilmiş bir fotoğraf kullan.';
+
+  @override
+  String get photoWarnSmall =>
+      'Kişi kadrajda çok küçük; daha yakından, boydan çek.';
+
+  @override
+  String get photoWarnRegion =>
+      'Denenecek bölge (üst ya da alt beden) fotoğrafta tam görünmüyor.';
+
+  @override
+  String get photoWarnLowRes =>
+      'Fotoğrafın çözünürlüğü düşük; daha net bir fotoğraf kullan.';
+
+  @override
+  String get loadingErrorTitle => 'Deneme tamamlanamadı';
+
+  @override
+  String get actionRetry => 'Tekrar dene';
+
+  @override
+  String get actionGoBack => 'Geri dön';
+
+  @override
+  String get loadingDemoHint =>
+      'Bu manken ve kıyafet için önceden üretilmiş bir sonuç var; sunucu olmadan gösterilebilir.';
+
+  @override
+  String get loadingShowDemo => 'Örnek sonucu göster';
+
+  @override
+  String get resultDemoBadge =>
+      'Örnek sonuç: sunucu kapalıyken önceden üretilmiş sonuç gösteriliyor.';
 }

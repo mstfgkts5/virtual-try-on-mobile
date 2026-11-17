@@ -58,6 +58,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('HESAP'), findsOneWidget);
     expect(find.text('a@b.co olarak giriş yapıldı'), findsOneWidget);
+    await tester.scrollUntilVisible(find.text('Çıkış yap'), 200, scrollable: find.byType(Scrollable).first);
     await tester.tap(find.text('Çıkış yap'));
     await tester.pumpAndSettle();
     expect(signOutCalls, 1);
@@ -84,10 +85,88 @@ void main() {
     ));
     await tester.tap(find.text('ROOT'));
     await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(find.text('Çıkış yap'), 200, scrollable: find.byType(Scrollable).first);
     await tester.tap(find.text('Çıkış yap'));
     await tester.pumpAndSettle();
     expect(find.text('Çıkış yap'), findsNothing);
     expect(find.text('ROOT'), findsOneWidget);
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('hesap silme: onaylanınca silinir ve kök ekrana dönülür', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    localeController = await LocaleController.load(deviceLocale: const Locale('tr'));
+    var calls = 0;
+    await tester.pumpWidget(SeeItOnApp(
+      home: Builder(
+        builder: (context) => TextButton(
+          onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => SettingsScreen(userEmail: 'a@b.co', onDeleteAccount: () async => calls++),
+            ),
+          ),
+          child: const Text('ROOT'),
+        ),
+      ),
+    ));
+    await tester.tap(find.text('ROOT'));
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(find.text('Hesabımı ve verilerimi sil'), 200,
+        scrollable: find.byType(Scrollable).first);
+    await tester.tap(find.text('Hesabımı ve verilerimi sil'));
+    await tester.pumpAndSettle();
+    expect(find.text('Hesap silinsin mi?'), findsOneWidget);
+    await tester.tap(find.text('Kalıcı olarak sil'));
+    await tester.pumpAndSettle();
+    expect(calls, 1);
+    expect(find.text('ROOT'), findsOneWidget);
+  });
+
+  testWidgets('hesap silme: vazgeçilirse hiçbir şey silinmez', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    localeController = await LocaleController.load(deviceLocale: const Locale('tr'));
+    var calls = 0;
+    await tester.pumpWidget(SeeItOnApp(
+      home: SettingsScreen(userEmail: 'a@b.co', onDeleteAccount: () async => calls++),
+    ));
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(find.text('Hesabımı ve verilerimi sil'), 200,
+        scrollable: find.byType(Scrollable).first);
+    await tester.tap(find.text('Hesabımı ve verilerimi sil'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Vazgeç'));
+    await tester.pumpAndSettle();
+    expect(calls, 0);
+    expect(find.text('Hesabımı ve verilerimi sil'), findsOneWidget);
+  });
+
+  testWidgets('hesap silme hata verirse ekranda kalır ve uyarı gösterir', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    localeController = await LocaleController.load(deviceLocale: const Locale('tr'));
+    await tester.pumpWidget(SeeItOnApp(
+      home: SettingsScreen(userEmail: 'a@b.co', onDeleteAccount: () => Future.error(Exception('offline'))),
+    ));
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(find.text('Hesabımı ve verilerimi sil'), 200,
+        scrollable: find.byType(Scrollable).first);
+    await tester.tap(find.text('Hesabımı ve verilerimi sil'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Kalıcı olarak sil'));
+    await tester.pumpAndSettle();
+    expect(find.text('Hesap silinemedi. Bağlantını kontrol edip tekrar dene.'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('gizlilik bölümü oturum olmadan da görünür ve metni açar', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    localeController = await LocaleController.load(deviceLocale: const Locale('tr'));
+    await tester.pumpWidget(const SeeItOnApp(home: SettingsScreen(userEmail: null)));
+    await tester.pumpAndSettle();
+    expect(find.text('GİZLİLİK'), findsOneWidget);
+    expect(find.text('Hesabımı ve verilerimi sil'), findsNothing);
+    await tester.tap(find.text('KVKK aydınlatma metni'));
+    await tester.pumpAndSettle();
+    expect(find.text('Fotoğrafların nasıl işlenir?'), findsOneWidget);
   });
 }

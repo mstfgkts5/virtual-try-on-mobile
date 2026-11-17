@@ -12,6 +12,9 @@ class ResultScreen extends StatefulWidget {
   final String category; // 'upper', 'lower', 'overall'
   final double renderTimeSec;
 
+  /// Çevrimdışı demo: sonuç bu oturumda değil, önceden üretildi; ekranda açıkça yazılır.
+  final bool isDemo;
+
   /// Verilmezse Supabase kullanılır; testlerde sahte depo verilir.
   final WardrobeRepository? wardrobe;
 
@@ -21,6 +24,7 @@ class ResultScreen extends StatefulWidget {
     required this.generatedImageBytes,
     this.category = 'upper',
     this.renderTimeSec = 0,
+    this.isDemo = false,
     this.wardrobe,
   });
 
@@ -244,6 +248,24 @@ class _ResultScreenState extends State<ResultScreen> {
             EditorialHeading(l.resultHeading, size: 28),
             const SizedBox(height: 6),
             Caption(l.resultSubtitle),
+            if (widget.isDemo) ...[
+              const SizedBox(height: 12),
+              Container(
+                key: const Key('demoBadge'),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                decoration: BoxDecoration(
+                  color: t.accent.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(SeeItOnTokens.radiusSm),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.cloud_off_outlined, size: 18, color: t.accent),
+                    const SizedBox(width: 8),
+                    Expanded(child: Text(l.resultDemoBadge, style: Theme.of(context).textTheme.bodySmall)),
+                  ],
+                ),
+              ),
+            ],
             const SizedBox(height: 18),
 
             // Sonuç 3:4 (768x1024) olduğu için kutu da 3:4; geniş ekranda görsel kırpılmaz

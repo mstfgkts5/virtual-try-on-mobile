@@ -52,8 +52,8 @@ create policy "wardrobe_delete_own" on public.wardrobe
 
 -- 3) Görsel deposu ---------------------------------------------------------------
 insert into storage.buckets (id, name, public)
-values ('wardrobe_images', 'wardrobe_images', true)
-on conflict (id) do update set public = true;
+values ('wardrobe_images', 'wardrobe_images', false)
+on conflict (id) do update set public = false;  -- özel depo: görseller imzalı URL ile açılır (KVKK)
 
 -- 4) Depo kuralları: yol "<kullanıcı-id>/<zaman>.png" ---------------------------
 drop policy if exists "wardrobe_images_insert_own" on storage.objects;
@@ -66,9 +66,9 @@ create policy "wardrobe_images_delete_own" on storage.objects
   for delete to authenticated
   using (bucket_id = 'wardrobe_images' and (storage.foldername(name))[1] = auth.uid()::text);
 
--- Görselleri açmak için kural gerekmez: depo public olduğu için /object/public/... adresleri
--- RLS'ye takılmaz. Bu SELECT kuralı yalnızca silme için (remove() hem SELECT hem DELETE ister)
--- ve kullanıcının kendi klasörüyle sınırlı; aksi halde anon anahtarla herkesin klasörleri listelenebilirdi.
+-- Depo özel: görseller imzalı URL ile açılır; imza, listeleme ve silme (remove() hem SELECT hem DELETE
+-- ister) bu SELECT kuralına dayanır. Kural kullanıcının kendi klasörüyle sınırlı; aksi halde
+-- anon anahtarla herkesin klasörleri listelenebilirdi.
 drop policy if exists "wardrobe_images_read" on storage.objects;
 drop policy if exists "wardrobe_images_select_own" on storage.objects;
 create policy "wardrobe_images_select_own" on storage.objects

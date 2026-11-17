@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:see_it_on/core/l10n_ext.dart';
 import 'package:see_it_on/screens/home_screen.dart';
 import 'package:see_it_on/screens/live_tryon_screen.dart';
 import 'package:see_it_on/screens/loading_screen.dart';
@@ -51,9 +52,15 @@ class FakeBundle extends CachingAssetBundle {
   }
 }
 
-Widget home({bool preset = true, int videoBytes = 10}) => DefaultAssetBundle(
+typedef PhotoChecker = Future<List<String>> Function(Uint8List personBytes, String category);
+
+// Varsayılan sahte kontrol sorun bulmaz; testler backend'e gerçek istek atmaz
+Widget home({bool preset = true, int videoBytes = 10, PhotoChecker? checker}) => DefaultAssetBundle(
       bundle: FakeBundle(withPreset: preset),
-      child: HomeScreen(picker: FakePicker(videoBytes: videoBytes)),
+      child: HomeScreen(
+        picker: FakePicker(videoBytes: videoBytes),
+        photoChecker: checker ?? (_, _) async => const [],
+      ),
     );
 
 Future<void> tapText(WidgetTester tester, String text) async {
@@ -106,7 +113,9 @@ void main() {
     }
     final live = tester.widget<LiveTryOnScreen>(find.byType(LiveTryOnScreen, skipOffstage: false));
     expect(live.garments.map((g) => g.id), contains('blazer'));
-    expect(live.garments.length, 6);
+    expect(live.garments.length, 10);
+    expect(live.garments.where((g) => g.category == 'upper').map((g) => g.id),
+        ['blazer', 'shirt-stripe', 'hoodie', 'sweater-wave', 'turtleneck']);
     await tester.pumpWidget(const SizedBox());
     await tester.pump(const Duration(milliseconds: 500));
   });
@@ -182,4 +191,107 @@ void main() {
       expect(tester.takeException(), isNull);
     });
   }
+
+  group('fotoğraf kontrolü', () {
+    Future<List<String>> calls(WidgetTester tester, List<String> warnings, {List<String>? seen}) async {
+      tester.view.physicalSize = const Size(400, 1800);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      await tester.pumpWidget(localized(home(checker: (bytes, category) async {
+        seen?.add(category);
+        return warnings;
+      })));
+      await tester.pumpAndSettle();
+      return warnings;
+    }
+
+    testWidgets('sorunlu fotoğrafta uyarı kutusu görünür, manken seçince kalkar', (tester) async {
+      await calls(tester, ['person_small', 'back_view']);
+      await tapText(tester, l.homeGallery); // 1. adım: kendi fotoğrafı
+      expect(find.byKey(const Key('photoWarnings')), findsOneWidget);
+      expect(find.text('• ${l.photoWarnSmall}'), findsOneWidget);
+      expect(find.text('• ${l.photoWarnBack}'), findsOneWidget);
+      await tapText(tester, l.homeSpinVideo); // video seçilince fotoğraf uyarısı anlamsız
+      expect(find.byKey(const Key('photoWarnings')), findsNothing);
+    });
+
+    testWidgets('sorun yoksa uyarı kutusu yok', (tester) async {
+      await calls(tester, const []);
+      await tapText(tester, l.homeGallery);
+      expect(find.byKey(const Key('photoWarnings')), findsNothing);
+    });
+
+    testWidgets('kategori değişince fotoğraf yeni bölge için tekrar kontrol edilir', (tester) async {
+      final seen = <String>[];
+      await calls(tester, const [], seen: seen);
+      await tapText(tester, l.homeGallery);
+      await tapText(tester, l.categoryLower);
+      expect(seen, ['upper', 'lower']);
+    });
+
+    Future<void> pickBothAndTry(WidgetTester tester) async {
+      await tapText(tester, l.homeGallery);
+      await tester.tap(find.text(l.homeGallery).at(1)); // 2. adım: kıyafet
+      await tester.pumpAndSettle();
+      final tryOn = find.text(l.homeTryOn);
+      await tester.ensureVisible(tryOn);
+      await tester.tap(tryOn);
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('uyarı varken Üzerimde Gör önce sorar; Fotoğrafı değiştir denemeyi başlatmaz', (tester) async {
+      await calls(tester, ['person_small']);
+      await pickBothAndTry(tester);
+      expect(find.byType(AlertDialog), findsOneWidget);
+      expect(find.text(l.photoCheckTitle), findsWidgets);
+      await tester.tap(find.text(l.photoCheckChange));
+      await tester.pumpAndSettle();
+      expect(find.byType(LoadingScreen, skipOffstage: false), findsNothing);
+    });
+
+    testWidgets('Yine de dene denemeyi başlatır', (tester) async {
+      await calls(tester, ['person_small']);
+      await pickBothAndTry(tester);
+      await tester.tap(find.text(l.photoCheckContinue));
+      await tester.pump();
+      expect(find.byType(LoadingScreen, skipOffstage: false), findsOneWidget);
+      await tester.pumpAndSettle(const Duration(milliseconds: 50));
+    });
+
+    for (final (lang, b) in [('en', Brightness.dark), ('tr', Brightness.light)]) {
+      testWidgets('uyarı kutusu $lang/${b.name} 360 genişlikte taşmasız', (tester) async {
+        Future<List<String>> checker(Uint8List _, String _) async => ['multiple_people', 'region_missing', 'low_resolution'];
+        await expectNoOverflow(tester, home(checker: checker), lang: lang, b: b);
+        final l2 = l10nFor(lang);
+        final gallery = find.text(l2.homeGallery).first;
+        await tester.ensureVisible(gallery);
+        await tester.tap(gallery);
+        await tester.pumpAndSettle();
+        expect(find.byKey(const Key('photoWarnings')), findsOneWidget);
+        expect(tester.takeException(), isNull);
+      });
+    }
+
+    test('uyarı kodları iki dilde çevrilir', () {
+      for (final lang in ['tr', 'en']) {
+        final l2 = l10nFor(lang);
+        for (final code in ['no_person', 'multiple_people', 'back_view', 'person_small', 'region_missing', 'low_resolution']) {
+          expect(photoWarning(l2, code), isNot(code));
+        }
+      }
+    });
+  });
+
+  testWidgets('bağlantı düğümü uyarı kutusunun üstüne binmez', (tester) async {
+    tester.view.physicalSize = const Size(400, 1800);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(localized(home(checker: (_, _) async => ['person_small', 'back_view'])));
+    await tester.pumpAndSettle();
+    await tapText(tester, l.homeGallery);
+    final warn = tester.getRect(find.byKey(const Key('photoWarnings')));
+    final link = tester.getRect(find.byKey(const Key('stepLink')));
+    expect(link.overlaps(warn), isFalse);
+    expect(link.top, greaterThan(warn.bottom)); // düğüm iki kartın arasında, uyarının altında
+  });
 }

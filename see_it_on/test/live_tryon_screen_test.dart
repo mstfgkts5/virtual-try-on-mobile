@@ -45,14 +45,19 @@ class FakeCamera implements CameraService {
 }
 
 class FakeApi implements ApiService {
-  FakeApi({this.fail = false});
+  FakeApi({this.fail = false, this.delay = const Duration(milliseconds: 20)});
   final bool fail;
+  final Duration delay;
   final requests = <TryOnRequest>[];
+  int inFlight = 0, maxInFlight = 0;
 
   @override
   Future<TryOnResult> processVirtualTryOn(TryOnRequest request) async {
     requests.add(request);
-    await Future<void>.delayed(const Duration(milliseconds: 20));
+    inFlight++;
+    if (inFlight > maxInFlight) maxInFlight = inFlight;
+    await Future<void>.delayed(delay);
+    inFlight--;
     if (fail) throw Exception('ağ yok');
     return TryOnResult(id: '1', title: 'upper', resultImageBytes: _png, renderTimeSec: 2.2);
   }
@@ -82,7 +87,7 @@ Future<void> run(WidgetTester tester, [int ticks = 10]) async {
 /// Ekranı kapatıp döngünün bekleyen zamanlayıcılarının bitmesini bekler.
 Future<void> finish(WidgetTester tester) async {
   await tester.pumpWidget(const SizedBox());
-  await run(tester, 5);
+  await run(tester, 20); // ikinci işçinin 400 ms gecikmesi dahil
 }
 
 void main() {
@@ -122,6 +127,17 @@ void main() {
     await finish(tester);
   });
 
+  testWidgets('GPU boş kalmasın diye en fazla iki istek aynı anda gider', (tester) async {
+    final cam = FakeCamera(), api = FakeApi(delay: const Duration(milliseconds: 300));
+    await tester.pumpWidget(localized(live(cam, api)));
+    await run(tester, 2);
+    await tester.tap(find.byKey(const ValueKey('live-garment-blazer')));
+    await run(tester, 40);
+    expect(api.maxInFlight, 2);
+    expect(find.byKey(const ValueKey('live-result')), findsOneWidget);
+    await finish(tester);
+  });
+
   testWidgets('seçili kıyafete tekrar dokununca döngü durur', (tester) async {
     final cam = FakeCamera(), api = FakeApi();
     await tester.pumpWidget(localized(live(cam, api)));
@@ -134,6 +150,28 @@ void main() {
     await run(tester, 10);
     expect(api.requests.length, after);
     expect(find.byKey(const ValueKey('live-result')), findsNothing);
+  });
+
+  testWidgets('üst/alt seçimi şeridi süzer ve çalışan döngüyü durdurur', (tester) async {
+    final cam = FakeCamera(), api = FakeApi();
+    await tester.pumpWidget(localized(live(cam, api)));
+    await run(tester, 2);
+    expect(find.byKey(const ValueKey('live-garment-blazer')), findsOneWidget);
+    expect(find.byKey(const ValueKey('live-garment-jeans')), findsNothing);
+    await tester.tap(find.byKey(const ValueKey('live-garment-blazer')));
+    await run(tester);
+    await tester.tap(find.text(l.categoryLower));
+    await run(tester, 4);
+    final after = api.requests.length;
+    expect(find.byKey(const ValueKey('live-garment-blazer')), findsNothing);
+    expect(find.byKey(const ValueKey('live-garment-jeans')), findsOneWidget);
+    expect(find.byKey(const ValueKey('live-result')), findsNothing);
+    await run(tester, 10);
+    expect(api.requests.length, after);
+    await tester.tap(find.byKey(const ValueKey('live-garment-jeans')));
+    await run(tester);
+    expect(api.requests.last.category, 'lower');
+    await finish(tester);
   });
 
   testWidgets('art arda hatada döngü durur ve mesaj görünür', (tester) async {

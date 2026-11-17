@@ -7,7 +7,8 @@ SeeItOn, kullanıcıların seçtikleri kıyafetleri kendi fotoğrafları (veya h
 * **Hazır mankenler:** kadın (160 cm) ve erkek (185 cm), S / M / L / XL bedenler
 * **Önce / sonra karşılaştırması:** sürgü, yan yana ve geçiş modları
 * Gerçek işlem süresi gösterimi, galeriye kaydetme ve paylaşma
-* Supabase ile kullanıcı girişi ve dijital gardırop
+* Supabase ile kullanıcı girişi ve dijital gardırop (özel depo, imzalı URL)
+* KVKK aydınlatma metni ve açık rıza ekranı; Ayarlar'dan hesabı ve tüm verileri silme
 
 ## Teknolojiler
 * **Mobil:** Flutter
@@ -17,7 +18,7 @@ SeeItOn, kullanıcıların seçtikleri kıyafetleri kendi fotoğrafları (veya h
 * **Test verisi:** Mankenler ve örnek kıyafetler RealVisXL V5 ile üretildi (gerçek kişi / marka ürünü kullanılmadı)
 
 ## Performans
-RTX 5060 Laptop GPU (8 GB) üzerinde: görsel başına ~40 sn (30 difüzyon adımı), en yüksek VRAM ~4,4 GB.
+RTX 5060 Laptop GPU (8 GB) üzerinde, şarjda: görsel başına ~5 sn (DPM-Solver++ 8 adım, 576×768), en yüksek VRAM ~3,7 GB; canlı önizleme ~1 sn. Ölçümler ve yöntem: [`docs/PERFORMANCE.md`](docs/PERFORMANCE.md).
 
 ## Klasör Yapısı
 | Klasör | İçerik |

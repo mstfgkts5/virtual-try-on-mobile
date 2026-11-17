@@ -15,6 +15,9 @@ abstract class WardrobeRepository {
   Future<void> add(Uint8List pngBytes, String category);
 
   Future<void> delete(WardrobeItem item);
+
+  /// Kullanıcının tüm görsellerini, kayıtlarını ve hesabını kalıcı olarak siler (KVKK md. 7 ve 11).
+  Future<void> deleteAccount();
 }
 
 /// Oturum yokken kaydetmeye çalışıldığında fırlatılır (ekran çevrili mesaj gösterir).
@@ -55,7 +58,25 @@ class SupabaseWardrobeRepository implements WardrobeRepository {
         .select()
         .eq('user_id', user.id)
         .order('created_at', ascending: false);
-    return (rows as List).map((r) => WardrobeItem.fromRow(Map<String, dynamic>.from(r as Map))).toList();
+    final items =
+        (rows as List).map((r) => WardrobeItem.fromRow(Map<String, dynamic>.from(r as Map))).toList();
+    return Future.wait(items.map(_signed));
+  }
+
+  /// Depo özel olduğu için görsel, 1 saat geçerli imzalı URL ile gösterilir.
+  /// İmzalama başarısız olursa (ör. depo henüz özel değilse) kayıttaki URL kullanılır.
+  static const signedUrlSeconds = 3600;
+
+  Future<WardrobeItem> _signed(WardrobeItem item) async {
+    final path = item.storagePath;
+    if (path == null) return item;
+    try {
+      final url = await _client.storage.from(WardrobeItem.bucket).createSignedUrl(path, signedUrlSeconds);
+      return item.withDisplayUrl(url);
+    } catch (e) {
+      debugPrint('[Wardrobe] İmzalı URL alınamadı: $e');
+      return item;
+    }
   }
 
   @override
@@ -92,5 +113,26 @@ class SupabaseWardrobeRepository implements WardrobeRepository {
       // Satır silindi; dosya kalırsa kullanıcıya görünmez, işlemi başarısız saymayız
       debugPrint('[Wardrobe] Dosya silinemedi: $e');
     }
+  }
+
+  @override
+  Future<void> deleteAccount() async {
+    final user = _client.auth.currentUser;
+    if (user == null) throw const NotSignedInException();
+
+    // 1) Kullanıcı klasöründeki tüm görseller (depo kuralı yalnızca kendi klasörüne izin verir)
+    final storage = _client.storage.from(WardrobeItem.bucket);
+    final files = await storage.list(path: user.id);
+    if (files.isNotEmpty) {
+      await storage.remove([for (final f in files) '${user.id}/${f.name}']);
+    }
+    // 2) Gardırop kayıtları
+    await _client.from('wardrobe').delete().eq('user_id', user.id);
+    // 3) Hesabın kendisi: supabase/privacy_setup.sql içindeki delete_user() fonksiyonu
+    await _client.rpc('delete_user');
+    // Yerel oturumu da kapat; sunucuda kullanıcı zaten silindiği için hata yok sayılır
+    try {
+      await _client.auth.signOut();
+    } catch (_) {}
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'core/consent_controller.dart';
 import 'core/design/theme.dart';
 import 'core/l10n_ext.dart';
 import 'core/locale_controller.dart';
@@ -17,6 +18,7 @@ Future<void> main() async {
 
   localeController = await LocaleController.load();
   themeModeController = await ThemeModeController.load();
+  consentController = await ConsentController.load();
 
   runApp(const SeeItOnApp());
 }

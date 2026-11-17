@@ -18,6 +18,10 @@ class WardrobeItem {
 
   static const bucket = 'wardrobe_images';
 
+  /// Görüntülemek için kısa ömürlü imzalı URL ile aynı kayıt (depo herkese açık değil).
+  WardrobeItem withDisplayUrl(String url) =>
+      WardrobeItem(id: id, imageUrl: url, category: category, createdAt: createdAt, storagePath: storagePath);
+
   /// `category` sütunu henüz eklenmemiş tablolarda da çalışır (varsayılan üst giyim).
   factory WardrobeItem.fromRow(Map<String, dynamic> row) {
     final url = row['image_url'] as String? ?? '';

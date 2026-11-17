@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../core/consent_controller.dart';
+import 'consent_screen.dart';
 import 'home_screen.dart';
 import 'onboarding_screen.dart';
 
@@ -37,9 +39,27 @@ class AuthGate extends StatelessWidget {
         // bu oturumun kapandığı anlamına gelmez, o yüzden mevcut oturuma bakılır
         final signedIn = snapshot.hasError ? signedInNow() : snapshot.data == true;
         return signedIn
-            ? (signedInBuilder ?? (_) => const HomeScreen())(context)
+            ? (signedInBuilder ?? (_) => const ConsentGate(child: HomeScreen()))(context)
             : (signedOutBuilder ?? (_) => const OnboardingScreen())(context);
       },
+    );
+  }
+}
+
+/// Oturum açık kullanıcı KVKK açık rızasını vermediyse ana ekran yerine aydınlatma metnini gösterir.
+/// Rıza verilince (veya Ayarlar'dan geri çekilince) kendiliğinden yeniden çizilir.
+class ConsentGate extends StatelessWidget {
+  const ConsentGate({super.key, required this.child, this.controller});
+
+  final Widget child;
+  final ConsentController? controller;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = controller ?? consentController;
+    return ValueListenableBuilder<bool>(
+      valueListenable: c,
+      builder: (context, accepted, _) => accepted ? child : ConsentScreen(controller: c),
     );
   }
 }

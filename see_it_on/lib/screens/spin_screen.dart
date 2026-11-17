@@ -77,6 +77,24 @@ class _SpinScreenState extends State<SpinScreen> {
     }
   }
 
+  /// Hata sonrası işi baştan başlatır; sunucuda yarım kalmış eski iş iptal edilir.
+  void _retry() {
+    _timer?.cancel();
+    final old = _jobId;
+    final finished = _state == SpinState.done || _state == SpinState.failed || _state == SpinState.cancelled;
+    if (old != null && !finished) _api.cancelSpin(old);
+    setState(() {
+      _jobId = null;
+      _state = SpinState.queued;
+      _total = 0;
+      _failures = 0;
+      _error = null;
+      _frames.clear();
+      _images.clear();
+    });
+    _start();
+  }
+
   Future<void> _poll() async {
     if (_busy || _jobId == null) return;
     _busy = true;
@@ -174,13 +192,23 @@ class _SpinScreenState extends State<SpinScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (_error != null)
+                  if (_error != null) ...[
                     Text(
                       l.spinFailed(_error!),
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: t.danger),
-                    )
-                  else if (running) ...[
+                    ),
+                    if (_isLive) ...[
+                      const SizedBox(height: 12),
+                      PillButton(
+                        label: l.actionRetry,
+                        icon: Icons.refresh,
+                        primary: false,
+                        expand: true,
+                        onPressed: _retry,
+                      ),
+                    ],
+                  ] else if (running) ...[
                     Text(
                       _jobId == null ? l.spinStarting : l.spinProgress(_frames.length, _total),
                       style: Theme.of(context).textTheme.labelLarge,
