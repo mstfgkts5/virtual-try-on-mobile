@@ -1,0 +1,246 @@
+00:00 +0: loading C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/auth_errors_test.dart
+00:00 +0: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/auth_errors_test.dart: hatalı e-posta/şifre
+00:00 +1: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/auth_errors_test.dart: kayıtlı e-posta
+00:00 +2: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/auth_errors_test.dart: zayıf şifre
+00:00 +3: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/auth_errors_test.dart: geçersiz e-posta
+00:00 +4: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/auth_errors_test.dart: bağlantı hataları
+00:00 +5: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/auth_errors_test.dart: bilinmeyen hata genel mesaja düşer
+00:00 +6: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/auth_errors_test.dart: e-posta biçimi
+00:00 +7: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/auth_errors_test.dart: çok fazla deneme
+00:00 +8: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/auth_errors_test.dart: zaman aşımı bağlantı hatası sayılır
+00:00 +9: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/auth_gate_test.dart: başlangıçta oturum var → HOME
+00:00 +10: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/auth_gate_test.dart: başlangıçta oturum var → HOME
+00:00 +11: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/auth_gate_test.dart: başlangıçta oturum var → HOME
+00:00 +12: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/auth_gate_test.dart: başlangıçta oturum var → HOME
+00:00 +13: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/auth_gate_test.dart: başlangıçta oturum var → HOME
+00:00 +14: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/auth_gate_test.dart: başlangıçta oturum var → HOME
+00:00 +14: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/consent_controller_test.dart: depolama hatasında rıza yok, çökme yok
+[ConsentController] Onay durumu okunamadı: Bad state: x
+[ConsentController] Onay kaydedilemedi: Bad state: x
+00:00 +15: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/auth_gate_test.dart: başlangıçta oturum var → HOME
+00:00 +16: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/camera_capture_screen_test.dart: arka plandan dönünce tekrar çek kamerayı yeniden açar
+00:00 +17: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/camera_capture_screen_test.dart: arka plandan dönünce tekrar çek kamerayı yeniden açar
+00:00 +18: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/camera_capture_screen_test.dart: arka plandan dönünce tekrar çek kamerayı yeniden açar
+00:00 +19: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/camera_capture_screen_test.dart: arka plandan dönünce tekrar çek kamerayı yeniden açar
+00:00 +20: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/camera_capture_screen_test.dart: arka plandan dönünce tekrar çek kamerayı yeniden açar
+00:00 +21: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/camera_capture_screen_test.dart: arka plandan dönünce tekrar çek kamerayı yeniden açar
+00:00 +22: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/camera_capture_screen_test.dart: arka plandan dönünce tekrar çek kamerayı yeniden açar
+00:00 +23: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/camera_capture_screen_test.dart: arka plandan dönünce tekrar çek kamerayı yeniden açar
+00:00 +24: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/camera_capture_screen_test.dart: arka plandan dönünce tekrar çek kamerayı yeniden açar
+00:01 +25: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/camera_capture_screen_test.dart: arka plandan dönünce tekrar çek kamerayı yeniden açar
+00:01 +26: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/camera_capture_screen_test.dart: arka plandan dönünce tekrar çek kamerayı yeniden açar
+00:01 +27: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/consent_screen_test.dart: kutu işaretlenmeden onay düğmesi kapalı, işaretlenince rıza verilir
+[ConsentController] Onay kaydedilemedi: Unsupported operation: in-memory
+00:01 +28: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/consent_screen_test.dart: kutu işaretlenmeden onay düğmesi kapalı, işaretlenince rıza verilir
+00:01 +29: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/design_screens_test.dart: kapakta künye görünür
+00:01 +30: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/design_screens_test.dart: kapakta künye görünür
+00:01 +31: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/design_screens_test.dart: kapakta künye görünür
+00:01 +32: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/design_widgets_test.dart: bileşenler dark temada 360 px taşmasız
+00:01 +32: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/camera_capture_screen_test.dart: eski başlatmanın geç gelen hatası yok sayılır
+[CameraCapture] Kamera açılamadı: Instance of 'NoCameraException'
+00:01 +33: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/design_widgets_test.dart: bileşenler dark temada 360 px taşmasız
+00:01 +34: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/design_widgets_test.dart: bileşenler dark temada 360 px taşmasız
+00:01 +35: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/error_retry_test.dart: hata olunca ekran kapanmaz, nedeni ve Tekrar dene görünür
+00:01 +35: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/consent_screen_test.dart: salt okunur modda rıza geri çekilir
+[ConsentController] Onay silinemedi: Unsupported operation: in-memory
+00:01 +36: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/error_retry_test.dart: hata olunca ekran kapanmaz, nedeni ve Tekrar dene görünür
+00:01 +37: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/error_retry_test.dart: hata olunca ekran kapanmaz, nedeni ve Tekrar dene görünür
+00:01 +38: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/error_retry_test.dart: hata olunca ekran kapanmaz, nedeni ve Tekrar dene görünür
+00:01 +38: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/consent_screen_test.dart: ConsentGate: rıza yoksa metin, verilince içerik
+[ConsentController] Onay kaydedilemedi: Unsupported operation: in-memory
+00:01 +39: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/error_retry_test.dart: hata olunca ekran kapanmaz, nedeni ve Tekrar dene görünür
+00:01 +39: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/camera_capture_screen_test.dart: kamera yok mesajı
+[CameraCapture] Kamera açılamadı: Instance of 'NoCameraException'
+00:01 +40: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/error_retry_test.dart: hata olunca ekran kapanmaz, nedeni ve Tekrar dene görünür
+00:01 +41: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/error_retry_test.dart: hata olunca ekran kapanmaz, nedeni ve Tekrar dene görünür
+00:01 +42: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/error_retry_test.dart: hata olunca ekran kapanmaz, nedeni ve Tekrar dene görünür
+00:01 +43: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/error_retry_test.dart: hata olunca ekran kapanmaz, nedeni ve Tekrar dene görünür
+00:01 +44: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/error_retry_test.dart: hata olunca ekran kapanmaz, nedeni ve Tekrar dene görünür
+00:01 +45: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/error_retry_test.dart: hata olunca ekran kapanmaz, nedeni ve Tekrar dene görünür
+00:01 +46: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/error_retry_test.dart: hata olunca ekran kapanmaz, nedeni ve Tekrar dene görünür
+00:01 +47: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/error_retry_test.dart: hata olunca ekran kapanmaz, nedeni ve Tekrar dene görünür
+00:01 +48: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/error_retry_test.dart: hata olunca ekran kapanmaz, nedeni ve Tekrar dene görünür
+00:01 +49: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/error_retry_test.dart: hata olunca ekran kapanmaz, nedeni ve Tekrar dene görünür
+00:01 +49: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/locale_controller_test.dart: depolama hatasında çökmez, cihaz diline düşer
+[LocaleController] Dil tercihi okunamadı: Bad state: prefs bozuk
+[LocaleController] Dil tercihi kaydedilemedi: Bad state: prefs bozuk
+00:01 +50: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/error_retry_test.dart: hata olunca ekran kapanmaz, nedeni ve Tekrar dene görünür
+00:01 +51: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/error_retry_test.dart: hata olunca ekran kapanmaz, nedeni ve Tekrar dene görünür
+00:01 +52: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/error_retry_test.dart: hata olunca ekran kapanmaz, nedeni ve Tekrar dene görünür
+00:01 +53: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/error_retry_test.dart: hata olunca ekran kapanmaz, nedeni ve Tekrar dene görünür
+00:02 +54: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/error_retry_test.dart: hata olunca ekran kapanmaz, nedeni ve Tekrar dene görünür
+00:02 +55: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/error_retry_test.dart: hata olunca ekran kapanmaz, nedeni ve Tekrar dene görünür
+00:02 +56: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/error_retry_test.dart: hata olunca ekran kapanmaz, nedeni ve Tekrar dene görünür
+[LoadingScreen] Hata: TimeoutException: tryon
+00:02 +57: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/home_screen_test.dart: EN kategori seçici
+00:02 +58: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/home_screen_test.dart: EN kategori seçici
+00:02 +59: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/home_screen_test.dart: EN kategori seçici
+00:02 +60: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/home_screen_test.dart: EN kategori seçici
+00:02 +61: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/home_screen_test.dart: EN kategori seçici
+00:02 +62: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/home_screen_test.dart: EN kategori seçici
+00:02 +63: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/home_screen_test.dart: EN kategori seçici
+00:02 +64: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/home_screen_test.dart: EN kategori seçici
+00:02 +64: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/error_retry_test.dart: Tekrar dene isteği yeniden gönderir
+[LoadingScreen] Hata: TimeoutException: tryon
+00:02 +65: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/home_screen_test.dart: EN kategori seçici
+00:02 +66: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/home_screen_test.dart: EN kategori seçici
+00:02 +67: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/home_spin_test.dart: video seçilince dönüş etiketi ve arka görsel alanı görünür
+00:02 +68: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/home_spin_test.dart: video seçilince dönüş etiketi ve arka görsel alanı görünür
+00:02 +69: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/home_spin_test.dart: video seçilince dönüş etiketi ve arka görsel alanı görünür
+00:02 +70: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/home_spin_test.dart: video seçilince dönüş etiketi ve arka görsel alanı görünür
+00:02 +71: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/home_spin_test.dart: video seçilince dönüş etiketi ve arka görsel alanı görünür
+00:02 +72: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/home_spin_test.dart: video seçilince dönüş etiketi ve arka görsel alanı görünür
+00:02 +73: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/home_spin_test.dart: video seçilince dönüş etiketi ve arka görsel alanı görünür
+00:02 +73: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/error_retry_test.dart: hazır manken + kıyafette sunucu yoksa demo sonucu açılır
+[LoadingScreen] Hata: TimeoutException: tryon
+00:02 +74: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/home_spin_test.dart: video seçilince dönüş etiketi ve arka görsel alanı görünür
+00:02 +75: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/home_spin_test.dart: video seçilince dönüş etiketi ve arka görsel alanı görünür
+00:02 +75: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/error_retry_test.dart: dizinde olmayan çift için demo düğmesi yok
+[LoadingScreen] Hata: TimeoutException: tryon
+00:02 +76: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/home_spin_test.dart: video seçilince dönüş etiketi ve arka görsel alanı görünür
+00:02 +77: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/home_spin_test.dart: video seçilince dönüş etiketi ve arka görsel alanı görünür
+00:03 +78: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/home_spin_test.dart: video seçilince dönüş etiketi ve arka görsel alanı görünür
+00:03 +79: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/home_spin_test.dart: video seçilince dönüş etiketi ve arka görsel alanı görünür
+00:03 +79: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/error_retry_test.dart: hata ekranı tr/dark 360 taşmasız
+[LoadingScreen] Hata: TimeoutException: tryon
+00:03 +80: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/home_spin_test.dart: video seçilince dönüş etiketi ve arka görsel alanı görünür
+00:03 +80: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/error_retry_test.dart: hata ekranı tr/light 360 taşmasız
+[LoadingScreen] Hata: TimeoutException: tryon
+00:03 +81: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/home_spin_test.dart: video seçilince dönüş etiketi ve arka görsel alanı görünür
+00:03 +82: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/result_screen_test.dart: gardıroba kategoriyle kaydeder
+00:03 +83: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/result_screen_test.dart: gardıroba kategoriyle kaydeder
+00:03 +84: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/result_screen_test.dart: gardıroba kategoriyle kaydeder
+00:03 +84: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/error_retry_test.dart: hata ekranı en/dark 360 taşmasız
+[LoadingScreen] Hata: TimeoutException: tryon
+00:03 +85: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/result_screen_test.dart: gardıroba kategoriyle kaydeder
+00:03 +86: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/result_screen_test.dart: gardıroba kategoriyle kaydeder
+00:03 +87: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/result_screen_test.dart: gardıroba kategoriyle kaydeder
+00:03 +88: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/result_screen_test.dart: gardıroba kategoriyle kaydeder
+00:03 +88: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/theme_mode_controller_test.dart: depolama hatasında sistem, çökme yok
+[ThemeModeController] Tema tercihi okunamadı: Bad state: x
+[ThemeModeController] Tema tercihi kaydedilemedi: Bad state: x
+00:03 +89: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/result_screen_test.dart: gardıroba kategoriyle kaydeder
+00:03 +90: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/result_screen_test.dart: gardıroba kategoriyle kaydeder
+00:03 +91: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/result_screen_test.dart: gardıroba kategoriyle kaydeder
+00:03 +91: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/error_retry_test.dart: hata ekranı en/light 360 taşmasız
+[LoadingScreen] Hata: TimeoutException: tryon
+00:03 +92: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/result_screen_test.dart: gardıroba kategoriyle kaydeder
+00:03 +93: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/result_screen_test.dart: gardıroba kategoriyle kaydeder
+00:03 +94: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/result_screen_test.dart: gardıroba kategoriyle kaydeder
+00:03 +95: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/result_screen_test.dart: gardıroba kategoriyle kaydeder
+00:03 +96: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/result_screen_test.dart: gardıroba kategoriyle kaydeder
+00:03 +97: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/result_screen_test.dart: gardıroba kategoriyle kaydeder
+00:03 +98: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/result_screen_test.dart: gardıroba kategoriyle kaydeder
+00:03 +99: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/result_screen_test.dart: gardıroba kategoriyle kaydeder
+00:03 +100: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/result_screen_test.dart: gardıroba kategoriyle kaydeder
+00:03 +101: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/server_address_test.dart: Ayarlar: adres kaydedilir ve bağlantı denenir
+00:03 +102: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/server_address_test.dart: Ayarlar: adres kaydedilir ve bağlantı denenir
+00:03 +103: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/server_address_test.dart: Ayarlar: adres kaydedilir ve bağlantı denenir
+00:03 +104: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/server_address_test.dart: Ayarlar: adres kaydedilir ve bağlantı denenir
+00:03 +105: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/server_address_test.dart: Ayarlar: adres kaydedilir ve bağlantı denenir
+00:03 +106: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/server_address_test.dart: Ayarlar: adres kaydedilir ve bağlantı denenir
+00:03 +107: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/server_address_test.dart: Ayarlar: adres kaydedilir ve bağlantı denenir
+00:03 +108: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/server_address_test.dart: Ayarlar: adres kaydedilir ve bağlantı denenir
+00:03 +109: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/spin_screen_test.dart: kareler geldikçe gösterilir
+00:03 +110: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/spin_screen_test.dart: kareler geldikçe gösterilir
+00:03 +111: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/spin_screen_test.dart: kareler geldikçe gösterilir
+00:03 +112: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/spin_screen_test.dart: kareler geldikçe gösterilir
+00:03 +113: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/spin_viewer_test.dart: sürükleme kareyi değiştirir
+00:03 +113: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/result_screen_test.dart: oturum yoksa giriş uyarısı
+[ResultScreen] Gardıroba kaydetme hatası: Instance of 'NotSignedInException'
+00:03 +114: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/spin_viewer_test.dart: sürükleme kareyi değiştirir
+00:03 +115: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/spin_viewer_test.dart: sürükleme kareyi değiştirir
+00:03 +116: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/spin_viewer_test.dart: sürükleme kareyi değiştirir
+00:04 +117: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/wardrobe_screen_test.dart: oturum yoksa giriş daveti gösterilir
+00:04 +118: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/wardrobe_screen_test.dart: oturum yoksa giriş daveti gösterilir
+00:04 +119: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/wardrobe_screen_test.dart: oturum yoksa giriş daveti gösterilir
+00:04 +120: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/wardrobe_screen_test.dart: oturum yoksa giriş daveti gösterilir
+00:04 +121: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/wardrobe_screen_test.dart: oturum yoksa giriş daveti gösterilir
+00:04 +122: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/wardrobe_screen_test.dart: oturum yoksa giriş daveti gösterilir
+00:04 +123: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/wardrobe_screen_test.dart: oturum yoksa giriş daveti gösterilir
+00:04 +124: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/wardrobe_screen_test.dart: oturum yoksa giriş daveti gösterilir
+00:04 +125: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/wardrobe_screen_test.dart: oturum yoksa giriş daveti gösterilir
+00:04 +126: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/wardrobe_screen_test.dart: oturum yoksa giriş daveti gösterilir
+00:04 +127: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/wardrobe_screen_test.dart: oturum yoksa giriş daveti gösterilir
+00:04 +128: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/wardrobe_screen_test.dart: oturum yoksa giriş daveti gösterilir
+00:04 +129: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/wardrobe_screen_test.dart: oturum yoksa giriş daveti gösterilir
+00:04 +130: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/wardrobe_screen_test.dart: oturum yoksa giriş daveti gösterilir
+00:04 +131: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/wardrobe_screen_test.dart: oturum yoksa giriş daveti gösterilir
+00:04 +132: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/wardrobe_screen_test.dart: oturum yoksa giriş daveti gösterilir
+00:04 +133: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/wardrobe_screen_test.dart: oturum yoksa giriş daveti gösterilir
+00:04 +134: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/wardrobe_screen_test.dart: oturum yoksa giriş daveti gösterilir
+00:04 +134: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/settings_screen_test.dart: çıkış hata verse de kök ekrana döner
+[SettingsScreen] Çıkış sırasında sunucu hatası: Exception: offline
+00:04 +135: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/wardrobe_screen_test.dart: oturum yoksa giriş daveti gösterilir
+00:04 +136: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/wardrobe_screen_test.dart: oturum yoksa giriş daveti gösterilir
+00:04 +137: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/wardrobe_screen_test.dart: oturum yoksa giriş daveti gösterilir
+00:04 +138: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/widget_test.dart: Açılış ekranı marka adını gösterir
+00:04 +139: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/widget_test.dart: Açılış ekranı marka adını gösterir
+00:04 +140: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/widget_test.dart: Açılış ekranı marka adını gösterir
+00:04 +141: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/widget_test.dart: Açılış ekranı marka adını gösterir
+00:04 +142: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/widget_test.dart: Açılış ekranı marka adını gösterir
+00:04 +143: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/widget_test.dart: Açılış ekranı marka adını gösterir
+00:04 +144: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/widget_test.dart: Açılış ekranı marka adını gösterir
+00:04 +145: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/widget_test.dart: Açılış ekranı marka adını gösterir
+00:04 +146: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/widget_test.dart: Açılış ekranı marka adını gösterir
+00:04 +146: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/live_tryon_screen_test.dart: Kaydet son kareyi tam kaliteyle LoadingScreen e gönderir
+[ApiService] İstek Gönderiliyor -> Kategori: upper, BaseUrl: http://10.0.2.2:8000
+[ApiService] Yanıt durumu: 400
+[ApiService] Kritik Bağlantı veya API Hatası: Exception: HTTP 400
+[LoadingScreen] Hata: Exception: HTTP 400
+00:04 +147: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/widget_test.dart: Açılış ekranı marka adını gösterir
+00:04 +148: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/widget_test.dart: Açılış ekranı marka adını gösterir
+00:04 +149: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/widget_test.dart: Açılış ekranı marka adını gösterir
+00:04 +150: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/widget_test.dart: Açılış ekranı marka adını gösterir
+00:04 +151: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/widget_test.dart: Açılış ekranı marka adını gösterir
+00:04 +152: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/widget_test.dart: Açılış ekranı marka adını gösterir
+00:04 +153: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/widget_test.dart: Açılış ekranı marka adını gösterir
+00:04 +154: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/home_spin_test.dart: fotoğrafla Üzerimde Gör LoadingScreen açar
+00:04 +155: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/home_spin_test.dart: fotoğrafla Üzerimde Gör LoadingScreen açar
+00:04 +156: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/home_spin_test.dart: fotoğrafla Üzerimde Gör LoadingScreen açar
+00:04 +157: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/home_spin_test.dart: fotoğrafla Üzerimde Gör LoadingScreen açar
+[ApiService] İstek Gönderiliyor -> Kategori: upper, BaseUrl: http://10.0.2.2:8000
+[ApiService] Yanıt durumu: 400
+[ApiService] Kritik Bağlantı veya API Hatası: Exception: HTTP 400
+[LoadingScreen] Hata: Exception: HTTP 400
+00:04 +158: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/settings_screen_test.dart: hesap silme hata verirse ekranda kalır ve uyarı gösterir
+[SettingsScreen] Hesap silinemedi: Exception: offline
+00:04 +159: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/widget_test.dart: Açılış ekranı TR başlığı
+00:04 +160: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/wardrobe_screen_test.dart: detaydan silme onayla kaldırır
+00:04 +161: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/wardrobe_screen_test.dart: detaydan silme onayla kaldırır
+00:04 +162: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/wardrobe_screen_test.dart: detaydan silme onayla kaldırır
+00:04 +163: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/wardrobe_screen_test.dart: detaydan silme onayla kaldırır
+00:04 +164: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/wardrobe_screen_test.dart: detaydan silme onayla kaldırır
+00:04 +165: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/wardrobe_screen_test.dart: detaydan silme onayla kaldırır
+00:05 +166: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/wardrobe_screen_test.dart: detaydan silme onayla kaldırır
+00:05 +167: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/wardrobe_screen_test.dart: detaydan silme onayla kaldırır
+00:05 +168: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/wardrobe_screen_test.dart: detaydan silme onayla kaldırır
+00:05 +169: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/wardrobe_screen_test.dart: detaydan silme onayla kaldırır
+00:05 +170: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/wardrobe_screen_test.dart: detaydan silme onayla kaldırır
+00:05 +171: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/wardrobe_screen_test.dart: detaydan silme onayla kaldırır
+00:05 +172: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/home_spin_test.dart: manifest yoksa hazır set kartı gizli
+00:05 +173: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/widget_test.dart: geçersiz e-posta uyarısı
+00:05 +174: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/widget_test.dart: geçersiz e-posta uyarısı
+00:05 +175: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/widget_test.dart: geçersiz e-posta uyarısı
+00:05 +176: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/widget_test.dart: geçersiz e-posta uyarısı
+00:05 +177: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/widget_test.dart: geçersiz e-posta uyarısı
+00:05 +178: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/widget_test.dart: geçersiz e-posta uyarısı
+00:05 +179: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/wardrobe_screen_test.dart: detay koyu temada belirteç zemini, silme düğmesi danger
+00:05 +180: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/home_spin_test.dart: video seçili ana ekran en/dark 360 taşmasız
+00:05 +181: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/home_spin_test.dart: video seçili ana ekran en/dark 360 taşmasız
+00:05 +182: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/wardrobe_screen_test.dart: yenilenirken liste ekranda kalır
+00:05 +183: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/wardrobe_screen_test.dart: yenilenirken liste ekranda kalır
+00:05 +184: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/home_spin_test.dart: fotoğraf kontrolü sorunlu fotoğrafta uyarı kutusu görünür, manken seçince kalkar
+00:05 +185: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/home_spin_test.dart: fotoğraf kontrolü sorun yoksa uyarı kutusu yok
+00:05 +186: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/home_spin_test.dart: fotoğraf kontrolü kategori değişince fotoğraf yeni bölge için tekrar kontrol edilir
+00:05 +187: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/home_spin_test.dart: fotoğraf kontrolü uyarı varken Üzerimde Gör önce sorar; Fotoğrafı değiştir denemeyi başlatmaz
+00:05 +188: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/home_spin_test.dart: fotoğraf kontrolü Yine de dene denemeyi başlatır
+[ApiService] İstek Gönderiliyor -> Kategori: upper, BaseUrl: http://10.0.2.2:8000
+[ApiService] Yanıt durumu: 400
+[ApiService] Kritik Bağlantı veya API Hatası: Exception: HTTP 400
+[LoadingScreen] Hata: Exception: HTTP 400
+00:06 +189: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/home_spin_test.dart: fotoğraf kontrolü uyarı kutusu en/dark 360 genişlikte taşmasız
+00:06 +190: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/home_spin_test.dart: fotoğraf kontrolü uyarı kutusu tr/light 360 genişlikte taşmasız
+00:06 +191: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/home_spin_test.dart: fotoğraf kontrolü uyarı kodları iki dilde çevrilir
+00:06 +192: C:/Users/mstfg/OneDrive/Desktop/Virtual Try-On Mobile Application/see_it_on/test/home_spin_test.dart: bağlantı düğümü uyarı kutusunun üstüne binmez
+00:06 +193: All tests passed!

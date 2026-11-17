@@ -30,8 +30,10 @@ ROOT = os.path.abspath(os.path.join(HERE, ".."))
 BASE = sys.argv[1] if len(sys.argv) > 1 else "http://127.0.0.1:8000"
 N = int(sys.argv[2]) if len(sys.argv) > 2 else 50
 REPO = "TryOnVirtual/VITON-HD-TEST"
-OUT = os.path.join(ROOT, "tests", "output", "vitonhd")
-DATA = os.path.join(OUT, "data")
+# Haftalık regresyon (tests/regression.py) çıktıyı kendi klasörüne yazar; veri her zaman aynı yerden okunur
+OUT = os.environ.get("SEEITON_QUALITY_OUT") or os.path.join(ROOT, "tests", "output", "vitonhd")
+DATA = os.path.join(ROOT, "tests", "output", "vitonhd", "data")
+os.makedirs(OUT, exist_ok=True)
 os.makedirs(DATA, exist_ok=True)
 
 

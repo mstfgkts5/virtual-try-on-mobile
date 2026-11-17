@@ -1,0 +1,13 @@
+profile,category,person,garment,http,ok,render_time,wall_time,width,height,error
+full,upper,mannequins/m-m.jpg,garments/sweater-wave.jpg,200,True,15.92,18.582,864,1152,
+full,upper,mannequins/w-s.jpg,garments/blazer.jpg,200,True,16.36,18.964,864,1152,
+full,upper,mannequins/m-m.jpg,garments/sweater-wave.jpg,200,True,15.85,18.483,864,1152,
+full,lower,mannequins/w-m.jpg,garments/jeans-w.jpg,200,True,16.87,19.519,864,1152,
+full,lower,mannequins/m-m.jpg,garments/chino-m.jpg,200,True,17.42,20.032,864,1152,
+full,lower,mannequins/w-m.jpg,garments/jeans-w.jpg,200,True,16.77,19.389,864,1152,
+full,overall,mannequins/w-m.jpg,garments/blazer.jpg,200,True,16.48,19.133,864,1152,
+full,overall,mannequins/m-l.jpg,garments/shirt-stripe.jpg,200,True,15.89,18.482,864,1152,
+full,overall,mannequins/w-m.jpg,garments/blazer.jpg,200,True,16.63,19.259,864,1152,
+preview,upper,mannequins/m-m.jpg,garments/sweater-wave.jpg,200,True,2.09,2.349,384,512,
+preview,upper,mannequins/w-s.jpg,garments/blazer.jpg,200,True,1.72,2.025,384,512,
+preview,upper,mannequins/m-m.jpg,garments/sweater-wave.jpg,200,True,1.71,2.002,384,512,

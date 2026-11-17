@@ -3,7 +3,7 @@
 Kullanım: backend\\venv\\Scripts\\python.exe tests\\bench_report.py [base_url=http://127.0.0.1:8000] [tekrar=10]
 Çıktı: tests/output/report/bench_runs.csv, bench_summary.json ve ekrana özet.
 
-- Güncel varsayılan profil (DPM-Solver++ 8 adım, 576x768) ile kategori başına [tekrar] istek
+- Güncel varsayılan profil (DPM-Solver++ 8 adım, 768x1024, kırpma + renk düzeltme) ile kategori başına [tekrar] istek
 - Canlı önizleme profili (preview=true: 3 adım, 384x512) için [tekrar] istek
 - Tüm istekler başarı oranına sayılır (HTTP 200 ve görsel dönmesi)
 - Kapasite: aynı anda 3 istek gönderilir; GPU kilidi sırayla işler, toplam süre ölçülür
@@ -27,7 +27,8 @@ ROOT = os.path.abspath(os.path.join(HERE, ".."))
 ASSETS = os.path.join(ROOT, "see_it_on", "assets", "images")
 BASE = sys.argv[1] if len(sys.argv) > 1 else "http://127.0.0.1:8000"
 REPEAT = int(sys.argv[2]) if len(sys.argv) > 2 else 10
-OUT = os.path.join(ROOT, "tests", "output", "report")
+# Haftalık regresyon (tests/regression.py) çıktıyı kendi klasörüne yazar; rapor ölçümleri ezilmez
+OUT = os.environ.get("SEEITON_BENCH_OUT") or os.path.join(ROOT, "tests", "output", "report")
 os.makedirs(OUT, exist_ok=True)
 
 # Her kategori için iki farklı kişi-kıyafet çifti dönüşümlü kullanılır

@@ -1,0 +1,81 @@
+Backend: {'status': 'ok', 'engine': 'CatVTON', 'gpu': {'name': 'NVIDIA GeForce RTX 5060 Laptop GPU', 'vram_total_mb': 8150, 'vram_free_mb': 700}}
+Veri klasörleri: ['agnostic-v3.2', 'cloth', 'cloth-mask', 'cloth-warp', 'cloth-warp-mask', 'image', 'image-densepose', 'image-parse-agnostic-v3.2', 'image-parse-v3', 'openpose_img', 'openpose_json', 'unpaired-cloth-warp', 'unpaired-cloth-warp-mask']
+Eşli örnek: 100 (kişi klasörü: image); ilk 50 kullanılacak
+[1/50] 00006_00.jpg SSIM=0.9226 LPIPS=0.10333371162414551 t=16.21s
+[2/50] 00008_00.jpg SSIM=0.8215 LPIPS=0.11562884598970413 t=15.94s
+[3/50] 00013_00.jpg SSIM=0.9422 LPIPS=0.06654642522335052 t=16.19s
+[4/50] 00017_00.jpg SSIM=0.8972 LPIPS=0.11856107413768768 t=17.21s
+[5/50] 00034_00.jpg SSIM=0.9172 LPIPS=0.11275649815797806 t=15.98s
+[6/50] 00035_00.jpg SSIM=0.9217 LPIPS=0.08841904997825623 t=16.3s
+[7/50] 00055_00.jpg SSIM=0.9010 LPIPS=0.11944922059774399 t=16.34s
+[8/50] 00057_00.jpg SSIM=0.8829 LPIPS=0.12727363407611847 t=16.83s
+[9/50] 00064_00.jpg SSIM=0.8358 LPIPS=0.16148249804973602 t=16.8s
+[10/50] 00067_00.jpg SSIM=0.9008 LPIPS=0.08840377628803253 t=16.75s
+[11/50] 00069_00.jpg SSIM=0.8651 LPIPS=0.12559446692466736 t=16.56s
+[12/50] 00071_00.jpg SSIM=0.9129 LPIPS=0.09132328629493713 t=16.28s
+[13/50] 00074_00.jpg SSIM=0.8128 LPIPS=0.20600268244743347 t=16.46s
+[14/50] 00075_00.jpg SSIM=0.9077 LPIPS=0.14614127576351166 t=16.04s
+[15/50] 00084_00.jpg SSIM=0.7446 LPIPS=0.2839447259902954 t=16.25s
+[16/50] 00094_00.jpg SSIM=0.8838 LPIPS=0.1041850745677948 t=16.59s
+[17/50] 00095_00.jpg SSIM=0.7765 LPIPS=0.15076646208763123 t=16.76s
+[18/50] 00096_00.jpg SSIM=0.8213 LPIPS=0.17151789367198944 t=16.24s
+[19/50] 00110_00.jpg SSIM=0.9085 LPIPS=0.1127154529094696 t=17.0s
+[20/50] 00112_00.jpg SSIM=0.9641 LPIPS=0.044605132192373276 t=16.13s
+[21/50] 00121_00.jpg SSIM=0.8652 LPIPS=0.16386766731739044 t=16.54s
+[22/50] 00126_00.jpg SSIM=0.8988 LPIPS=0.10486529022455215 t=15.98s
+[23/50] 00127_00.jpg SSIM=0.9059 LPIPS=0.13119474053382874 t=16.8s
+[24/50] 00135_00.jpg SSIM=0.7282 LPIPS=0.2881404459476471 t=16.97s
+[25/50] 00145_00.jpg SSIM=0.7822 LPIPS=0.3030795454978943 t=16.33s
+[26/50] 00151_00.jpg SSIM=0.7621 LPIPS=0.13325555622577667 t=16.3s
+[27/50] 00158_00.jpg SSIM=0.9000 LPIPS=0.1079997718334198 t=17.0s
+[28/50] 00176_00.jpg SSIM=0.9364 LPIPS=0.08952479809522629 t=16.32s
+[29/50] 00190_00.jpg SSIM=0.9425 LPIPS=0.07242762297391891 t=16.45s
+[30/50] 00205_00.jpg SSIM=0.8713 LPIPS=0.08734695613384247 t=16.17s
+[31/50] 00249_00.jpg SSIM=0.8558 LPIPS=0.17054462432861328 t=16.21s
+[32/50] 00254_00.jpg SSIM=0.7978 LPIPS=0.17834053933620453 t=15.96s
+[33/50] 00259_00.jpg SSIM=0.7278 LPIPS=0.12831711769104004 t=15.98s
+[34/50] 00260_00.jpg SSIM=0.8031 LPIPS=0.1997048556804657 t=16.53s
+[35/50] 00261_00.jpg SSIM=0.8815 LPIPS=0.14680463075637817 t=16.39s
+[36/50] 00272_00.jpg SSIM=0.8952 LPIPS=0.07350814342498779 t=15.81s
+[37/50] 00273_00.jpg SSIM=0.9049 LPIPS=0.10235001146793365 t=16.93s
+[38/50] 00278_00.jpg SSIM=0.9033 LPIPS=0.10037107765674591 t=16.09s
+[39/50] 00286_00.jpg SSIM=0.7791 LPIPS=0.12652328610420227 t=16.08s
+[40/50] 00287_00.jpg SSIM=0.8185 LPIPS=0.12079286575317383 t=16.27s
+[41/50] 00291_00.jpg SSIM=0.7412 LPIPS=0.272569477558136 t=16.74s
+[42/50] 00311_00.jpg SSIM=0.8854 LPIPS=0.12112965434789658 t=16.32s
+[43/50] 00330_00.jpg SSIM=0.8903 LPIPS=0.1377614438533783 t=16.73s
+[44/50] 00339_00.jpg SSIM=0.9217 LPIPS=0.11453583091497421 t=16.65s
+[45/50] 00345_00.jpg SSIM=0.9178 LPIPS=0.10665304958820343 t=15.53s
+[46/50] 00348_00.jpg SSIM=0.8815 LPIPS=0.10640992969274521 t=16.33s
+[47/50] 00349_00.jpg SSIM=0.8146 LPIPS=0.24754676222801208 t=16.56s
+[48/50] 00373_00.jpg SSIM=0.8707 LPIPS=0.15412351489067078 t=16.07s
+[49/50] 00396_00.jpg SSIM=0.8966 LPIPS=0.09334170818328857 t=16.75s
+[50/50] 00397_00.jpg SSIM=0.9424 LPIPS=0.06501848250627518 t=16.2s
+{
+  "dataset": "TryOnVirtual/VITON-HD-TEST",
+  "setting": "paired, upper body",
+  "pairs_requested": 50,
+  "succeeded": 50,
+  "resolution": "768x1024",
+  "ssim": {
+    "n": 50,
+    "mean": 0.8652,
+    "std": 0.0622
+  },
+  "lpips_alex": {
+    "n": 50,
+    "mean": 0.1357,
+    "std": 0.0589
+  },
+  "render_time": {
+    "n": 50,
+    "mean": 16.397,
+    "std": 0.3546
+  }
+}
+C:\Users\mstfg\OneDrive\Desktop\Virtual Try-On Mobile Application\backend\venv\Lib\site-packages\torchvision\models\_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+C:\Users\mstfg\OneDrive\Desktop\Virtual Try-On Mobile Application\backend\venv\Lib\site-packages\torchvision\models\_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=AlexNet_Weights.IMAGENET1K_V1`. You can also use `weights=AlexNet_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+C:\Users\mstfg\OneDrive\Desktop\Virtual Try-On Mobile Application\tests\quality_vitonhd.py:63: UserWarning: The given NumPy array is not writable, and PyTorch does not support non-writable tensors. This means writing to this tensor will result in undefined behavior. You may want to copy the array to protect its data or make it writable before converting it to a tensor. This type of warning will be suppressed for the rest of this program. (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\pytorch\torch\csrc\utils\tensor_numpy.cpp:219.)
+  ta = torch.from_numpy(a).permute(2, 0, 1)[None].float() / 127.5 - 1

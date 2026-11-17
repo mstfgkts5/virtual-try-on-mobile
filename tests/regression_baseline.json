@@ -1,0 +1,24 @@
+{
+  "date": "2026-11-14",
+  "commit": "8b62697",
+  "note": "Tam profil 768x1024, 8 adım, şarjda; tests/output/report ve tests/output/vitonhd (Ara Rapor Bölüm 10.9)",
+  "speed_render_s": {
+    "full/upper": 14.19,
+    "full/lower": 14.59,
+    "full/overall": 14.38,
+    "preview/upper": 1.17
+  },
+  "success_rate": 1.0,
+  "quality": {
+    "pairs": 50,
+    "succeeded": 49,
+    "ssim": 0.8603,
+    "lpips": 0.1414
+  },
+  "tolerance": {
+    "speed_ratio": 1.15,
+    "ssim_drop": 0.01,
+    "lpips_rise": 0.01,
+    "quality_failed_pairs": 1
+  }
+}
