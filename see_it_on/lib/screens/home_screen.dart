@@ -6,6 +6,7 @@ import '../core/l10n_ext.dart';
 import '../models/spin.dart';
 import '../models/spin_preset.dart';
 import '../services/api_service.dart';
+import '../services/demo_results.dart';
 import '../services/media_picker.dart';
 import 'camera_capture_screen.dart';
 import 'live_tryon_screen.dart';
@@ -37,6 +38,14 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _personIsUserPhoto = false;
   int _checkSeq = 0;
 
+  // Hazır manken / örnek kıyafet seçildiyse kimlikleri; kullanıcının kendi görselinde null.
+  // Sunucuya ulaşılamazsa bu çift için önceden üretilmiş demo sonucu gösterilebilir.
+  String? _mannequinId;
+  String? _garmentId;
+
+  /// 'assets/images/mannequins/m-m.jpg' -> 'm-m'
+  static String _assetId(String path) => path.split('/').last.replaceFirst(RegExp(r'\.\w+$'), '');
+
   void _checkPhoto() {
     final bytes = _personImageBytes;
     final seq = ++_checkSeq;
@@ -55,6 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
       _videoBytes = null;
       _personImageBytes = bytes;
       _personIsUserPhoto = true;
+      _mannequinId = null;
       _photoWarnings = const [];
     });
     _checkPhoto();
@@ -255,10 +265,12 @@ class _HomeScreenState extends State<HomeScreen> {
         _videoBytes = null;
         _personImageBytes = data.buffer.asUint8List();
         _personIsUserPhoto = false;
+        _mannequinId = _assetId(assetPath);
         _photoWarnings = const [];
         _checkSeq++;
       } else {
         _garmentImageBytes = data.buffer.asUint8List();
+        _garmentId = _assetId(assetPath);
       }
     });
   }
@@ -271,7 +283,10 @@ class _HomeScreenState extends State<HomeScreen> {
       if (isPerson) {
         _setUserPhoto(bytes);
       } else {
-        setState(() => _garmentImageBytes = bytes);
+        setState(() {
+          _garmentImageBytes = bytes;
+          _garmentId = null;
+        });
       }
     }
   }
@@ -485,6 +500,7 @@ class _HomeScreenState extends State<HomeScreen> {
         personImageBytes: _personImageBytes!,
         garmentImageBytes: _garmentImageBytes!,
         category: _category,
+        demo: _mannequinId != null && _garmentId != null ? DemoPair(_mannequinId!, _garmentId!) : null,
       ),
     );
   }

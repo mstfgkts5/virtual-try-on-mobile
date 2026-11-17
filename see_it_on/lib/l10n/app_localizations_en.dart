@@ -235,7 +235,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loadingTitle => 'Dressing you up •';
 
   @override
-  String get loadingEta => 'Estimated time ~10 s';
+  String get loadingEta => 'Estimated time ~15 s';
 
   @override
   String get loadingFinalTouches => 'Final touches...';
@@ -766,4 +766,24 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get photoWarnLowRes =>
       'The photo resolution is low; use a sharper photo.';
+
+  @override
+  String get loadingErrorTitle => 'Try-on could not finish';
+
+  @override
+  String get actionRetry => 'Try again';
+
+  @override
+  String get actionGoBack => 'Go back';
+
+  @override
+  String get loadingDemoHint =>
+      'A result for this mannequin and garment was generated earlier and can be shown without the server.';
+
+  @override
+  String get loadingShowDemo => 'Show sample result';
+
+  @override
+  String get resultDemoBadge =>
+      'Sample result: shown from a result generated earlier, because the server is offline.';
 }

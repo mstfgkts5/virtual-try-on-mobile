@@ -37,6 +37,7 @@ flutter:
     - assets/images/mannequins/
     - assets/images/garments/
     - assets/images/spin/demo/
+    - assets/images/demo/ # çevrimdışı demo sonuçları (backend/make_demo_results.py)
 
   # Dergi tarzı tipografi (SIL Open Font License, lisanslar assets/fonts/OFL-*.txt).
   # Statik ağırlık dosyaları: FontWeight her platformda doğru dosyayı seçer.

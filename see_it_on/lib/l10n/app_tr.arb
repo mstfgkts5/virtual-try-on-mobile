@@ -111,7 +111,7 @@
   },
   "loadingModelRunning": "DİFÜZYON MODELİ ÇALIŞIYOR",
   "loadingTitle": "Kıyafet giydiriliyor •",
-  "loadingEta": "Tahmini süre ~10 sn",
+  "loadingEta": "Tahmini süre ~15 sn",
   "loadingFinalTouches": "Son rötuşlar...",
   "loadingProcessing": "İşleniyor...",
   "loadingStepMask": "Vücut Maskesi",
@@ -360,5 +360,11 @@
   "photoWarnBack": "Yüz görünmüyor; önden çekilmiş bir fotoğraf kullan.",
   "photoWarnSmall": "Kişi kadrajda çok küçük; daha yakından, boydan çek.",
   "photoWarnRegion": "Denenecek bölge (üst ya da alt beden) fotoğrafta tam görünmüyor.",
-  "photoWarnLowRes": "Fotoğrafın çözünürlüğü düşük; daha net bir fotoğraf kullan."
+  "photoWarnLowRes": "Fotoğrafın çözünürlüğü düşük; daha net bir fotoğraf kullan.",
+  "loadingErrorTitle": "Deneme tamamlanamadı",
+  "actionRetry": "Tekrar dene",
+  "actionGoBack": "Geri dön",
+  "loadingDemoHint": "Bu manken ve kıyafet için önceden üretilmiş bir sonuç var; sunucu olmadan gösterilebilir.",
+  "loadingShowDemo": "Örnek sonucu göster",
+  "resultDemoBadge": "Örnek sonuç: sunucu kapalıyken önceden üretilmiş sonuç gösteriliyor."
 }

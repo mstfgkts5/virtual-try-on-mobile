@@ -238,7 +238,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get loadingTitle => 'Kıyafet giydiriliyor •';
 
   @override
-  String get loadingEta => 'Tahmini süre ~10 sn';
+  String get loadingEta => 'Tahmini süre ~15 sn';
 
   @override
   String get loadingFinalTouches => 'Son rötuşlar...';
@@ -766,4 +766,24 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get photoWarnLowRes =>
       'Fotoğrafın çözünürlüğü düşük; daha net bir fotoğraf kullan.';
+
+  @override
+  String get loadingErrorTitle => 'Deneme tamamlanamadı';
+
+  @override
+  String get actionRetry => 'Tekrar dene';
+
+  @override
+  String get actionGoBack => 'Geri dön';
+
+  @override
+  String get loadingDemoHint =>
+      'Bu manken ve kıyafet için önceden üretilmiş bir sonuç var; sunucu olmadan gösterilebilir.';
+
+  @override
+  String get loadingShowDemo => 'Örnek sonucu göster';
+
+  @override
+  String get resultDemoBadge =>
+      'Örnek sonuç: sunucu kapalıyken önceden üretilmiş sonuç gösteriliyor.';
 }

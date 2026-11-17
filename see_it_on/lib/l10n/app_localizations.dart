@@ -515,7 +515,7 @@ abstract class AppLocalizations {
   /// No description provided for @loadingEta.
   ///
   /// In tr, this message translates to:
-  /// **'Tahmini süre ~10 sn'**
+  /// **'Tahmini süre ~15 sn'**
   String get loadingEta;
 
   /// No description provided for @loadingFinalTouches.
@@ -1429,6 +1429,42 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Fotoğrafın çözünürlüğü düşük; daha net bir fotoğraf kullan.'**
   String get photoWarnLowRes;
+
+  /// No description provided for @loadingErrorTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Deneme tamamlanamadı'**
+  String get loadingErrorTitle;
+
+  /// No description provided for @actionRetry.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tekrar dene'**
+  String get actionRetry;
+
+  /// No description provided for @actionGoBack.
+  ///
+  /// In tr, this message translates to:
+  /// **'Geri dön'**
+  String get actionGoBack;
+
+  /// No description provided for @loadingDemoHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu manken ve kıyafet için önceden üretilmiş bir sonuç var; sunucu olmadan gösterilebilir.'**
+  String get loadingDemoHint;
+
+  /// No description provided for @loadingShowDemo.
+  ///
+  /// In tr, this message translates to:
+  /// **'Örnek sonucu göster'**
+  String get loadingShowDemo;
+
+  /// No description provided for @resultDemoBadge.
+  ///
+  /// In tr, this message translates to:
+  /// **'Örnek sonuç: sunucu kapalıyken önceden üretilmiş sonuç gösteriliyor.'**
+  String get resultDemoBadge;
 }
 
 class _AppLocalizationsDelegate

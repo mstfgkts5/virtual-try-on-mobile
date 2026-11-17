@@ -6,6 +6,7 @@ import '../core/design/widgets.dart';
 import '../core/l10n_ext.dart';
 import '../models/tryon_request.dart';
 import '../services/api_service.dart';
+import '../services/demo_results.dart';
 import 'result_screen.dart';
 
 class LoadingScreen extends StatefulWidget {
@@ -16,12 +17,17 @@ class LoadingScreen extends StatefulWidget {
   /// Verilmezse uygulamanın ApiService'i kullanılır; testlerde backend'e gitmeyen sahte servis verilir.
   final ApiService? api;
 
+  /// Hazır manken ve örnek kıyafet seçildiyse verilir: sunucuya ulaşılamazsa
+  /// bu çift için önceden üretilmiş sonuç gösterilebilir (çevrimdışı demo).
+  final DemoPair? demo;
+
   const LoadingScreen({
     super.key,
     required this.personImageBytes,
     required this.garmentImageBytes,
     this.category = 'upper',
     this.api,
+    this.demo,
   });
 
   @override
@@ -31,6 +37,11 @@ class LoadingScreen extends StatefulWidget {
 class _LoadingScreenState extends State<LoadingScreen> {
   double progress = 0.0;
   Timer? _progressTimer;
+
+  // Hata olursa ekran kapanmaz: neden yazılır, "Tekrar dene" ve varsa hazır demo sonucu sunulur
+  String? _error;
+  DemoResult? _demoResult;
+  bool _openingDemo = false;
 
   @override
   void initState() {
@@ -44,10 +55,19 @@ class _LoadingScreenState extends State<LoadingScreen> {
     super.dispose();
   }
 
+  void _retry() {
+    setState(() {
+      _error = null;
+      _demoResult = null;
+      progress = 0.0;
+    });
+    _processVirtualTryOn();
+  }
+
   Future<void> _processVirtualTryOn() async {
-    // Tahmini ilerleme: yerel GPU'da işlem ~4–9 sn (8 adım · 576x768) sürdüğü için %90'a ~10 sn'de ulaşır,
+    // Tahmini ilerleme: yerel GPU'da işlem ~15 sn (8 adım · 768x1024) sürdüğü için %90'a ~14 sn'de ulaşır,
     // backend yanıt verince %100'e tamamlanır
-    _progressTimer = Timer.periodic(const Duration(milliseconds: 110), (timer) {
+    _progressTimer = Timer.periodic(const Duration(milliseconds: 160), (timer) {
       if (!mounted || progress >= 0.89) {
         timer.cancel();
         return;
@@ -88,15 +108,45 @@ class _LoadingScreenState extends State<LoadingScreen> {
       _progressTimer?.cancel();
       debugPrint('[LoadingScreen] Hata: $e');
       if (!mounted) return;
+      final message = ApiService.friendlyError(context.l10n, e);
+      final pair = widget.demo;
+      DemoResult? demo;
+      if (pair != null) {
+        final results = await DemoResults.load(DefaultAssetBundle.of(context));
+        demo = results.lookup(pair.mannequinId, pair.garmentId);
+      }
+      if (!mounted) return;
+      setState(() {
+        _error = message;
+        _demoResult = demo;
+      });
+    }
+  }
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(context.l10n.loadingFailed(ApiService.friendlyError(context.l10n, e))),
-          backgroundColor: context.tokens.danger,
-          duration: const Duration(seconds: 5),
+  Future<void> _showDemo() async {
+    final demo = _demoResult;
+    if (demo == null || _openingDemo) return;
+    setState(() => _openingDemo = true);
+    final bundle = DefaultAssetBundle.of(context);
+    try {
+      final result = await bundle.load(demo.resultAsset);
+      final person = await bundle.load(demo.personAsset);
+      if (!mounted) return;
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => ResultScreen(
+            originalImageBytes: Uint8List.sublistView(person),
+            generatedImageBytes: Uint8List.sublistView(result),
+            category: demo.category,
+            renderTimeSec: demo.renderTimeSec,
+            isDemo: true,
+          ),
         ),
       );
-      Navigator.pop(context);
+    } catch (e) {
+      debugPrint('[LoadingScreen] Demo sonucu açılamadı: $e');
+      if (mounted) setState(() => _openingDemo = false);
     }
   }
 
@@ -109,12 +159,95 @@ class _LoadingScreenState extends State<LoadingScreen> {
     };
   }
 
+  Widget _buildError(BuildContext context) {
+    final l = context.l10n;
+    final t = context.tokens;
+    final demo = _demoResult;
+    return Scaffold(
+      backgroundColor: t.paper,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(child: EditorialOverline(l.loadingEngine)),
+                  IconButton(
+                    tooltip: l.actionGoBack,
+                    icon: Icon(Icons.close, color: t.ink, size: 20),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(SeeItOnTokens.radiusLg),
+                child: SizedBox(
+                  height: 220,
+                  width: double.infinity,
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      Image.memory(widget.personImageBytes, fit: BoxFit.cover),
+                      ColoredBox(color: t.paper.withValues(alpha: 0.6)),
+                      Center(child: Icon(Icons.cloud_off_outlined, size: 48, color: t.danger)),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+              EditorialHeading(l.loadingErrorTitle, size: 26),
+              const SizedBox(height: 10),
+              Text(
+                _error!,
+                key: const Key('loadingError'),
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: t.danger),
+              ),
+              const SizedBox(height: 24),
+              PillButton(
+                label: l.actionRetry,
+                icon: Icons.refresh,
+                expand: true,
+                onPressed: _retry,
+              ),
+              if (demo != null) ...[
+                const SizedBox(height: 20),
+                const HairlineDivider(),
+                const SizedBox(height: 16),
+                Caption(l.loadingDemoHint),
+                const SizedBox(height: 12),
+                PillButton(
+                  label: l.loadingShowDemo,
+                  icon: Icons.photo_library_outlined,
+                  primary: false,
+                  expand: true,
+                  busy: _openingDemo,
+                  onPressed: _showDemo,
+                ),
+              ],
+              const SizedBox(height: 12),
+              Center(
+                child: TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(l.actionGoBack),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l = context.l10n;
     final t = context.tokens;
     final text = Theme.of(context).textTheme;
     final percent = (progress * 100).toInt();
+    if (_error != null) return _buildError(context);
 
     final steps = [
       (l.loadingStepMask, l.loadingStepMaskDesc, progress > 0.3, progress <= 0.3),

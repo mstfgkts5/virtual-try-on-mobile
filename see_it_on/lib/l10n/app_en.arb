@@ -69,7 +69,7 @@
   "loadingProgress": "PROGRESS: {percent}%",
   "loadingModelRunning": "DIFFUSION MODEL RUNNING",
   "loadingTitle": "Dressing you up •",
-  "loadingEta": "Estimated time ~10 s",
+  "loadingEta": "Estimated time ~15 s",
   "loadingFinalTouches": "Final touches...",
   "loadingProcessing": "Processing...",
   "loadingStepMask": "Body mask",
@@ -221,5 +221,11 @@
   "photoWarnBack": "The face is not visible; use a photo taken from the front.",
   "photoWarnSmall": "The person is too small in the frame; take a closer, full-length photo.",
   "photoWarnRegion": "The area to try on (upper or lower body) is not fully visible.",
-  "photoWarnLowRes": "The photo resolution is low; use a sharper photo."
+  "photoWarnLowRes": "The photo resolution is low; use a sharper photo.",
+  "loadingErrorTitle": "Try-on could not finish",
+  "actionRetry": "Try again",
+  "actionGoBack": "Go back",
+  "loadingDemoHint": "A result for this mannequin and garment was generated earlier and can be shown without the server.",
+  "loadingShowDemo": "Show sample result",
+  "resultDemoBadge": "Sample result: shown from a result generated earlier, because the server is offline."
 }
