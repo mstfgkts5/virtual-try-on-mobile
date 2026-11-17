@@ -19,7 +19,7 @@ Rapordaki "Sınırlılıklar" bölümü için. Her madde gözlem, sebep ve uygul
 - **Gözlem:** iPhone Safari'de uygulama yerel Wi-Fi üzerinden (http) açıldığında tarayıcı kamerayı açmıyor; ekran "Galeriden seç"e yönlendiriyor.
 - **Sebep:** Tarayıcılar kamerayı yalnızca güvenli bağlamda (HTTPS veya localhost) verir.
 - **Uygulamada:** Galeri ve manken yolları çalışır; yerel (Android/iOS) derlemede kamera eklentisi doğrudan çalışır.
-- **Demo için:** `start_demo.ps1` backend'i (8000) ve web uygulamasını (8443) kendi imzalı sertifikayla HTTPS üzerinden açar (`backend/certs/`, git dışında). Telefonda önce `https://<IP>:8000/health`, sonra `https://<IP>:8443` açılıp "bağlantı gizli değil" uyarısı bir kez kabul edilir. Gerçek bir dağıtımda tanınmış bir sertifika (ör. Let's Encrypt) gerekir.
+- **Demo için:** `start_demo.ps1`, `tools/lan_server.py` ile derlenmiş web uygulamasını ve backend'i tek adreste sunar: `https://<IP>:8443` (kendi imzalı sertifika, `backend/certs/`, git dışında) ve `http://<IP>:8000` (Android uygulaması). Uygulama ve backend aynı adreste olduğu için Safari'de "bağlantı gizli değil" uyarısı bir kez kabul edilir. Telefonla bilgisayar aynı ağda olmalı; istemcileri birbirinden ayıran ağlarda (ör. yurt Wi-Fi'si) çalışmaz, kişisel erişim noktası çalışır. Gerçek bir dağıtımda tanınmış bir sertifika (ör. Let's Encrypt) gerekir.
 
 ## 4. 360° dönüş: kareler ayrı üretilir
 - **Gözlem:** Dönüşteki her kare CatVTON ile ayrı giydirildiği için kumaşın kırışıkları ve deseni kareden kareye biraz değişebilir; ince desenler (kareli, ekose) düz renge yaklaşabilir.

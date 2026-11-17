@@ -4,7 +4,7 @@ Bu servis, **SeeItOn** Flutter uygulamasından gelen kişi ve kıyafet fotoğraf
 **CatVTON** difüzyon modeliyle yerel NVIDIA GPU üzerinde sanal deneme yapar.
 Üst giyim (`upper`), alt giyim (`lower`) ve tam kıyafet (`overall`) desteklenir.
 
-Ölçülen performans (RTX 5060 Laptop, 8 GB, şarjda): görsel başına ~5 sn (DPM-Solver++ 8 adım, 576×768), en yüksek VRAM ~3,7 GB. Ayrıntı: `docs/PERFORMANCE.md`.
+Ölçülen performans (RTX 5060 Laptop, 8 GB, şarjda): tam kalite görsel başına ~15 sn (DPM-Solver++ 8 adım, 768×1024, kişi kırpma ve renk düzeltme); 360° dönüş kareleri ve hızlı profil 576×768'de ~5 sn; en yüksek VRAM ~3,7 GB. Ayrıntı: `docs/PERFORMANCE.md`.
 
 ---
 
@@ -59,7 +59,7 @@ Yanıt (JSON):
 
 | Alan | Açıklama |
 |---|---|
-| `image_base64` | Sonuç görseli (PNG, 576×768; önizlemede JPEG 384×512) |
+| `image_base64` | Sonuç görseli (PNG, 768×1024; önizlemede JPEG 384×512) |
 | `person_base64` | Modele giren 3:4 kırpılmış kişi fotoğrafı (JPEG); önce/sonra karşılaştırması bununla yapılır |
 | `category` | Kullanılan kategori (`upper` / `lower` / `overall`) |
 | `render_time` | Gerçek işlem süresi (sn) |
@@ -71,7 +71,10 @@ Yanıt (JSON):
 
 - **Chrome / Web**: `http://localhost:8000`
 - **Android Emülatör**: `http://10.0.2.2:8000`
-- **Gerçek Telefon**: Bilgisayarın yerel Wi-Fi IP adresi (örn. `http://192.168.1.35:8000`), uygulamadaki ayarlardan girilir.
+- **Telefon (demo)**: proje kökünde `powershell -ExecutionPolicy Bypass -File start_demo.ps1`. Backend `127.0.0.1:8001`'de çalışır; `tools/lan_server.py` web uygulamasını ve API'yi tek adreste sunar:
+  - iPhone Safari (kamera için HTTPS): `https://<bilgisayar IP>:8443`, kendi imzalı sertifika uyarısı bir kez kabul edilir
+  - Android uygulaması (APK): Ayarlar → Sunucu'ya bilgisayarın IP'si yazılır (`http://<IP>:8000`); APK `http://<IP>:8000/SeeItOn.apk` adresinden indirilebilir
+  - Telefonla bilgisayar aynı ağda olmalı (istemcileri ayıran ağlarda olmaz; kişisel erişim noktası çalışır)
 
 ---
 

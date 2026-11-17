@@ -18,7 +18,7 @@ Teslim: çalışan uygulama + rapor + sunum.
 - [x] Alt giyim testi: chino / kumaş pantolon / kot başarılı (~40 sn). **Bilinen sınır:** hedef kıyafet mevcut kıyafetten kısaysa (şort, midi etek) sonuç uzuyor, çünkü CatVTON maskeyi mevcut kıyafetten çıkarıyor → raporda belgelenecek, uygulamada ipucu gösteriliyor
 - [ ] (İsteğe bağlı) Kısa alt giyim için maskeyi kıyafet uzunluğuna göre kısaltma
 - [ ] Alt giyimde renk doygunluğu biraz düşüyor (kot) → incele
-- [ ] Zaman aşımı, bağlantı ve model hataları için düzgün hata ekranları
+- [x] Zaman aşımı, bağlantı ve model hataları için düzgün hata ekranları (17 Kasım): yükleme ekranı hata olunca kapanmaz, nedeni ve "Tekrar dene"yi gösterir; 360° dönüşte de "Tekrar dene"
 - [x] Sahte değerleri kaldır (fit score, sahte yükleme adımları, kullanılmayan fit/pose ayarları)
 - [x] Önce/sonra karşılaştırmasını düzelt: backend 3:4 kırpılmış kişi fotoğrafını da döndürsün, karşılaştırma onu kullansın
 
@@ -39,14 +39,15 @@ Teslim: çalışan uygulama + rapor + sunum.
 - [x] Uygulama içi kamera (1. aşama): silüet rehberi, 3-2-1 geri sayım, Kullan/Tekrar çek, ön/arka kamera, izin reddi ve kamera yok ekranları, galeriye geçiş; Android/iOS izinleri — 92 test
 - [ ] Kamerayı gerçek telefonda ve tarayıcı kamerasıyla dene
 - [x] **Canlı dene** (neredeyse canlı): kamera açık, yandaki şeritten kıyafet seçilince ~1 sn'de bir önizleme (384×512, DPM-Solver++ 3 adım, iki istek üst üste), "Bu kareyi kaydet" tam kalite; HTTPS demo betiği `start_demo.ps1`
-- [ ] Canlı denemeyi iPhone'da HTTPS üzerinden dene
+- [ ] Canlı denemeyi iPhone'da HTTPS üzerinden dene — 17 Kasım: `start_demo.ps1` artık uygulama ve backend'i tek HTTPS adresinde (`https://<IP>:8443`, `tools/lan_server.py`) sunuyor; telefonda denenecek
 - [x] DPM-Solver++'a geçiş: tam kalite 8 adım (8,2 → ~5 sn), önizleme 3 adım (~1 sn) — [PERFORMANCE.md](PERFORMANCE.md)
 - [x] Tekrarlanan ve kullanılmayan kodu temizle (`splash_screen.dart` kopyası, 8 widget, eski görseller)
 
 ## 4. Hafta (24–30 Kasım) – Test ve dokümantasyon
 - [x] Gerçek telefonda uçtan uca test (iPhone 15 Pro, Safari, kişisel erişim noktası üzerinden): giriş, manken + örnek kıyafet, kendi fotoğrafı, sonuç, gardırop, koyu tema, EN — hepsi çalıştı (~48 sn / deneme)
 - [x] Bol/açık dış giyimde vücudun ince görünmesi incelendi: maskeyi siluete kırpmak denendi, iyileşme yok → bilinen sınır olarak belgelendi ([KNOWN_LIMITATIONS.md](KNOWN_LIMITATIONS.md))
-- [ ] Yerel iOS/Android derlemesiyle (kamera dahil) test — iOS için Mac gerekir
+- [ ] Yerel iOS/Android derlemesiyle (kamera dahil) test — iOS için Mac gerekir. 17 Kasım: release APK derlendi (eski Supabase eklentileri `sign_in_with_apple` ve `app_links` için derleme düzeltmeleri), Ayarlar'a sunucu adresi eklendi; Android telefonda denenecek
+- [x] Çevrimdışı demo modu (17 Kasım): sunucuya ulaşılamazsa hazır manken + örnek kıyafet için önceden üretilmiş sonuç gösterilir, sonuç ekranında "Örnek sonuç" etiketi; 60 çiftin 49'u (11'i gözle elendi, `backend/make_demo_results.py`)
 - [x] Performans ölçümleri: kategori başına ~8 sn (şarjda), 48 karelik dönüş 111 sn, VRAM 3,7 GB — [PERFORMANCE.md](PERFORMANCE.md)
 - [x] Mimari ve sıra diyagramları güncellendi (bileşenler, tek görsel, 360° dönüş, giriş/gardırop, veri modeli, kullanım senaryoları) — [ARCHITECTURE.md](../ARCHITECTURE.md)
 - [x] Rapor taslağı (Claude Docs: özet, giriş, ilgili çalışmalar, sistem tasarımı + diyagram, yöntem, uygulama, test, sınırlılıklar, sonuç, kaynaklar) — kaynak künyeleri doğrulanacak, gerçek dönüş videosu sonuçları eklenecek
