@@ -22,6 +22,12 @@ dependencies:
   gal: ^2.3.3
   camera: ^0.12.2
 
+# supabase_flutter 1.x, sign_in_with_apple 5.0.0'ı çekiyor; o sürüm Flutter'dan kaldırılan
+# v1 Android arayüzünü (Registrar) kullandığı için APK derlenemiyor. 6.1.1+ bu arayüzü kullanmıyor,
+# Dart API'si aynı. Uygulama Apple ile girişi kullanmıyor; yalnızca derleme için.
+dependency_overrides:
+  sign_in_with_apple: ^6.1.4
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
